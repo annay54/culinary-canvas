@@ -70,7 +70,10 @@ const Pagination = ({pageLength}) => {
 
     return (
         <div className='flex flex-row gap-1'>
-            <button className='text-secondary px-3 py-2 bg-transparent hover:bg-primary hover:text-white' onClick={handlePrevious}>
+            <button 
+                className={`text-secondary px-3 py-2 bg-transparent hover:bg-primary hover:text-white ${currentPage === 1 && "pointer-events-none opacity-50"}`} 
+                onClick={handlePrevious}
+            >
                 <i className='fa-solid fa-arrow-left'></i>
             </button>
             
@@ -99,7 +102,10 @@ const Pagination = ({pageLength}) => {
                 )
             }
 
-            <button className='bg-transparent text-secondary px-3 py-2 hover:bg-primary hover:text-white' onClick={handleNext}>
+            <button 
+                className={`text-secondary px-3 py-2 bg-transparent hover:bg-primary hover:text-white ${currentPage === pageLength && "pointer-events-none opacity-50"}`}  
+                onClick={handleNext}
+            >
                 <i className='fa-solid fa-arrow-right'></i>
             </button>
         </div>
