@@ -61,7 +61,7 @@ const Pagination = ({pageLength}) => {
                 setCurrentPage(index + 1);
                 handlePageChange(index + 1);
             }}
-            className={`w-[40px] py-2 text-center hover:bg-primary hover:text-white ${currentPage === index + 1 ? 'bg-secondary text-white' : 'bg-transparent text-secondary'}`}
+            className={`min-[400px]:w-[40px] py-2 text-center hover:bg-primary hover:text-white ${currentPage === index + 1 ? 'bg-secondary text-white' : 'bg-transparent text-secondary'}`}
         >
             {index + 1}
         </button>);
@@ -69,45 +69,63 @@ const Pagination = ({pageLength}) => {
 
 
     return (
-        <div className='flex flex-row gap-1'>
-            <button 
-                className={`text-secondary px-3 py-2 bg-transparent hover:bg-primary hover:text-white ${currentPage === 1 && "pointer-events-none opacity-50"}`} 
-                onClick={handlePrevious}
-            >
-                <i className='fa-solid fa-arrow-left'></i>
-            </button>
-            
-            {pageLength < 6 
-                ? [...Array(pageLength)].map((_, index) => (
-                    <PageButton key={index} index={index} />
-                ))
-                : (
-                    <>
-                        {leftButtons.map((button, index) => (
-                            <PageButton key={index} index={button-1} />
-                        ))}
-                        
-                        <p className='px-4 py-2 text-secondary'>...</p>
-                        
-                        {middleButtons.map((button, index) => (
-                            <PageButton key={index} index={button-1} />
-                        ))}
+        <div className='flex flex-wrap sm:flex-row sm:gap-1'>
+            <div className='flex flex-row sm:gap-1'>
+                {/* previous button */}
+                <button 
+                    className={`text-secondary px-3 py-2 bg-transparent hover:bg-primary hover:text-white ${currentPage === 1 && "pointer-events-none opacity-50"}`} 
+                    onClick={handlePrevious}
+                >
+                    <i className='fa-solid fa-arrow-left'></i>
+                </button>
+                
+                {pageLength < 6 
+                    ? [...Array(pageLength)].map((_, index) => (
+                        <PageButton key={index} index={index} />
+                    ))
+                    : (
+                        <>
+                            {leftButtons.map((button, index) => (
+                                <PageButton key={index} index={button-1} />
+                            ))}
+                            
+                            <p className='px-4 py-2 text-secondary'>...</p>
+                            
+                            {middleButtons.map((button, index) => (
+                                <PageButton key={index} index={button-1} />
+                            ))}
 
-                        {middleButtons.length > 0 && <p className='px-4 py-2 text-secondary'>...</p>}
-                        
-                        {rightButtons.map((button, index) => (
-                            <PageButton key={index} index={button-1} />
-                        ))}
-                    </>
-                )
-            }
+                            {middleButtons.length > 0 && <p className='px-4 py-2 text-secondary'>...</p>}
+                            
+                            {rightButtons.map((button, index) => (
+                                <PageButton key={index} index={button-1} />
+                            ))}
+                        </>
+                    )
+                }
 
-            <button 
-                className={`text-secondary px-3 py-2 bg-transparent hover:bg-primary hover:text-white ${currentPage === pageLength && "pointer-events-none opacity-50"}`}  
-                onClick={handleNext}
+                {/* next arrow */}
+                <button 
+                    className={`text-secondary px-3 py-2 bg-transparent hover:bg-primary hover:text-white ${currentPage === pageLength && "pointer-events-none opacity-50"}`}  
+                    onClick={handleNext}
+                >
+                    <i className='fa-solid fa-arrow-right'></i>
+                </button>
+            </div>
+
+            {/* dropdown */}
+            <select 
+                className='bg-transparent rounded-none border-secondary text-secondary' 
+                value={currentPage}
+                onChange={(e) => {
+                    setCurrentPage(parseInt(e.target.value));
+                    handlePageChange(parseInt(e.target.value));
+                }}
             >
-                <i className='fa-solid fa-arrow-right'></i>
-            </button>
+                {[...Array(pageLength)].map((_, index) => (
+                    <option key={index} value={index + 1}>{index + 1}</option>
+                ))}
+            </select>
         </div>
     )
 }
