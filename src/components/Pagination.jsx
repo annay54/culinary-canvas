@@ -67,6 +67,9 @@ const Pagination = ({pageLength}) => {
         </button>);
     }
 
+    if (pageLength < 2) {
+        return;
+    }
 
     return (
         <div className='flex flex-wrap sm:flex-row sm:gap-1'>
