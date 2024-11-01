@@ -7,14 +7,14 @@ const Navbar = () => {
   const user = true; // temporary user state
 
   return (
-    <div className='flex flex-row flex-nowrap justify-between bg-white w-full min-[850px]:h-20'>
+    <div className='flex flex-row flex-nowrap justify-between bg-white w-full min-[850px]:h-20 h-16'>
       {/* logo and brand name */}
-      <div className='flex flex-row gap-2 items-center min-[850px]:pl-[3%] lg:pl-[5%] text-secondary'>
+      <a href='/' className='flex flex-row gap-2 items-center hover:no-underline hover:text-secondary pl-[3%] lg:pl-[5%] text-secondary'>
         <i className="fa-solid fa-kitchen-set fa-2xl"></i>
-        <h2 className='font-bold'>CulinaryCanvas</h2>
-      </div>
-      {/* nav links */}
-      <div className='flex flex-row gap-6 items-center min-[850px]:pr-[3%] lg:pr-[5%]'>
+        <h2 className='font-bold max-[850px]:hidden'>CulinaryCanvas</h2>
+      </a>
+      {/* nav links for large screens*/}
+      <div className='flex flex-row gap-6 items-center pr-[3%] lg:pr-[5%] max-[850px]:hidden'>
         <Link href='/' className='font-normal text-xl text-textColor'>Home</Link>
         <Link href='/explore' className='font-normal text-xl text-textColor'>Explore</Link>
         <Link href='/contact' className='font-normal text-xl text-textColor'>Contact</Link>
@@ -34,11 +34,11 @@ const Navbar = () => {
             </DropdownTrigger>
             <DropdownMenu
               color='primary'
-              variant='light'
+              variant='flat'
             >
-              <DropdownItem key='dashboard' href='/dashboard'><p>My dashboard</p></DropdownItem>
-              <DropdownItem key='create-recipe' href='/create_recipe'><p>Create recipe</p></DropdownItem>
-              <DropdownItem key='logout' href='/logout'><p>Logout</p></DropdownItem>
+              <DropdownItem key='dashboard' href='/dashboard' className='hover:no-underline'><p>My dashboard</p></DropdownItem>
+              <DropdownItem key='create-recipe' href='/create_recipe' className='hover:no-underline'><p>Create recipe</p></DropdownItem>
+              <DropdownItem key='logout' href='/logout' className='hover:no-underline'><p>Logout</p></DropdownItem>
             </DropdownMenu>
           </Dropdown>)
         : (
@@ -47,6 +47,38 @@ const Navbar = () => {
               Login
             </button>
           </Link>)}
+      </div>
+      {/* nav links for small screens */}
+      <div className='flex items-center min-[850px]:hidden'>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              className='bg-white text-secondary font-normal text-3xl rounded-lg'
+            >
+              <i class="fa-solid fa-bars"></i>
+            </Button>
+          </DropdownTrigger>
+          {/* check if user is login */}
+          {user ? (
+            <DropdownMenu color='primary' variant='flat'>
+              <DropdownItem key='home' href='/' className='hover:no-underline'><p>Home</p></DropdownItem>
+              <DropdownItem key='explore' href='/explore' className='hover:no-underline'><p>Explore</p></DropdownItem>
+              <DropdownItem key='contact' href='/contact' className='hover:no-underline'><p>Contact</p></DropdownItem>
+              <DropdownItem key='about' href='/about' className='hover:no-underline'><p>About</p></DropdownItem>
+              <DropdownItem key='dashboard' href='/dashboard' className='hover:no-underline'><p>My dashboard</p></DropdownItem>
+              <DropdownItem key='create-recipe' href='/create_recipe' className='hover:no-underline'><p>Create recipe</p></DropdownItem>
+              <DropdownItem key='logout' href='/logout' className='hover:no-underline'><p>Logout</p></DropdownItem>
+            </DropdownMenu>
+          ) : (
+            <DropdownMenu color='primary' variant='flat'>
+              <DropdownItem key='home' href='/' className='hover:no-underline'><p>Home</p></DropdownItem>
+              <DropdownItem key='explore' href='/explore' className='hover:no-underline'><p>Explore</p></DropdownItem>
+              <DropdownItem key='contact' href='/contact' className='hover:no-underline'><p>Contact</p></DropdownItem>
+              <DropdownItem key='about' href='/about' className='hover:no-underline'><p>About</p></DropdownItem>
+              <DropdownItem key='login' href='/login' className='hover:no-underline'><p>Login</p></DropdownItem>
+            </DropdownMenu>
+          )}
+        </Dropdown>
       </div>
     </div>
   )
