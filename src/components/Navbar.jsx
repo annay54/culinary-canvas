@@ -36,9 +36,9 @@ const Navbar = () => {
               color='primary'
               variant='flat'
             >
-              <DropdownItem key='dashboard' href='/dashboard' className='hover:no-underline'><p>My dashboard</p></DropdownItem>
-              <DropdownItem key='create-recipe' href='/create_recipe' className='hover:no-underline'><p>Create recipe</p></DropdownItem>
-              <DropdownItem key='logout' href='/logout' className='hover:no-underline'><p>Logout</p></DropdownItem>
+              <DropdownItem href='/dashboard' className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
+              <DropdownItem href='/create_recipe' className='hover:no-underline py-2'><p>Create recipe</p></DropdownItem>
+              <DropdownItem href='/logout' className='hover:no-underline py-2'><p>Logout</p></DropdownItem>
             </DropdownMenu>
           </Dropdown>)
         : (
@@ -60,22 +60,22 @@ const Navbar = () => {
           </DropdownTrigger>
           {/* check if user is login */}
           {user ? (
-            <DropdownMenu color='primary' variant='flat'>
-              <DropdownItem key='home' href='/' className='hover:no-underline'><p>Home</p></DropdownItem>
-              <DropdownItem key='explore' href='/explore' className='hover:no-underline'><p>Explore</p></DropdownItem>
-              <DropdownItem key='contact' href='/contact' className='hover:no-underline'><p>Contact</p></DropdownItem>
-              <DropdownItem key='about' href='/about' className='hover:no-underline'><p>About</p></DropdownItem>
-              <DropdownItem key='dashboard' href='/dashboard' className='hover:no-underline'><p>My dashboard</p></DropdownItem>
-              <DropdownItem key='create-recipe' href='/create_recipe' className='hover:no-underline'><p>Create recipe</p></DropdownItem>
-              <DropdownItem key='logout' href='/logout' className='hover:no-underline'><p>Logout</p></DropdownItem>
+            <DropdownMenu color='primary' variant='flat' className=''>
+              <DropdownItem href='/' className='hover:no-underline py-2'><p>Home</p></DropdownItem>
+              <DropdownItem href='/explore' className='hover:no-underline py-2'><p>Explore</p></DropdownItem>
+              <DropdownItem href='/contact' className='hover:no-underline py-2'><p>Contact</p></DropdownItem>
+              <DropdownItem href='/about' className='hover:no-underline py-2'><p>About</p></DropdownItem>
+              <DropdownItem href='/dashboard' className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
+              <DropdownItem href='/create_recipe' className='hover:no-underline py-2'><p>Create recipe</p></DropdownItem>
+              <DropdownItem href='/logout' className='hover:no-underline py-2'><p>Logout</p></DropdownItem>
             </DropdownMenu>
           ) : (
             <DropdownMenu color='primary' variant='flat'>
-              <DropdownItem key='home' href='/' className='hover:no-underline'><p>Home</p></DropdownItem>
-              <DropdownItem key='explore' href='/explore' className='hover:no-underline'><p>Explore</p></DropdownItem>
-              <DropdownItem key='contact' href='/contact' className='hover:no-underline'><p>Contact</p></DropdownItem>
-              <DropdownItem key='about' href='/about' className='hover:no-underline'><p>About</p></DropdownItem>
-              <DropdownItem key='login' href='/login' className='hover:no-underline'><p>Login</p></DropdownItem>
+              <DropdownItem href='/' className='hover:no-underline py-2'><p>Home</p></DropdownItem>
+              <DropdownItem href='/explore' className='hover:no-underline py-2'><p>Explore</p></DropdownItem>
+              <DropdownItem href='/contact' className='hover:no-underline py-2'><p>Contact</p></DropdownItem>
+              <DropdownItem href='/about' className='hover:no-underline py-2'><p>About</p></DropdownItem>
+              <DropdownItem href='/login' className='hover:no-underline py-2'><p>Login</p></DropdownItem>
             </DropdownMenu>
           )}
         </Dropdown>
