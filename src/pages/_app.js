@@ -1,8 +1,8 @@
 import "@/styles/globals.css";
 import { Toaster } from "react-hot-toast";
-import Navbar from "@/components/Navbar";
-
 import {NextUIProvider} from "@nextui-org/react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -10,6 +10,7 @@ export default function App({ Component, pageProps }) {
     <NextUIProvider>
     <Navbar />
     <Component {...pageProps} />
+    <Footer />
     <Toaster position="top-center" reverseOrder="false" />
     </NextUIProvider>
   </>
