@@ -1,5 +1,5 @@
 import React from "react";
-import {Select, SelectItem} from "@nextui-org/react";
+import {Select, SelectItem, RadioGroup, Radio, cn} from "@nextui-org/react";
 
 const Explore = () => {
   const ratings = [1, 2, 3, 4, 5];
@@ -18,7 +18,7 @@ const Explore = () => {
         <div>
           <h3>Rating</h3>
           <div className="flex flex-row items-center gap-2 m-2">
-            <p>Minimum</p>
+            <p className="text-base">Minimum</p>
             <select className="text-secondary text-base w-12 h-8 p-1 rounded-xl border-2">
               <option value={null}>-</option>
               <option value={1}>1</option>
@@ -29,7 +29,7 @@ const Explore = () => {
             </select>
           </div>
           <div className="flex flex-row items-center gap-2 m-2">
-            <p>Maximum</p>
+            <p className="text-base">Maximum</p>
             <select className="text-secondary text-base w-12 h-8 p-1 rounded-xl border-2">
             <option value={null}>-</option>
               <option value={1}>1</option>
@@ -50,10 +50,13 @@ const Explore = () => {
               variant="flat"
               isMultiline={true}
               selectionMode="multiple"
-              className="max-w-xs"
               selectedKeys={values}
               onSelectionChange={setValues}
-              style={{ color: "#A55913", border: "2px solid #A55913" }}
+              classNames={{ 
+                mainWrapper: "border-2 border-secondary rounded-xl",
+                listbox: "text-secondary",
+                selectorIcon: "text-secondary",
+              }}
             >
               {tags.map((tag) => (
                 <SelectItem key={tag}>{tag}</SelectItem>
@@ -67,6 +70,27 @@ const Explore = () => {
           <h2>Sort</h2>
         </div>
         <hr></hr>
+        <RadioGroup
+          color="secondary"
+          defaultValue="rating"
+          className="ml-2"
+        >
+          {/* change text colour of radio slots font-size: 1.5rem; */}
+          <Radio value="rating" classNames={{ label:"text-white" }}>Rating</Radio>
+          <Radio value="create" classNames={{ label:"text-white" }}>Create date</Radio>
+          <Radio value="favourite" classNames={{ label:"text-white" }}>Favourite</Radio>
+          <Radio value="time" classNames={{ label:"text-white" }}>Recipe time</Radio>
+        </RadioGroup>
+        <hr></hr>
+        <RadioGroup
+          color="secondary"
+          defaultValue="descending"
+          className="ml-2"
+        >
+          <Radio value="descending" classNames={{ label:"text-white" }}>Descending</Radio>
+          <Radio value="ascending" classNames={{ label:"text-white" }}>Ascending</Radio>
+        </RadioGroup>
+        <button className="rounded-xl w-28 p-2 mx-2 mt-4 mb-20 font-medium hover:opacity-90">Apply</button>
       </div>
       {/* Search and result column */}
       <div className="w-2/3 h-auto">
