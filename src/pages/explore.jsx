@@ -2,6 +2,7 @@ import React from "react";
 import {Select, SelectItem} from "@nextui-org/react";
 
 const Explore = () => {
+  const ratings = [1, 2, 3, 4, 5];
   const tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"];
   const [values, setValues] = React.useState([]);
 
@@ -54,7 +55,6 @@ const Explore = () => {
                 selectedKeys={values}
                 onSelectionChange={setValues}
                 style={{ color: "#A55913", border: "2px solid #A55913" }}
-                selectorIcon={<i class="fa-solid fa-chevron-down"></i>}
               >
                 {tags.map((tag) => (
                   <SelectItem key={tag}>{tag}</SelectItem>
