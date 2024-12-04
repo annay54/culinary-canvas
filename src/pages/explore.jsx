@@ -9,7 +9,8 @@ const Explore = () => {
   return (
     <div className="flex flex-row ">
       {/* Filter column */}
-      <div className="bg-primary w-1/3 h-fit flex flex-col text-white gap-2 px-4 py-2">
+      <div className="bg-primary w-1/4 h-fit flex flex-col text-white gap-2 px-4 py-2
+        min-[1024px]:w-1/5">
         <div className="flex flex-row items-center gap-2 mt-2">
           <i className="fa-solid fa-sliders text-2xl"></i>
           <h2>Filters</h2>
@@ -93,8 +94,16 @@ const Explore = () => {
         <button className="rounded-xl w-28 p-2 mx-2 mt-4 mb-20 font-medium hover:opacity-90">Apply</button>
       </div>
       {/* Search and result column */}
-      <div className="w-2/3 h-auto">
-        search
+      <div className="w-3/4 h-auto flex flex-col items-center min-[1024px]:w-4/5">
+        <div className="border-2 border-solid border-primary text-primary bg-white py-1 px-3 my-4 h-12 w-4/5 rounded-xl">
+          <i className="fa-solid fa-search text-lg"></i>
+          <input
+            type="text"
+            placeholder="Search for recipes or creators"
+            className=" border-none focus:outline-none  h-9 py-0 w-11/12 placeholder-primary">
+          </input>
+        </div>
+        
       </div>
     </div>
   )
