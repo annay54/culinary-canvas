@@ -56,6 +56,7 @@ const Explore = () => {
         </div>
         <hr></hr>
         <div>
+          {/* Rating filter section */}
           <h3>Rating</h3>
           <div className="flex flex-row items-center gap-2 m-2">
             <p className="text-base">Minimum</p>
@@ -82,6 +83,7 @@ const Explore = () => {
         </div>
         <hr></hr>
         <div>
+          {/* Tags filter section */}
           <h3>Tags</h3>
           <div className="m-2">
             <Select
@@ -110,18 +112,19 @@ const Explore = () => {
           <h2>Sort</h2>
         </div>
         <hr></hr>
+        {/* Sort by variable section */}
         <RadioGroup
           color="secondary"
           defaultValue="rating"
           className="ml-2"
         >
-          {/* change text colour of radio slots font-size: 1.5rem; */}
           <Radio value="rating" classNames={{ label:"text-white" }}>Rating</Radio>
           <Radio value="create" classNames={{ label:"text-white" }}>Create date</Radio>
           <Radio value="favourite" classNames={{ label:"text-white" }}>Favourite</Radio>
           <Radio value="time" classNames={{ label:"text-white" }}>Recipe time</Radio>
         </RadioGroup>
         <hr></hr>
+        {/* De/Ascending sort section */}
         <RadioGroup
           color="secondary"
           defaultValue="descending"
@@ -134,19 +137,22 @@ const Explore = () => {
       </div>
       {/* Search and result column */}
       <div className="w-3/4 h-auto flex flex-col items-center min-[1024px]:w-4/5">
-        <div className="border-2 border-solid border-primary text-primary bg-white py-1 px-3 my-4 h-12 w-4/5 rounded-xl">
-          <i className="fa-solid fa-search text-lg"></i>
+        {/* Search bar  */}
+        <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
+          <i className="fa-solid fa-search text-base"></i>
           <input
             type="text"
             placeholder="Search for recipes or creators"
-            className=" border-none focus:outline-none font-normal h-9 py-0 w-11/12 placeholder-primary">
+            className=" border-none focus:outline-none font-normal text-base h-9 py-0 w-11/12 placeholder-primary">
           </input>
         </div>
+        {/* Number of result from search */}
         <div className="text-secondary w-11/12">
           <hr className="border-primary border-1"></hr>
           <p className="font-normal text-base my-2">6 out of 20 results</p>
           <hr className="border-primary border-1"></hr>
         </div>
+        {/* Result recipes from search */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 p-6 gap-16">
           {recipes.map((recipe, index) => (
             <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
