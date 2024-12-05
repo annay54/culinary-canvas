@@ -1,5 +1,6 @@
 import React from "react";
 import RecipeCard from '@/components/RecipeCard';
+import Pagination from "@/components/Pagination";
 import {Select, SelectItem, RadioGroup, Radio, cn, image} from "@nextui-org/react";
 
 const Explore = () => {
@@ -146,7 +147,7 @@ const Explore = () => {
             className=" border-none focus:outline-none font-normal text-base h-9 py-0 w-11/12 placeholder-primary">
           </input>
         </div>
-        {/* Number of result from search */}
+        {/* Number of results shown from search */}
         <div className="text-secondary w-11/12">
           <hr className="border-primary border-1"></hr>
           <p className="font-normal text-base my-2">6 out of 20 results</p>
@@ -157,6 +158,10 @@ const Explore = () => {
           {recipes.map((recipe, index) => (
             <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
+        </div>
+        {/* Pagination */}
+        <div className="pt-4 pb-8">
+          <Pagination pageLength={4} />
         </div>
       </div>
     </div>
