@@ -1,15 +1,54 @@
 import React from "react";
-import {Select, SelectItem, RadioGroup, Radio, cn} from "@nextui-org/react";
+import RecipeCard from '@/components/RecipeCard';
+import {Select, SelectItem, RadioGroup, Radio, cn, image} from "@nextui-org/react";
 
 const Explore = () => {
   const ratings = [1, 2, 3, 4, 5];
   const tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"];
   const [values, setValues] = React.useState([]);
+  const recipes = [
+    {
+      name: "Recipe 1",
+      author: "Author 1",
+      image: "https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      rating: 4.5
+    },
+    {
+      name: "Recipe 2",
+      author: "Author 2",
+      image: "https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      rating: 5
+    },
+    {
+      name: "Recipe 3",
+      author: "Author 3",
+      image: "https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      rating: 4
+    },
+    {
+      name: "Recipe 4",
+      author: "Author 4",
+      image: "https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      rating: 3
+    },
+    {
+      name: "Recipe 5",
+      author: "Author 5",
+      image: "https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      rating: 2.5
+    },
+    {
+      name: "Recipe 6",
+      author: "Author 6",
+      image: "https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      rating: 1
+    },
+  ];
 
   return (
     <div className="flex flex-row ">
       {/* Filter column */}
-      <div className="bg-primary w-1/4 h-fit flex flex-col text-white gap-2 px-4 py-2
+      <div className="bg-primary w-1/4 h-auto flex flex-col text-white gap-2 px-4 py-2
         min-[1024px]:w-1/5">
         <div className="flex flex-row items-center gap-2 mt-2">
           <i className="fa-solid fa-sliders text-2xl"></i>
@@ -100,10 +139,19 @@ const Explore = () => {
           <input
             type="text"
             placeholder="Search for recipes or creators"
-            className=" border-none focus:outline-none  h-9 py-0 w-11/12 placeholder-primary">
+            className=" border-none focus:outline-none font-normal h-9 py-0 w-11/12 placeholder-primary">
           </input>
         </div>
-        
+        <div className="text-secondary w-11/12">
+          <hr className="border-primary border-1"></hr>
+          <p className="font-normal text-base my-2">6 out of 20 results</p>
+          <hr className="border-primary border-1"></hr>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 p-6 gap-16">
+          {recipes.map((recipe, index) => (
+            <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+          ))}
+        </div>
       </div>
     </div>
   )
