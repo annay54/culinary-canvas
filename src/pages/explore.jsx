@@ -47,9 +47,9 @@ const Explore = () => {
   ];
 
   return (
-    <div className="flex flex-row ">
+    <div className="flex flex-col sm:flex-row ">
       {/* Filter column */}
-      <div className="bg-primary w-1/4 h-auto flex flex-col text-white gap-2 px-4 py-2
+      <div className="bg-primary sm:w-1/4 sm:h-auto flex flex-col text-white gap-2 px-4 py-2
         min-[1024px]:w-1/5">
         <div className="flex flex-row items-center gap-2 mt-2">
           <i className="fa-solid fa-sliders text-2xl"></i>
@@ -134,10 +134,10 @@ const Explore = () => {
           <Radio value="descending" classNames={{ label:"text-white" }}>Descending</Radio>
           <Radio value="ascending" classNames={{ label:"text-white" }}>Ascending</Radio>
         </RadioGroup>
-        <button className="rounded-xl w-28 p-2 mx-2 mt-4 mb-20 font-medium hover:opacity-90">Apply</button>
+        <button className="rounded-xl w-28 p-2 mx-2 mt-4 mb-8 font-medium hover:opacity-90">Apply</button>
       </div>
       {/* Search and result column */}
-      <div className="w-3/4 h-auto flex flex-col items-center min-[1024px]:w-4/5">
+      <div className="sm:w-3/4 h-auto flex flex-col items-center min-[1024px]:w-4/5">
         {/* Search bar  */}
         <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
           <i className="fa-solid fa-search text-base"></i>
@@ -154,7 +154,7 @@ const Explore = () => {
           <hr className="border-primary border-1"></hr>
         </div>
         {/* Result recipes from search */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 p-6 gap-16">
+        <div className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 p-6 gap-6 sm:gap-16">
           {recipes.map((recipe, index) => (
             <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
