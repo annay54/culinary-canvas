@@ -6,7 +6,7 @@ const Review = ({type, image, name, review}) => {
   // type is either 'recipe' or 'user', and image and name correspond to the type value
 
   return (
-    <div className='flex flex-col p-8 gap-3'>
+    <div className='flex flex-col p-5 gap-3'>
       {/* Image and name of review in recipe page or user dashboard */}
       <div className='flex flex-row items-center gap-4 w-full h-[80px]'>
         <img 
