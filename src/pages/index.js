@@ -35,7 +35,7 @@ export default function Home() {
       </div>
       <RecipeCard name='Steak' image={"https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} author='master_chief' rating={4} />
       <hr className='border-secondary'/>
-      <Review type='recipe' image={"https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} name='Steak' review={review1} />
+      <Review type='recipe' image={"https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} name='Steak dsfsfsfsfsfghfhr dfsf sdadsdfdsfsfsfsfsdfssssssssssssssssssssssssssssssssssssss' review={review1} />
       <hr className='border-secondary'/>
       <div className='bg-primary'>
         <Review type='user' image={"https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} name='user-101' review={review2} />
