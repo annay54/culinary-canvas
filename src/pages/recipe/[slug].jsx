@@ -1,5 +1,6 @@
 import Pagination from '@/components/Pagination';
 import RecipeTag from '@/components/RecipeTag';
+import Review from '@/components/Review';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 import React from 'react'
 
@@ -11,14 +12,14 @@ export default function ({ slug }) {
         user: 'Iloverecipes',
         img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         rating: 4,
-        date: '05/26/14',
+        date: '05/26/2014',
         review: "This is the best pancake recipe I've ever tried. It's so easy and quick to make. I love it!",
         helpful: 20
     }, {
         user: 'foodie',
         img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         rating: 3,
-        date: '06/13/15',
+        date: '06/13/2015',
         review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur",
         helpful: 0
     }];
@@ -38,39 +39,6 @@ export default function ({ slug }) {
             <p className='text-textColor text-right'>{quantity}</p>
         </div>
     );
-
-    const Review = ({ user, img, rating, date, review, helpful }) => (
-        <div className='flex flex-col gap-4 w-full py-8 px-4 border-b border-white'>
-            {/* image and name */}
-            <div className='flex flex-row gap-2 items-center'>
-                <img 
-                    src={img}
-                    className='w-[50px] h-[50px] object-cover rounded-full'
-                />
-                <h3>{user}</h3>
-            </div>
-
-            {/* rating and date */}
-            <div className='flex flex-row gap-4 items-center'>
-                <div className='flex flex-row gap-1'>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                        <i className={`fa-star text-secondary ${rating >= star ? "fa-solid" : "fa-regular"}`} />
-                    ))}
-                </div>
-                <p className='text-textColor'>{date}</p>
-            </div>
-            <p>{review}</p>
-                
-            {/* helpful button and number */}
-            <div className='flex flex-row items-center text-textColor'>
-                <button className='bg-transparent text-textColor'>
-                    <i className='fa-solid fa-thumbs-up'></i>
-                </button>
-                <p>Helpful ({helpful})</p>
-            </div>
-        </div>
-    );
-
 
   return (
     <>
@@ -171,7 +139,7 @@ export default function ({ slug }) {
             <h2>Reviews</h2>
             <div className='flex flex-wrap md:flex-row px-4 items-center justify-between border-t border-b border-white'>
                 <p>30 reviews</p>
-                <div className='flex flex-row gap-8'>
+                <div className='flex flex-row gap-2'>
                     {/* sort button */}
                     <Dropdown>
                         <DropdownTrigger>
@@ -223,14 +191,15 @@ export default function ({ slug }) {
 
             {/* list of reviews */}
             {reviews.map((review) => (
-                <Review 
-                    user={review.user} 
-                    img={review.img} 
-                    rating={review.rating} 
-                    date={review.date} 
-                    review={review.review} 
-                    helpful={review.helpful} 
+                <div>
+                  <Review 
+                    type='user'
+                    name={review.user} 
+                    image={review.img}
+                    review={review}
                 />
+                <hr />
+              </div>
             ))}
             
             {/* pagination */}
