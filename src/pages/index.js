@@ -4,6 +4,7 @@ import RecipeCard from '@/components/RecipeCard';
 import Pagination from '@/components/Pagination';
 import RecipeTag from '@/components/RecipeTag';
 import Review from '@/components/Review';
+import Carousel from '@/components/Carousel';
 
 export default function Home() {
   const tags = ['Breakfast', 'Easy', 'Quick', 'Healthy', 'Pan fry'];
@@ -19,6 +20,47 @@ export default function Home() {
     date: '02/21/2023',
     helpful: 2,
   };
+  const recipes = [{
+    name: 'Steak 1',
+    author: 'master_chief',
+    image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    rating: 4,
+  }, {
+    name: 'Steak 2',
+    author: 'master_chief',
+    image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    rating: 4,
+  }, {
+    name: 'Steak 3',
+    author: 'master_chief',
+    image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    rating: 4,
+  }, {
+    name: 'Steak 4',
+    author: 'master_chief',
+    image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    rating: 4,
+  }, {
+    name: 'Steak 5',
+    author: 'master_chief',
+    image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    rating: 4,
+  }, {
+    name: 'Steak 6',
+    author: 'master_chief',
+    image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    rating: 4,
+  }, {
+    name: 'Steak 7',
+    author: 'master_chief',
+    image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    rating: 4,
+  }, {
+    name: 'Steak 8',
+    author: 'master_chief',
+    image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    rating: 4,
+  }];
 
   return (
     <div className='flex flex-col gap-4'>
@@ -41,6 +83,7 @@ export default function Home() {
         <Review type='user' image={"https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} name='user-101' review={review2} />
       </div>
       <hr className='border-secondary'/>
+      <Carousel recipes={recipes} />
       <div className='pb-4'>
         <Pagination pageLength={10} />
       </div>

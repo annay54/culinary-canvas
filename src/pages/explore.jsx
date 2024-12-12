@@ -154,7 +154,7 @@ const Explore = () => {
           <hr className="border-primary border-1"></hr>
         </div>
         {/* Result recipes from search */}
-        <div className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 p-6 gap-6 sm:gap-16">
+        <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 p-6 gap-6 sm:gap-16">
           {recipes.map((recipe, index) => (
             <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
