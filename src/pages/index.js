@@ -60,9 +60,9 @@ export default function Home() {
 
   return (
     <div className='flex flex-col'> 
-      <div className='flex self-center w-3/4 2xl:w-3/5 h-[500px] 2xl:h-[700px] items-end lg:items-center lg:pl-0 pl-8 mt-14 bg-no-repeat bg-cover bg-top bg-[url("https://plus.unsplash.com/premium_photo-1672149634560-a2848b4554cd?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")]'>
+      <div className='flex self-center w-3/4  h-[300px] sm:h-[400px] 2xl:h-[700px] items-end lg:items-center lg:pl-0 pl-8 mt-14 bg-no-repeat bg-cover bg-top bg-[url("https://plus.unsplash.com/premium_photo-1672149634560-a2848b4554cd?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")]'>
         <div className='h-fit max-w-sm max-sm:w-2/3 md:max-w-lg xl:w-1/2 lg:px-7 py-12 bg-white bg-opacity-60'>
-          <h1 className='text-secondary lg:font-bold mx-9 max-sm:mx-4 max-md:text-4xl max-sm:text-2xl '>Welcome to Culinary Canvas</h1>
+          <h1 className='text-secondary lg:font-bold mx-9 max-sm:mx-4 max-md:text-4xl max-sm:text-3xl '>Welcome to Culinary Canvas</h1>
         </div>
       </div>
       <p className='self-center w-3/4 2xl:w-3/5 px-8 my-8'>
