@@ -4,7 +4,7 @@ import React from 'react';
 const RecipeCard = ({name, author, image, rating}) => {
 
   return (
-    <div className='flex flex-col w-[150px] h-[280px] md:w-[190px] md:h-[290px] xl:w-[250px] xl:h-[360px] bg-white'>
+    <div className='flex flex-col w-[150px] h-[280px] md:w-[190px] md:h-[290px] xl:w-[230px] xl:h-[360px] bg-white'>
         {/* image */}
         <img 
             src={image} 

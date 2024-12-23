@@ -56,7 +56,7 @@ const Carousel = ({recipes}) => {
 
   return (
     <div className='flex flex-col gap-4 self-center'>
-      <div className='flex flex-row gap-3 items-center'>
+      <div className='flex flex-row gap-6 items-center'>
         <i 
           className={`fa-solid fa-chevron-left text-secondary text-2xl hover:cursor-pointer hover:text-primary ${current === 0 ? 'pointer-events-none opacity-50' : ''}`} 
           onClick={() => handlePrevious(numRecipes)}></i>
