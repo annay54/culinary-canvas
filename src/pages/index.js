@@ -7,19 +7,6 @@ import Review from '@/components/Review';
 import Carousel from '@/components/Carousel';
 
 export default function Home() {
-  const tags = ['Breakfast', 'Easy', 'Quick', 'Healthy', 'Pan fry'];
-  const review1 = {
-    rating: 4,
-    review: 'This is a great recipe!',
-    date: '10/10/2021',
-    helpful: 5,
-  };
-  const review2 = {
-    rating: 5,
-    review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut luctus mauris a sem volutpat sodales. Suspendisse potenti. Quisque eros est, volutpat ut magna sed, eleifend interdum mi. Donec a orci lacinia, interdum mi non, euismod libero. Aenean ac maximus quam. Ut quis ligula eros. Maecenas condimentum neque sit amet purus feugiat, eget sodales erat scelerisque.',
-    date: '02/21/2023',
-    helpful: 2,
-  };
   const recipes = [{
     name: 'Steak 1',
     author: 'master_chief',
@@ -62,31 +49,36 @@ export default function Home() {
     rating: 4,
   }];
 
+  const RecipeCarousel = ({ recipes, title }) => {
+    return (
+      <div className='flex flex-col gap-4 w-4/5 h-fit self-center px-4 sm:px-10 py-5'>
+        <h2 className='text-secondary max-sm:text-2xl font-medium sm:font-semibold'>{title}</h2>
+        <Carousel recipes={recipes} />
+      </div>
+    )
+  }
+
   return (
-    <div className='flex flex-col gap-4'>
-      <h1>Welcome to Next.js</h1>
-      <h2 className='text-primary'>Hello, world!</h2>
-      
-      <i className="fa-brands fa-xing"></i>
-      <button onClick={() => toast('Hello, world!')}>Click me!</button>
-      <input type='text' placeholder='Type something...' />
-      <div className='flex flex-wrap flex-row gap-2'>
-        {tags.map((tag) => (
-          <RecipeTag tag={tag} />
-        ))}
+    <div className='flex flex-col'> 
+      <div className='flex self-center w-3/4 2xl:w-3/5 h-[500px] 2xl:h-[700px] items-end lg:items-center lg:pl-0 pl-8 mt-14 bg-no-repeat bg-cover bg-top bg-[url("https://plus.unsplash.com/premium_photo-1672149634560-a2848b4554cd?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")]'>
+        <div className='h-fit max-w-sm max-sm:w-2/3 md:max-w-lg xl:w-1/2 lg:px-7 py-12 bg-white bg-opacity-60'>
+          <h1 className='text-secondary lg:font-bold mx-9 max-sm:mx-4 max-md:text-4xl max-sm:text-2xl '>Welcome to Culinary Canvas</h1>
+        </div>
       </div>
-      <RecipeCard name='Steak' image={"https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} author='master_chief' rating={4} />
-      <hr className='border-secondary'/>
-      <Review type='recipe' image={"https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} name='Steak dsfsfsfsfsfghfhr dfsf sdadsdfdsfsfsfsfsdfssssssssssssssssssssssssssssssssssssss' review={review1} />
-      <hr className='border-secondary'/>
-      <div className='bg-primary'>
-        <Review type='user' image={"https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} name='user-101' review={review2} />
+      <p className='self-center w-3/4 2xl:w-3/5 px-8 my-8'>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut luctus mauris a sem volutpat sodales. Suspendisse potenti. Quisque eros est, volutpat ut magna sed, eleifend interdum mi. 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut luctus mauris a sem volutpat sodales. Suspendisse potenti. Quisque eros est, volutpat ut magna sed, eleifend interdum mi. 
+      </p>
+      <div className='flex flex-col gap-4 md:gap-6 w-full h-fit items-center px-4 py-10 my-4 bg-primary'>
+        <h2 className='text-white font-normal text-2xl max-md:text-xl'>Subscribe to get the latest recipes!</h2>
+        <div className='flex gap-4'>
+          <input className='p-2 w-1/2 sm:w-3/4 max-sm:text-sm rounded-xl bg-tertiary' placeholder='Email Address' />
+          <button className='px-4 py-2 max-sm:text-sm rounded-xl bg-secondary text-white text-nowrap'>Sign up</button>
+        </div>
       </div>
-      <hr className='border-secondary'/>
-      <Carousel recipes={recipes} />
-      <div className='pb-4'>
-        <Pagination pageLength={10} />
-      </div>
+      <RecipeCarousel recipes={recipes} title='Popular Recipes' />
+      <RecipeCarousel recipes={recipes} title='Recommended Recipes' />
+      <div className='h-20'></div>
     </div>
   );
 }
