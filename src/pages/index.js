@@ -1,9 +1,4 @@
 import react from 'react';
-import toast from 'react-hot-toast';
-import RecipeCard from '@/components/RecipeCard';
-import Pagination from '@/components/Pagination';
-import RecipeTag from '@/components/RecipeTag';
-import Review from '@/components/Review';
 import Carousel from '@/components/Carousel';
 
 export default function Home() {
