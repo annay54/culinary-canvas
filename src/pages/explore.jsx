@@ -4,6 +4,7 @@ import Pagination from "@/components/Pagination";
 import {Select, SelectItem, RadioGroup, Radio, cn, image} from "@nextui-org/react";
 
 const Explore = () => {
+  const [isFilterOpen, setIsFilterOpen] = React.useState(true);
   const ratings = [1, 2, 3, 4, 5];
   const tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"];
   const [values, setValues] = React.useState([]);
@@ -46,11 +47,9 @@ const Explore = () => {
     },
   ];
 
-  return (
-    <div className="flex flex-col sm:flex-row ">
-      {/* Filter column */}
-      <div className="bg-primary sm:w-1/4 sm:h-auto flex flex-col text-white gap-2 px-4 py-2
-        min-[1024px]:w-1/5">
+  const FilterContent = () => {
+    return (
+      <>
         <div className="flex flex-row items-center gap-2 mt-2">
           <i className="fa-solid fa-sliders text-xl"></i>
           <h3>Filters</h3>
@@ -135,40 +134,65 @@ const Explore = () => {
           <Radio value="ascending" classNames={{ label:"text-white" }}>Ascending</Radio>
         </RadioGroup>
         <button className="rounded-xl w-28 p-2 mx-2 mt-4 mb-8 font-medium hover:opacity-90">Apply</button>
-      </div>
+      </>
+    )
+  }
 
-      {/* Search and result column */}
-      <div className="sm:w-3/4 h-auto flex flex-col items-center min-[1024px]:w-4/5">
-        {/* hero */}
-        <h1 className="text-secondary my-8 mt-12">Explore</h1>
+  return (
+    <>
+      {/* Mobile Filter column */}
+      <div className="sticky top-0" >
+        <div className="absolute">
+          <div className={`flex lg:hidden relative bg-primary min-w-[260px] w-1/4 sm:max-w-[330px] h-lvh flex-col text-white gap-2 px-4 py-2 transition ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
+            {/* toggle button */}
+            <button className="absolute top-0 -right-10 lg:hidden p-4 bg-primary" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+              <i className={`fa-solid ${isFilterOpen ? "fa-chevron-left" : "fa-chevron-right"}`}></i>
+            </button>
 
-        {/* Search bar  */}
-        <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
-          <i className="fa-solid fa-search text-base"></i>
-          <input
-            type="text"
-            placeholder="Search for recipes or creators"
-            className=" border-none focus:outline-none font-normal text-base h-9 py-0 w-11/12 placeholder-primary">
-          </input>
-        </div>
-        {/* Number of results shown from search */}
-        <div className="text-secondary w-11/12">
-          <hr className="border-primary border-1"></hr>
-          <p className="font-normal text-base my-2">6 out of 20 results</p>
-          <hr className="border-primary border-1"></hr>
-        </div>
-        {/* Result recipes from search */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 p-6 gap-6 sm:gap-16">
-          {recipes.map((recipe, index) => (
-            <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
-          ))}
-        </div>
-        {/* Pagination */}
-        <div className="pt-4 pb-8">
-          <Pagination pageLength={4} />
+            <FilterContent />
+          </div>
         </div>
       </div>
-    </div>
+        
+      <div className="lg:flex lg:flex-row ">
+        {/* Desktop Filter column */}
+        <div className={`hidden lg:flex relative bg-primary min-w-[260px] w-1/4 sm:max-w-[330px] sm:h-auto flex-col text-white gap-2 px-4 py-2`}>
+          <FilterContent />
+        </div>
+
+        {/* Search and result column */}
+        <div className=" w-full lg:w-3/4 h-auto flex flex-col items-center">
+          {/* hero */}
+          <h1 className="text-secondary my-8 mt-12">Explore</h1>
+
+          {/* Search bar  */}
+          <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
+            <i className="fa-solid fa-search text-base"></i>
+            <input
+              type="text"
+              placeholder="Search for recipes or creators"
+              className=" border-none focus:outline-none font-normal text-base h-9 py-0 w-11/12 placeholder-primary">
+            </input>
+          </div>
+          {/* Number of results shown from search */}
+          <div className="text-secondary w-11/12">
+            <hr className="border-primary border-1"></hr>
+            <p className="font-normal text-base my-2">6 out of 20 results</p>
+            <hr className="border-primary border-1"></hr>
+          </div>
+          {/* Result recipes from search */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 p-6 gap-6 sm:gap-16">
+            {recipes.map((recipe, index) => (
+              <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+            ))}
+          </div>
+          {/* Pagination */}
+          <div className="pt-4 pb-8">
+            <Pagination pageLength={4} />
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
 
