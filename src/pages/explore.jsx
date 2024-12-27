@@ -52,13 +52,13 @@ const Explore = () => {
       <div className="bg-primary sm:w-1/4 sm:h-auto flex flex-col text-white gap-2 px-4 py-2
         min-[1024px]:w-1/5">
         <div className="flex flex-row items-center gap-2 mt-2">
-          <i className="fa-solid fa-sliders text-2xl"></i>
-          <h2>Filters</h2>
+          <i className="fa-solid fa-sliders text-xl"></i>
+          <h3>Filters</h3>
         </div>
         <hr></hr>
         <div>
           {/* Rating filter section */}
-          <h3>Rating</h3>
+          <p className="font-normal text-xl">Rating</p>
           <div className="flex flex-row items-center gap-2 m-2">
             <p className="text-base">Minimum</p>
             <select className="text-secondary text-base w-12 h-8 p-1 rounded-xl border-2">
@@ -85,7 +85,7 @@ const Explore = () => {
         <hr></hr>
         <div>
           {/* Tags filter section */}
-          <h3>Tags</h3>
+          <p className="font-normal text-xl">Tags</p>
           <div className="m-2">
             <Select
               items={tags}
@@ -109,8 +109,8 @@ const Explore = () => {
         </div>
         <hr></hr>
         <div className="flex flex-row items-center gap-2 my-2">
-          <i className="fa-solid fa-sort text-2xl"></i>
-          <h2>Sort</h2>
+          <i className="fa-solid fa-sort text-xl"></i>
+          <h3>Sort</h3>
         </div>
         <hr></hr>
         {/* Sort by variable section */}
@@ -136,8 +136,12 @@ const Explore = () => {
         </RadioGroup>
         <button className="rounded-xl w-28 p-2 mx-2 mt-4 mb-8 font-medium hover:opacity-90">Apply</button>
       </div>
+
       {/* Search and result column */}
       <div className="sm:w-3/4 h-auto flex flex-col items-center min-[1024px]:w-4/5">
+        {/* hero */}
+        <h1 className="text-secondary my-8 mt-12">Explore</h1>
+
         {/* Search bar  */}
         <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
           <i className="fa-solid fa-search text-base"></i>
