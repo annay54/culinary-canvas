@@ -12,7 +12,7 @@ const FAQDropdown = ({questionList, answerList}) => {
   }
 
   return (
-    <div className='flex flex-col gap-4 w-3/4 h-fit self-center m-2'>
+    <div className='flex flex-col gap-4 w-3/4 h-fit self-center justify-self-center m-2'>
       <hr className='w-full border-1 border-textColor'/>
       <div className='flex flex-col gap-4'>
         {questionList.map((question, index) => (
