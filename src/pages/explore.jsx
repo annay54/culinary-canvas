@@ -163,7 +163,7 @@ const Explore = () => {
         {/* Search and result column */}
         <div className=" w-full lg:w-3/4 h-auto flex flex-col items-center">
           {/* hero */}
-          <h1 className="text-secondary my-8 mt-12">Explore</h1>
+          <h1 className="text-secondary mt-6">Explore</h1>
 
           {/* Search bar  */}
           <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
