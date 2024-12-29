@@ -38,7 +38,7 @@ export default function Contact () {
             </div>
           <Input placeholder="Email" className=""/>
           <Input placeholder="Subject" className=""/>
-          <textarea placeholder="Message" className="p-2 border-2 rounded-md border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base h-32" />
+          <textarea placeholder="Message" maxLength="500" className="h-28 max-h-48 p-2 border-2 rounded-md border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base" />
           <button className="bg-secondary font-normal text-white p-2 rounded-md">Submit</button>
         </form>
       </div>
