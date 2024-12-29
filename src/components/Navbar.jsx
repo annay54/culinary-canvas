@@ -28,7 +28,7 @@ const Navbar = () => {
                 variant='solid'
                 className='flex flex-nowrap gap-2 items-center text-white font-normal text-xl px-4 rounded-lg'
               >
-                <i class="fa-regular fa-user"></i>
+                <i className="fa-regular fa-user"></i>
                 Account
               </Button>
             </DropdownTrigger>
@@ -55,7 +55,7 @@ const Navbar = () => {
             <Button
               className='bg-white text-secondary font-normal text-3xl rounded-lg'
             >
-              <i class="fa-solid fa-bars"></i>
+              <i className="fa-solid fa-bars"></i>
             </Button>
           </DropdownTrigger>
           {/* check if user is login */}
