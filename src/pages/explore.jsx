@@ -4,7 +4,7 @@ import Pagination from "@/components/Pagination";
 import {Select, SelectItem, RadioGroup, Radio, cn, image} from "@nextui-org/react";
 
 const Explore = () => {
-  const [isFilterOpen, setIsFilterOpen] = React.useState(true);
+  const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const ratings = [1, 2, 3, 4, 5];
   const tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"];
   const [values, setValues] = React.useState([]);
@@ -181,7 +181,7 @@ const Explore = () => {
             <hr className="border-primary border-1"></hr>
           </div>
           {/* Result recipes from search */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 p-6 gap-6 sm:gap-16">
+          <div className="flex flex-wrap p-6 gap-6 sm:gap-16 justify-center">
             {recipes.map((recipe, index) => (
               <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
             ))}
