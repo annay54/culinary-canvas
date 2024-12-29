@@ -47,12 +47,20 @@ const Explore = () => {
     },
   ];
 
-  const FilterContent = () => {
+  const FilterContent = ({isMobile = false}) => {
     return (
       <>
-        <div className="flex flex-row items-center gap-2 mt-2">
-          <i className="fa-solid fa-sliders text-xl"></i>
-          <h3>Filters</h3>
+        <div className="flex flex-row justify-between items-center gap-4">
+          <div className="flex flex-row items-center gap-2 mt-2">
+            <i className="fa-solid fa-sliders text-xl"></i>
+            <h3>Filters</h3>
+          </div>
+          {/* close button */}
+          {isMobile &&
+            <button className="p-4 bg-primary" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+              <i className={"fa-solid fa-xmark fa-lg"}></i>
+            </button>
+          }
         </div>
         <hr></hr>
         <div>
@@ -145,11 +153,13 @@ const Explore = () => {
         <div className="absolute">
           <div className={`flex lg:hidden relative bg-primary min-w-[260px] w-1/4 sm:max-w-[330px] h-lvh flex-col text-white gap-2 px-4 py-2 transition ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
             {/* toggle button */}
-            <button className="absolute top-0 -right-10 lg:hidden p-4 bg-primary" onClick={() => setIsFilterOpen(!isFilterOpen)}>
-              <i className={`fa-solid ${isFilterOpen ? "fa-chevron-left" : "fa-chevron-right"}`}></i>
-            </button>
+            {!isFilterOpen &&
+              <button className="absolute top-0 -right-10 lg:hidden p-4 bg-primary" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                <i className={`fa-solid ${isFilterOpen ? "fa-chevron-left" : "fa-chevron-right"}`}></i>
+              </button>
+            }
 
-            <FilterContent />
+            <FilterContent isMobile={true} />
           </div>
         </div>
       </div>
