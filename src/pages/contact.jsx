@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import FAQDropdown from "@/components/FAQDropdown";
 
 export default function Contact () {
   // 0 for mobile, 1 for desktop
-  const [deviceSize, setDeviceSize] = useState(0);
   const questions = [
     "What is CulinaryCanvas?",
     "How do I create an account?",
@@ -19,25 +18,6 @@ export default function Contact () {
     "To find a recipe, click on the 'Explore' button on the top right corner of the page. You can search for recipes by name, ingredients, or tags.",
   ];
 
-  useEffect(() => {
-    // Detect screen size and set mobile mode
-    const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setDeviceSize(0);
-      }
-      else {
-        setDeviceSize(1);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Initial check on component mount
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  } , [deviceSize]);
-
   const Input = ({placeholder, className}) => {
     return (
       <input type="text" placeholder={placeholder} className={`p-2 border-2 rounded-md border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base ${className}`} />
@@ -52,17 +32,10 @@ export default function Contact () {
           <p>Complete this form to ask questions or share your thoughts of CulinaryCanvas.</p>
         </div>
         <form className="flex flex-col gap-4 bg-white w-4/5 p-8 md:py-10 md:w-1/3 h-fit">
-          {deviceSize === 0 ? (
-            <div className="flex flex-col w-full gap-4">
-              <Input placeholder="First name" className=""/>
-              <Input placeholder="Last name" className=""/>
+            <div className="flex flex-col gap-4 lg:flex-row lg:gap-3">
+              <Input placeholder="First name" className="w-full lg:w-1/2"/>
+              <Input placeholder="Last name" className="w-full lg:w-1/2"/>
             </div>
-          ) : (
-            <div className="flex flex-row gap-3">
-              <Input placeholder="First name" className="w-1/2"/>
-              <Input placeholder="Last name" className="w-1/2"/>
-            </div>
-          )}
           <Input placeholder="Email" className=""/>
           <Input placeholder="Subject" className=""/>
           <textarea placeholder="Message" className="p-2 border-2 rounded-md border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base h-32" />
