@@ -4,7 +4,7 @@ import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@ne
 
 
 const Navbar = () => {
-  const user = true; // temporary user state
+  const user = false; // temporary user state
 
   return (
     <div className='flex flex-row flex-nowrap justify-between bg-white w-full min-[850px]:h-20 h-16'>
