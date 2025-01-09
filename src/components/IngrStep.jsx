@@ -13,6 +13,8 @@ const IngrStep = ({ type, list }) => {
   // type = "steps";
   // list = ["Preheat the oven to 350 degrees", "Mix the flour and sugar", "Bake for 30 minutes"]
 
+  const measurements = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
+
   // displayList: array of items from array list to display on the page
   const [displayList, setDisplayList] = useState(list);
   // editList: array of boolean values to determine if an item in the list is being edited
@@ -83,11 +85,15 @@ const IngrStep = ({ type, list }) => {
         {displayList.map((ingr, index) => (
           <div className="flex flex-col gap-3">
             {editList[index] ? (
-              <div className='flex flex-row mt-1 px-4 gap-2 items-center justify-between'>
-                <div className="flex gap-2 w-full">
-                  <input name={index} defaultValue={ingr.quantity} className='w-1/12 p-2 border-2 border-secondary rounded-md'/>
-                  <input name={index} defaultValue={ingr.measurement} className='w-2/12 p-2 border-2 border-secondary rounded-md'/>
-                  <input name={index} defaultValue={ingr.item} className='w-9/12 p-2 border-2 border-secondary rounded-md'/>
+              <div className='flex flex-col sm:flex-row mt-1 px-4 gap-2 items-end sm:items-center justify-between'>
+                <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full">
+                  <input name={index} defaultValue={ingr.quantity} className='w-1/12 min-w-12 p-2 border-2 border-secondary rounded-md'/>
+                  <select name={index} defaultValue={ingr.measurement} className='w-2/12 min-w-24 p-2 border-2 border-secondary rounded-md'>
+                    {measurements.map((measurement) => (
+                      <option value={measurement}>{measurement}</option>
+                    ))}
+                  </select>
+                  <input name={index} defaultValue={ingr.item} className='w-10/12 p-2 border-2 border-secondary rounded-md'/>
                 </div>
                 <div className='flex gap-2'>
                   <ConfirmEditButton index={index} />
@@ -119,7 +125,7 @@ const IngrStep = ({ type, list }) => {
             <div className="flex flex-col gap-3">
               {editList[index] ? (
                 <div className='flex flex-row mt-1 px-4 gap-2 items-center justify-between'>
-                  <textarea name={index} defaultValue={step} className='w-full h-24 p-2 border-1 border-secondary rounded-md'></textarea>
+                  <textarea name={index} defaultValue={step} className='w-full h-24 max-h-48 p-2 border-1 border-secondary rounded-md'></textarea>
                   <div className='flex gap-2'>
                     <ConfirmEditButton index={index} />
                     <CancelEditButton index={index} />
