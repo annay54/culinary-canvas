@@ -1,5 +1,6 @@
 import react from 'react';
 import Carousel from '@/components/Carousel';
+import IngrStep from '@/components/IngrStep';
 
 export default function Home() {
   const recipes = [{
@@ -60,6 +61,7 @@ export default function Home() {
           <h1 className='text-secondary lg:font-bold mx-9 max-sm:mx-4 max-md:text-4xl max-sm:text-3xl '>Welcome to Culinary Canvas</h1>
         </div>
       </div>
+      <IngrStep type='ingredients' list={[{ item: 'Flour', measurement: 'cup', quantity: 1 }, { item: 'Sugar', measurement: 'cup', quantity: 1 }]} />
       <p className='self-center w-3/4 2xl:w-3/5 px-8 my-8'>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut luctus mauris a sem volutpat sodales. Suspendisse potenti. Quisque eros est, volutpat ut magna sed, eleifend interdum mi. 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut luctus mauris a sem volutpat sodales. Suspendisse potenti. Quisque eros est, volutpat ut magna sed, eleifend interdum mi. 
