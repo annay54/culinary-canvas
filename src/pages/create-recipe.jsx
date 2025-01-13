@@ -59,6 +59,7 @@ const CreateRecipe = () => {
   const submitRecipe = () => {
     saveRecipe();
     window.location.href = "/"; // go back to the home page
+    alert("Recipe created successfully!");
   }
 
   const pushList = (type) => {
