@@ -32,12 +32,11 @@ const CreateRecipe = () => {
 
   const handleNextStep = () => {
     saveRecipe();
+    window.scrollTo(0, 0);
     if (step === 1) {
-      console.log(recipe);
       setStep(2);
       setDisplayList(ingredients);
       setEditList(new Array(ingredients.length).fill(false));
-      console.log(displayList);
     } else { // step === 2
       setStep(3);
       setDisplayList(steps);
@@ -47,11 +46,20 @@ const CreateRecipe = () => {
 
   const handleBackStep = () => {
     saveRecipe();
+    window.scrollTo(0, 0);
     if (step === 2) {
       setStep(1);
     } else { // step === 3
       setStep(2);
+      setDisplayList(ingredients);
+      setEditList(new Array(ingredients.length).fill(false));
     }
+  }
+
+  const submitRecipe = () => {
+    saveRecipe();
+    window.location.href = "/"; // go back to the home page
+    alert("Recipe created successfully!");
   }
 
   const pushList = (type) => {
@@ -64,6 +72,8 @@ const CreateRecipe = () => {
       setEditList(editList.concat(false));
     }
     else { // type === "steps"
+      setDisplayList(displayList.concat(document.getElementsByName("step")[0].value));
+      setEditList(editList.concat(false));
     }
   }
 
@@ -114,11 +124,6 @@ const CreateRecipe = () => {
             setDisplayList(displayList.filter((_, i) => i !== index.index))
             // update editList to reflect the new list with all values set to false values
             setEditList(new Array(displayList.length).fill(false))
-            // update the list of ingredients or steps
-            // if (type === "ingredients")
-            //   setIngredients(ingredients.filter((_, i) => i !== index.index))
-            // else
-            //   setSteps(steps.filter((_, i) => i !== index.index))
           }}>
           <i className="fa-regular fa-trash-can text-white w-5 h-5"></i>
         </button>
@@ -135,11 +140,9 @@ const CreateRecipe = () => {
                 measurement: document.getElementsByName(index.index)[1].value,
                 item: document.getElementsByName(index.index)[2].value
               }
-              // setIngredients(ingredients.map((value, i) => i === index.index ? displayList[index.index] : value))
             }
             else {
               displayList[index.index] = document.getElementsByName(index.index)[0].value
-              // setSteps(steps.map((value, i) => i === index.index ? displayList[index.index] : value))
             }
             setEditList(editList.map((value, i) => i === index.index ? false : value))
         }}>
@@ -164,19 +167,19 @@ const CreateRecipe = () => {
         {type === "ingredients" ? (
           <div className='flex flex-col gap-2 w-full h-fit self-center'>
           <p className="text-sm">Inserted {displayList.length} ingredients</p>
-          <hr className='w-full border-1 border-secondary'/>
+          <hr className='w-full border-1 border-primary'/>
           {displayList.map((ingr, index) => (
             <div className="flex flex-col gap-3">
               {editList[index] ? (
                 <div className='flex flex-col sm:flex-row mt-1 px-4 gap-2 items-end sm:items-center justify-between'>
                   <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full">
-                    <input name={index} defaultValue={ingr.quantity} className='w-1/12 min-w-12 p-2 border-2 border-secondary rounded-md'/>
-                    <select name={index} defaultValue={ingr.measurement} className='w-2/12 min-w-24 p-2 border-2 border-secondary rounded-md'>
+                    <input name={index} defaultValue={ingr.quantity} className='w-1/12 min-w-12 p-2 border-2 border-primary rounded-md'/>
+                    <select name={index} defaultValue={ingr.measurement} className='w-2/12 min-w-24 p-2 border-2 border-primary rounded-md'>
                       {measurements.map((measurement) => (
                         <option value={measurement}>{measurement}</option>
                       ))}
                     </select>
-                    <input name={index} defaultValue={ingr.item} className='w-10/12 p-2 border-2 border-secondary rounded-md'/>
+                    <input name={index} defaultValue={ingr.item} className='w-10/12 p-2 border-2 border-primary rounded-md'/>
                   </div>
                   <div className='flex gap-2'>
                     <ConfirmEditButton index={index} />
@@ -196,19 +199,19 @@ const CreateRecipe = () => {
                   </div>
                 </div>
               )}
-              <hr className='w-full border-1 border-secondary'/>
+              <hr className='w-full border-1 border-primary'/>
             </div>
           ))}
         </div>
         ) : ( // type === "steps"
-          <div className='flex flex-col gap-2 w-3/4 h-fit self-center px-4 sm:px-10 py-5'>
+          <div className='flex flex-col gap-2 w-full h-fit self-center'>
             <p className="text-sm">Inserted {displayList.length} steps</p>
-            <hr className='w-full border-1 border-secondary'/>
+            <hr className='w-full border-1 border-primary'/>
             {displayList.map((step, index) => (
               <div className="flex flex-col gap-3">
                 {editList[index] ? (
                   <div className='flex flex-row mt-1 px-4 gap-2 items-center justify-between'>
-                    <textarea name={index} defaultValue={step} className='w-full h-24 max-h-48 p-2 border-1 border-secondary rounded-md'></textarea>
+                    <textarea name={index} defaultValue={step} className='w-full h-24 max-h-48 p-2 border-2 border-primary rounded-md'></textarea>
                     <div className='flex gap-2'>
                       <ConfirmEditButton index={index} />
                       <CancelEditButton index={index} />
@@ -223,7 +226,7 @@ const CreateRecipe = () => {
                     </div>
                   </div>
                 )}
-                <hr className='w-full border-1 border-secondary'/>
+                <hr className='w-full border-1 border-primary'/>
               </div>
             ))}
           </div>
@@ -336,6 +339,27 @@ const CreateRecipe = () => {
         </>
       ) : ( // step === 3
         <>
+          <div className="flex flex-col gap-1 w-full mb-5">
+            <h3 className="text-secondary font-medium">Recipe steps</h3>
+            <textarea name="step" className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea>
+            <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" onClick={() => {
+              pushList("steps");
+              document.getElementsByName("step")[0].value = "";
+            }}>
+              Add
+            </button>
+          </div>
+          <IngrStep type={"steps"} />
+          <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
+            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" onClick={saveRecipe}>Save</button>
+            <div className="flex flex-row gap-5">
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleBackStep}>
+                <i className="fa-solid fa-arrow-left mr-2"></i>
+                Back
+              </button>
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={submitRecipe}>Submit</button>
+            </div>
+          </div>
         </>
       )}
     </div>
