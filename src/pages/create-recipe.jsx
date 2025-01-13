@@ -7,6 +7,17 @@ const CreateRecipe = () => {
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
 
+  const saveRecipe = () => {
+    recipe.name = document.getElementsByName("name")[0].value;
+    recipe.description = document.getElementsByName("about")[0].value;
+    // recipe.picture = document.getElementsByName("picture")[0].value;
+    recipe.prepTime = document.getElementsByName("prepHour")[0].value + ":" + document.getElementsByName("prepMin")[0].value;
+    recipe.cookTime = document.getElementsByName("cookHour")[0].value + ":" + document.getElementsByName("cookMin")[0].value;
+    recipe.servings = document.getElementsByName("servings")[0].value;
+    console.log(recipe);
+    console.log("Recipe saved");
+  }
+
   const ProgressSteps = () => (
     <div className="flex flex-row md:gap-2 items-center justify-center self-center w-full h-fit">
       <div className="flex flex-col items-center gap-0.5">
@@ -39,11 +50,11 @@ const CreateRecipe = () => {
       <hr className="border-1.5 border-primary w-full" />
       <div className="flex flex-col gap-1 w-full">
         <h3 className="text-secondary font-medium">Name of your recipe</h3>
-        <input type="text" className="w-full h-10 border-2 border-primary rounded-lg px-2 font-normal" />
+        <input type="text" name="name" className="w-full h-10 border-2 border-primary rounded-lg px-2 font-normal" />
       </div>
       <div className="flex flex-col gap-1 w-full">
         <h3 className="text-secondary font-medium">About your recipe</h3>
-        <textarea className="w-full h-44 max-h-72 border-2 border-primary rounded-lg px-2 font-normal" />
+        <textarea name="about" className="w-full h-44 max-h-72 border-2 border-primary rounded-lg px-2 font-normal" />
       </div>
       <div className="flex flex-col gap-1 w-full">
         <h3 className="text-secondary font-medium">Upload a picture of your recipe</h3>
@@ -57,29 +68,29 @@ const CreateRecipe = () => {
         <div className="flex flex-col gap-1 w-fit">
           <h3 className="text-secondary font-medium">Preparation time</h3>
           <div className="flex flex-row gap-2 items-center">
-            <input type="number" min={0} max={24} className="w-16 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
+            <input type="number" name="prepHour" min={0} max={24} className="w-16 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
             <p>hours</p>
-            <input type="number" min={0} max={59} className="w-16 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
+            <input type="number" name="prepMin" min={0} max={59} className="w-16 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
             <p>minutes</p>
           </div>
         </div>
         <div className="flex flex-col gap-1 w-fit">
           <h3 className="text-secondary font-medium">Cooking time</h3>
           <div className="flex flex-row gap-2 items-center">
-            <input type="number" min={0} max={24} className="w-16 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
+            <input type="number" name="cookHour" min={0} max={24} className="w-16 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
             <p>hours</p>
-            <input type="number" min={0} max={59} className="w-16 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
+            <input type="number" name="cookMin" min={0} max={59} className="w-16 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
             <p>minutes</p>
           </div>
         </div>
         <div className="flex flex-col gap-1 w-fit">
           <h3 className="text-secondary font-medium">Number of servings</h3>
-          <input type="number" min={1} className="w-20 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
+          <input type="number" name="servings" min={1} className="w-20 h-10 border-2 border-primary rounded-lg px-2 font-normal" />
         </div>
       </div>
       <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
-        <button className="w-32 h-12 bg-primary text-white font-medium rounded-lg self-center">Save</button>
-        <button className="w-32 h-12 bg-secondary text-white font-medium rounded-lg self-center">
+        <button className="w-32 h-12 bg-primary text-white font-medium rounded-lg self-center" onClick={saveRecipe}>Save</button>
+        <button className="w-32 h-12 bg-secondary text-white font-medium rounded-lg self-center" onClick={saveRecipe}>
           Next
           <i className="fa-solid fa-arrow-right ml-2"></i>
         </button>
