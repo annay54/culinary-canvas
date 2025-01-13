@@ -3,16 +3,15 @@ import React, { useState } from "react";
 const IngrStep = ({ type, list }) => {
   // type: 'ingredients' or 'steps'
   // list: array of items; each items is either a string (step) or an object with a 'item', 'measurement' and 'quantity' key (ingredient)
-  list=[
-    { item: 'Flour', measurement: 'cup', quantity: '1' }, 
-    { item: 'Sugar', measurement: 'tbsp', quantity: '1' },
-    { item: 'Butter', measurement: 'cup', quantity: '1/2' },
-    { item: 'Eggs', measurement: 'none', quantity: '2' },
-  ]
-  type = "ingredients";
+  // list=[
+  //   { item: 'Flour', measurement: 'cup', quantity: '1' }, 
+  //   { item: 'Sugar', measurement: 'tbsp', quantity: '1' },
+  //   { item: 'Butter', measurement: 'cup', quantity: '1/2' },
+  //   { item: 'Eggs', measurement: 'none', quantity: '2' },
+  // ]
+  // type = "ingredients";
   // type = "steps";
   // list = ["Preheat the oven to 350 degrees", "Mix the flour and sugar", "Bake for 30 minutes"]
-
   const measurements = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
 
   // displayList: array of items from array list to display on the page
@@ -79,7 +78,7 @@ const IngrStep = ({ type, list }) => {
   return (
     <>
       {type === "ingredients" ? (
-        <div className='flex flex-col gap-2 w-3/4 h-fit self-center px-4 sm:px-10 py-5'>
+        <div className='flex flex-col gap-2 w-full h-fit self-center'>
         <p className="text-sm">Inserted {displayList.length} ingredients</p>
         <hr className='w-full border-1 border-secondary'/>
         {displayList.map((ingr, index) => (
