@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Avatar } from "@nextui-org/avatar";
 
 export default function ({ slug }) {
   const navSection = [
@@ -45,8 +46,37 @@ export default function ({ slug }) {
         ))}
       </div>
       {/* Content displayed */}
-      <div className="flex flex-col">
-        <h1>{slug}</h1>
+      <div className="flex flex-col gap-5 p-10 w-full">
+        <div className="flex flex-row items-center gap-4">
+          <Avatar className="w-20 h-20" />
+          <div className="flex flex-col gap-2">
+            <h1 className="text-secondary text-4xl font-semibold">{slug}</h1>
+            <h3 className="text-xl font-normal">Toronto, ON</h3>
+          </div>
+        </div>
+        <div className="flex flex-col min-[600px]:flex-row gap-5 min-[600px]:gap-3 justify-evenly w-full">
+          <div className="flex flex-col gap-1 justify-center items-center bg-white p-5 lg:w-1/4 min-[850px]:px-7 min-w-36 min-h-36">
+            <div className="flex flex-row items-center gap-3">
+              <i className="fa-solid fa-heart text-primary text-xl"></i>
+              <h3 className="text-primary text-xl">Favourite Recipes</h3>
+            </div>
+            <h3 className="text-xl">10</h3>
+          </div>
+          <div className="flex flex-col gap-1 justify-center items-center bg-white p-5 lg:w-1/4 min-[850px]:px-7 min-w-36 min-h-36">
+            <div className="flex flex-row items-center gap-3">
+              <i className="fa-solid fa-book text-primary text-xl"></i>
+              <h3 className="text-primary text-xl">Your Recipes</h3>
+            </div>
+            <h3 className="text-xl">16</h3>
+          </div>
+          <div className="flex flex-col gap-1 justify-center items-center bg-white p-5 lg:w-1/4 min-[850px]:px-7 min-w-36 min-h-36">
+            <div className="flex flex-row items-center gap-3">
+              <i className="fa-solid fa-star text-primary text-xl"></i>
+              <h3 className="text-primary text-xl">Your Reviews</h3>
+            </div>
+            <h3 className="text-xl">32</h3>
+          </div>
+        </div>
       </div>
     </div>
   )
