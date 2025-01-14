@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import { Avatar } from "@nextui-org/avatar";
 
 export default function ({ slug }) {
@@ -12,10 +13,18 @@ export default function ({ slug }) {
   const [selectSection, setSelectSection] = useState(navSection[0]);
   const [showSection, setShowSection] = useState(false);
 
+  const Social = ({ icon, link }) => {
+    return (
+      <Link href={link} target='_blank' rel='noreferrer' className='flex w-10 h-10 items-center justify-center border-2 border-primary text-primary hover:no-underline hover:border-secondary hover:text-secondary'>
+        <i className={`fa-brands fa-${icon}`}></i>
+      </Link>
+    )
+  }
+
   return (
     <div className="flex flex-col md:flex-row w-full h-fit">
       {/* Side navigation bar for computer screen size */}
-      <div className="hidden md:flex flex-col py-2 min-w-48 w-1/5 h-screen bg-primary text-white">
+      <div className="hidden md:flex flex-col py-2 min-w-48 w-1/5 bg-primary text-white">
         {navSection.map((section, index) => (
           <>
             <div className={`flex flex-row items-center gap-2 px-6 py-3 hover:bg-secondary hover:cursor-pointer ${selectSection.name === section.name ? "bg-secondary" : ""}`} onClick={() => setSelectSection(section.name)}>
@@ -46,7 +55,7 @@ export default function ({ slug }) {
         ))}
       </div>
       {/* Content displayed */}
-      <div className="flex flex-col gap-5 p-10 w-full">
+      <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <div className="flex flex-row items-center gap-4">
           <Avatar className="w-20 h-20" />
           <div className="flex flex-col gap-2">
@@ -75,6 +84,29 @@ export default function ({ slug }) {
               <h3 className="text-primary text-xl">Your Reviews</h3>
             </div>
             <h3 className="text-xl">32</h3>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 w-full">
+          <h2 className="text-secondary">About Me</h2>
+          <p>
+            Here at CulinaryCanvas, we provide you delicious, easy-to-follow recipes written by fellow food enthusiasts. CulinaryCanvas forms a community of kitchen experts and food lovers who spreads inspiration to one another by sharing culinary creations and experiences.
+          </p>
+        </div>
+        <div className="flex flex-col gap-2 w-full">
+          <h2 className="text-secondary">Contact</h2>
+          <div className='flex flex-row gap-4'>
+            <Social icon='facebook-f' link='https://facebook.com' />
+            <Social icon='x-twitter' link='https://twitter.com' />
+            <Social icon='linkedin-in' link='https://linkedin.com' />
+            <Social icon='instagram' link='https://instagram.com' />
+          </div>
+          <div className="flex flex-row gap-3 mt-2">
+            <i className="fa-solid fa-phone text-primary text-xl"></i>
+            <p>123-123-1234</p>
+          </div>
+          <div className="flex flex-row gap-3 mt-2">
+            <i className="fa-solid fa-envelope text-primary text-xl"></i>
+            <p>test@gmail.com</p>
           </div>
         </div>
       </div>
