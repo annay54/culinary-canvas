@@ -122,7 +122,7 @@ export default function ({ slug }) {
                 <div className='flex flex-col gap-2 w-full md:w-[265px] p-4 md:p-8 h-fit bg-primary text-white'>
                     <h2>Ingredients</h2>
                     <p className='text-textColor'>Servings: 2</p>
-                    <hr />
+                    <hr className='border-1' />
                     <Ingredient name='All purpose flour' quantity='2 cups' />
                     <Ingredient name='Sugar' quantity='2 tbsp' />
                     <Ingredient name='Baking powder' quantity='2 tsp' />
@@ -137,7 +137,7 @@ export default function ({ slug }) {
         {/* reviews */}
         <div className='flex flex-col w-full gap-4 md:px-[10%] px-[5%] py-12 bg-primary text-white'>
             <h2>Reviews</h2>
-            <div className='flex flex-wrap md:flex-row px-4 items-center justify-between border-t border-b border-white'>
+            <div className='flex flex-wrap md:flex-row px-4 items-center justify-between border-t-1.5 border-b-1.5 border-white'>
                 <p>30 reviews</p>
                 <div className='flex flex-row gap-2'>
                     {/* sort button */}
@@ -198,13 +198,13 @@ export default function ({ slug }) {
                     image={review.img}
                     review={review}
                 />
-                <hr />
+                <hr className='border-1' />
               </div>
             ))}
             
             {/* pagination */}
             <div className='flex justify-center w-full'>
-                <Pagination pageLength={reviews.length} mainColour={"white"} textColour='secondary' />
+                <Pagination pageLength={reviews.length} mainColour='white' textColour='secondary' hoverColour="none" />
             </div>
 
         </div>
