@@ -191,7 +191,7 @@ const Explore = () => {
             <hr className="border-primary border-1"></hr>
           </div>
           {/* Result recipes from search */}
-          <div className="flex flex-wrap p-6 gap-6 sm:gap-16 justify-center">
+          <div className="flex flex-wrap p-6 gap-5 justify-center">
             {recipes.map((recipe, index) => (
               <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
             ))}

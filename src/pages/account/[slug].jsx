@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Avatar } from "@nextui-org/avatar";
+import RecipeCard from "@/components/RecipeCard";
+import Pagination from "@/components/Pagination";
 
 export default function ({ slug }) {
   const navSection = [
@@ -82,9 +84,114 @@ export default function ({ slug }) {
   }
 
   const FavouriteRecipes = () => {
+    const recipes = [{
+      name: 'Steak 1',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 2',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 3',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 4',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 5',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 6',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 7',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 8',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }];
+
     return (
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
+        <h1 className="text-secondary text-4xl font-semibold">Favourite Recipes</h1>
+        {/* Number of results shown from search */}
+        <div className="text-secondary w-full">
+          <hr className="border-primary border-1"></hr>
+          <p className="font-normal text-base my-2">6 out of 20 results</p>
+          <hr className="border-primary border-1"></hr>
+        </div>
+        <div className="flex flex-wrap gap-5 justify-center">
+          {recipes.map((recipe, index) => (
+            <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+          ))}
+        </div>
+        <div className="flex pt-4 pb-8 justify-center">
+          <Pagination pageLength={4} />
+        </div>
+      </div>
+    )
+  }
 
+  const YourRecipes = () => {
+    const recipes = [{
+      name: 'Steak 1',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 2',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 3',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 4',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }, {
+      name: 'Steak 5',
+      author: 'master_chief',
+      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      rating: 4,
+    }];
+
+    return (
+      <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
+        <h1 className="text-secondary text-4xl font-semibold">Your Recipes</h1>
+        {/* Number of results shown from search */}
+        <div className="text-secondary w-full">
+          <hr className="border-primary border-1"></hr>
+          <p className="font-normal text-base my-2">6 out of 20 results</p>
+          <hr className="border-primary border-1"></hr>
+        </div>
+        <div className="flex flex-wrap gap-5 justify-center">
+          {recipes.map((recipe, index) => (
+            <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+          ))}
+        </div>
+        <div className="flex pt-4 pb-8 justify-center">
+          <Pagination pageLength={4} />
+        </div>
       </div>
     )
   }
@@ -125,6 +232,7 @@ export default function ({ slug }) {
       {/* Content displayed */}
       {selectSection.name === navSection[0]["name"] && <Profile />}
       {selectSection.name === navSection[1]["name"] && <FavouriteRecipes />}
+      {selectSection.name === navSection[2]["name"] && <YourRecipes />}
     </div>
   )
 }
