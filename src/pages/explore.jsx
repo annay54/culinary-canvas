@@ -187,7 +187,7 @@ const Explore = () => {
           {/* Number of results shown from search */}
           <div className="text-secondary w-11/12">
             <hr className="border-primary border-1"></hr>
-            <p className="font-normal text-base my-2">6 out of 20 results</p>
+            <p className="text-textColor font-normal text-base my-2 px-4">6 out of 20 results</p>
             <hr className="border-primary border-1"></hr>
           </div>
           {/* Result recipes from search */}
@@ -198,7 +198,7 @@ const Explore = () => {
           </div>
           {/* Pagination */}
           <div className="pt-4 pb-8">
-            <Pagination pageLength={4} />
+            <Pagination pageLength={4} mainColour="secondary" textColour="white" hoverColour="" />
           </div>
         </div>
       </div>

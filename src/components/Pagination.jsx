@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 
-const Pagination = ({pageLength, mainColour = "secondary", textColour = "white"}) => {
+const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [leftButtons, setLeftButtons] = useState([]);
     const [rightButtons, setRightButtons] = useState([]);
@@ -62,7 +62,7 @@ const Pagination = ({pageLength, mainColour = "secondary", textColour = "white"}
                 setCurrentPage(index + 1);
                 handlePageChange(index + 1);
             }}
-            className={`min-[400px]:w-[40px] py-2 text-center hover:bg-primary hover:text-white ${currentPage === index + 1 ? `bg-${mainColour} text-${textColour}` : `bg-transparent text-${mainColour}`}`}
+            className={`min-[400px]:w-[40px] py-2 text-center ${hoverColour === "" ? "hover:bg-primary hover:text-white" : ""} ${currentPage === index + 1 ? `bg-${mainColour} text-${textColour}` : `bg-transparent text-${mainColour}`}`}
         >
             {index + 1}
         </button>);
@@ -77,7 +77,7 @@ const Pagination = ({pageLength, mainColour = "secondary", textColour = "white"}
             <div className='flex flex-row sm:gap-1'>
                 {/* previous button */}
                 <button 
-                    className={`text-${mainColour} px-3 py-2 bg-transparent hover:bg-primary hover:text-white ${currentPage === 1 && "pointer-events-none opacity-50"}`} 
+                    className={`text-${mainColour} px-3 py-2 bg-transparent ${hoverColour === "" ? "hover:bg-primary hover:text-white" : ""} ${currentPage === 1 && "pointer-events-none opacity-50"}`} 
                     onClick={handlePrevious}
                 >
                     <i className='fa-solid fa-arrow-left'></i>
@@ -110,7 +110,7 @@ const Pagination = ({pageLength, mainColour = "secondary", textColour = "white"}
 
                 {/* next arrow */}
                 <button 
-                    className={`text-${mainColour} px-3 py-2 bg-transparent hover:bg-primary hover:text-white ${currentPage === pageLength && "pointer-events-none opacity-50"}`}  
+                    className={`text-${mainColour} px-3 py-2 bg-transparent ${hoverColour === "" ? "hover:bg-primary hover:text-white" : ""} ${currentPage === pageLength && "pointer-events-none opacity-50"}`}  
                     onClick={handleNext}
                 >
                     <i className='fa-solid fa-arrow-right'></i>
@@ -123,7 +123,7 @@ const Pagination = ({pageLength, mainColour = "secondary", textColour = "white"}
                             <Button 
                                 color='primary'
                                 variant='solid'
-                                className={`bg-transparent rounded-none border justify-between border-${mainColour} text-${mainColour}`}
+                                className={`bg-transparent rounded-none border-2 justify-between border-${mainColour} text-${mainColour}`}
                             >
                                 {currentPage}
                                 <i className='fa-solid fa-chevron-down'></i>
