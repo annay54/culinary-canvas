@@ -282,6 +282,70 @@ export default function ({ slug }) {
     )
   }
 
+  const Settings = () => {
+    // there will be three main sectionns in the settings page: Profile content, privacy, and security
+    const [open, setOpen] = useState(new Array(3).fill(false));
+    const settingSections = ["Profile content", "Privacy", "Security"];
+    
+    const openSetting = (index) => {
+      setOpen(open.map((value, i) => i === index ? true : value));
+    }
+  
+    const closeSetting = (index) => {
+      setOpen(open.map((value, i) => i === index ? false : value));
+    }
+
+    const ProfileSection = () => {
+      return (
+        <div className="flex flex-col gap-1 w-full px-8">
+          <h3>Update profile and account content</h3>
+        </div>
+      )
+    }
+
+    const PrivacySection = () => {
+      return (
+        <div className="flex flex-col gap-1 w-full px-8">
+          <h3>privacy section</h3>
+        </div>
+      )
+    }
+
+    const SecuritySection = () => {
+      return (
+        <div className="flex flex-col gap-1 w-full px-8">
+          <h3>Security section</h3>
+        </div>
+      )
+    }
+
+    return (
+      <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
+        <h2 className="text-secondary">Settings</h2>
+        <hr className="border-textColor border-1"></hr>
+        {settingSections.map((section, index) => (
+          <div key={index} className='flex flex-col gap-2'>
+            {open[index] ? (
+              <div className='flex flex-row items-center gap-2 mx-2 hover:cursor-pointer' onClick={() => {closeSetting(index)}}>
+                <i className="fa-solid fa-chevron-up text-primary text-lg"></i>
+                <h3 className='text-primary font-medium'>{section}</h3>
+              </div>
+            ) : (
+              <div className='flex flex-row items-center gap-2 mx-2 hover:cursor-pointer' onClick={() => {openSetting(index)}}>
+                <i className="fa-solid fa-chevron-down text-primary text-lg" ></i>
+                <h3 className='text-primary font-medium'>{section}</h3>
+              </div>
+            )}
+            {open[index] && section === settingSections[0] && <ProfileSection />}
+            {open[index] && section === settingSections[1] && <PrivacySection />}
+            {open[index] && section === settingSections[2] && <SecuritySection />}
+            <hr className='w-full border-1 mt-2 border-textColor'/>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col md:flex-row w-full h-fit">
       {/* Side navigation bar for computer screen size */}
@@ -326,6 +390,7 @@ export default function ({ slug }) {
       {selectSection.name === navSection[1]["name"] && <FavouriteRecipes />}
       {selectSection.name === navSection[2]["name"] && <YourRecipes />}
       {selectSection.name === navSection[3]["name"] && <YourReviews />}
+      {selectSection.name === navSection[4]["name"] && <Settings />}
     </div>
   )
 }
