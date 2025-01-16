@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import {Select, SelectItem} from "@nextui-org/react";
 
 const CreateRecipe = () => {
   // there will be a total of 3 steps to create a recipe
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
   const [recipe, setRecipe] = useState({"name": "", "description": "", "picture": "", "prepTime": "", "cookTime": "", "servings": ""});
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
@@ -13,6 +14,7 @@ const CreateRecipe = () => {
 
   // first element of list measurements should be the default value
   const measurements = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
+  const tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"];
 
   const saveRecipe = () => {
     if (step === 1)
@@ -252,6 +254,29 @@ const CreateRecipe = () => {
             <textarea name="about" defaultValue={recipe.description} className="w-full h-44 max-h-72 border-2 border-primary rounded-lg px-2" />
           </div>
           <div className="flex flex-col gap-1 w-full">
+            <h3 className="text-secondary font-medium">Recipe tags</h3>
+            <p>Add tags to your recipe to make it easier to find. The tags should describe the recipe.</p>
+            <div className="my-2">
+              <Select
+                items={tags}
+                placeholder="Select tags"
+                variant="flat"
+                isMultiline={true}
+                selectionMode="multiple"
+                classNames={{ 
+                  mainWrapper: "border-2 border-primary rounded-lg",
+                  listbox: "text-secondary",
+                  selectorIcon: "text-secondary",
+                  trigger: "bg-white",
+                }}
+              >
+                {tags.map((tag) => (
+                  <SelectItem key={tag}>{tag}</SelectItem>
+                ))}
+              </Select>
+            </div>
+          </div>
+          <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">Upload a picture of your recipe</h3>
             <p>Recommended size: 800x400 pixels</p>
             <div className="flex flex-col w-full h-56 bg-white border-2 border-primary rounded-lg items-center justify-center">
@@ -260,6 +285,7 @@ const CreateRecipe = () => {
               <p className="text-gray-600 font-normal text-base">Supports: JPEG, JPG, PNG</p>
             </div>
           </div>
+          <hr className="border-1 border-primary w-full my-5" />
           <div className="flex flex-col lg:flex-row justify-between gap-5 lg:gap-1 w-full">
             <div className="flex flex-col gap-1 w-fit">
               <h3 className="text-secondary font-medium">Preparation time</h3>
