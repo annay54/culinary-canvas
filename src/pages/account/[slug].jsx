@@ -290,8 +290,8 @@ export default function ({ slug }) {
   }
 
   const Settings = () => {
-    // there will be three main sectionns in the settings page: Profile content, privacy, and security
-    const [open, setOpen] = useState(new Array(3).fill(true));
+    // there will be three main sections in the settings page: Profile content, privacy, and security
+    const [open, setOpen] = useState(new Array(3).fill(false));
     const settingSections = ["Profile content", "Privacy", "Security"];
     
     const openSetting = (index) => {
@@ -327,7 +327,7 @@ export default function ({ slug }) {
             </div>
             <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
           </form>
-          <h3 className="text-xl font-semibold mt-4">Link social media:</h3>
+          <h3 className="text-xl font-semibold mt-6">Link social media:</h3>
           <p><b>Note: </b>To remove a social media link, leave the input field blank.</p>
           <form className="flex flex-col gap-4 my-2">
             <div className="flex flex-row flex-wrap gap-5">
@@ -355,9 +355,64 @@ export default function ({ slug }) {
     }
 
     const PrivacySection = () => {
+      // first element of privacyOptions is the default selected option
+      const privacyOptions = [
+        { name: "Public", description: "Everyone can see your profile, reviews, and favourite recipes." },
+        { name: "Private", description: "Only you can see your profile, reviews, and favourite recipes." },
+        { name: "Custom", description: "Choose what everyone can see." },
+      ]
+      const [selectedOption, setSelectedOption] = useState(privacyOptions[0]);
+      const [showEmail, setShowEmail] = useState(false);
+
       return (
         <div className="flex flex-col gap-1 w-full px-8">
-          <h3>privacy section</h3>
+          <h3 className="text-xl font-semibold">Update privacy option:</h3>
+          <p>Set who can view your profile and activity.</p>
+          <p><b>Note: </b>Everyone can see your created recipes.</p>
+          <form className="flex flex-col gap-4">
+            <p className="text-secondary font-medium">{selectedOption.description}</p>
+            <select defaultValue={selectedOption.name} className="w-36 p-2 text-base border-2 border-primary rounded-lg"
+              onChange={(e) => setSelectedOption(privacyOptions.find(option => option.name === e.target.value))}>
+              {privacyOptions.map((option, index) => (
+                <option key={index} value={option.name}>{option.name}</option>
+              ))}
+            </select>
+            {selectedOption.name === "Custom" && (
+              <div className="flex flex-col gap-1">
+                <label className="text-secondary font-medium" htmlFor="custom">Custom privacy settings</label>
+                <div className="flex flex-row items-center gap-2">
+                  <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="customProfile" name="customProfile" />
+                  <label className="text-secondary" htmlFor="customProfile">Show profile</label>
+                </div>
+                <div className="flex flex-row items-center gap-2">
+                  <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="customReviews" name="customReviews" />
+                  <label className="text-secondary" htmlFor="customReviews">Show reviews</label>
+                </div>
+                <div className="flex flex-row items-center gap-2">
+                  <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="customFav" name="customFav" />
+                  <label className="text-secondary" htmlFor="customFav">Show favourite recipes</label>
+                </div>
+              </div>
+            )}
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          <h3 className="text-xl font-semibold mt-6">Show email in profile:</h3>
+          <p>Choose whether to everyone can view your email in your profile.</p>
+          <form className="flex flex-col gap-4 my-2">
+            <p className="text-secondary font-medium">
+              {showEmail ? "Your email is visible to everyone in your profile." : "Your email is not visible to everyone."}
+            </p>
+            <div className="flex flex-row items-center gap-2">
+              <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="showEmail" name="showEmail" onChange={() => setShowEmail(!showEmail)} />
+              <label className="text-secondary" htmlFor="showEmail">Show email</label>
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          <h3 className="text-xl font-semibold mt-6">Delete account:</h3>
+          <p>Permanently delete your account and all data associated with it.</p>
+          <form className="flex flex-col gap-4 my-2">
+            <button className="w-fit px-4 p-2 bg-red-600 text-white rounded-lg hover:bg-secondary" type="submit" onClick={() => window.location.href = "/"}>Delete account</button>
+          </form>
         </div>
       )
     }
