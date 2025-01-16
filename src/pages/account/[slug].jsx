@@ -14,8 +14,21 @@ export default function ({ slug }) {
     { name: "Your Reviews", icon: "fa-star" },
     { name: "Settings", icon: "fa-gear" },
   ]
-  const [selectSection, setSelectSection] = useState(navSection[0]);
+  const [selectSection, setSelectSection] = useState(navSection[4]);
   const [showSection, setShowSection] = useState(false);
+  const profile = {
+    name: "John Doe",
+    location: "Toronto, ON",
+    description: "Here at CulinaryCanvas, we provide you delicious, easy-to-follow recipes written by fellow food enthusiasts. CulinaryCanvas forms a community of kitchen experts and food lovers who spreads inspiration to one another by sharing culinary creations and experiences.",
+    email: "email@email.com",
+    phone: "123-123-1234",
+    social: {
+      facebook: "https://facebook.com",
+      twitter: "https://twitter.com",
+      linkedin: "https://linkedin.com",
+      instagram: "https://instagram.com",
+    },
+  }
 
   const Social = ({ icon, link }) => {
     return (
@@ -31,8 +44,8 @@ export default function ({ slug }) {
         <div className="flex flex-row items-center gap-4">
           <Avatar className="w-20 h-20" />
           <div className="flex flex-col gap-2">
-            <h2 className="text-secondary">{slug}</h2>
-            <h3 className="text-xl font-normal">Toronto, ON</h3>
+            <h2 className="text-secondary">{profile.name}</h2>
+            <h3 className="text-xl font-normal">{profile.location}</h3>
           </div>
         </div>
         <div className="flex flex-col min-[600px]:flex-row gap-5 min-[600px]:gap-3 justify-evenly w-full my-3">
@@ -60,25 +73,19 @@ export default function ({ slug }) {
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">About Me</h3>
-          <p>
-            Here at CulinaryCanvas, we provide you delicious, easy-to-follow recipes written by fellow food enthusiasts. CulinaryCanvas forms a community of kitchen experts and food lovers who spreads inspiration to one another by sharing culinary creations and experiences.
-          </p>
+          <p>{profile.description}</p>
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">Contact</h3>
           <div className='flex flex-row gap-4'>
-            <Social icon='facebook-f' link='https://facebook.com' />
-            <Social icon='x-twitter' link='https://twitter.com' />
-            <Social icon='linkedin-in' link='https://linkedin.com' />
-            <Social icon='instagram' link='https://instagram.com' />
-          </div>
-          <div className="flex flex-row gap-3 mt-2">
-            <i className="fa-solid fa-phone text-primary text-xl"></i>
-            <p>123-123-1234</p>
+            <Social icon='facebook-f' link={profile.social.facebook} />
+            <Social icon='x-twitter' link={profile.social.twitter} />
+            <Social icon='linkedin-in' link={profile.social.linkedin} />
+            <Social icon='instagram' link={profile.social.instagram} />
           </div>
           <div className="flex flex-row gap-3 mt-2">
             <i className="fa-solid fa-envelope text-primary text-xl"></i>
-            <p>test@gmail.com</p>
+            <p>{profile.email}</p>
           </div>
         </div>
       </div>
@@ -282,6 +289,205 @@ export default function ({ slug }) {
     )
   }
 
+  const Settings = () => {
+    // there will be three main sections in the settings page: Profile content, privacy, and security
+    const [open, setOpen] = useState(new Array(3).fill(false));
+    const settingSections = ["Profile content", "Privacy", "Security"];
+    
+    const openSetting = (index) => {
+      setOpen(open.map((value, i) => i === index ? true : value));
+    }
+  
+    const closeSetting = (index) => {
+      setOpen(open.map((value, i) => i === index ? false : value));
+    }
+
+    const ProfileSection = () => {
+      return (
+        <div className="flex flex-col gap-1 w-full px-4 sm:px-8">
+          <h3 className="text-xl font-semibold">Update profile content:</h3>
+          <form className="flex flex-col gap-4 my-2">
+            <div className="flex flex-col gap-1 w-full">
+              <label className="text-secondary font-medium" htmlFor="image">Profile image</label>
+              <input className="w-full p-0 text-base border-0 rounded-none" type="file" id="image" name="image" />
+            </div>
+            <div className="flex flex-col sm:flex-row flex-wrap gap-5 w-full">
+              <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="name">Name</label>
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="name" name="name" defaultValue={profile.name} />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="phone">Phone number</label>
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="tel" id="phone" name="phone" defaultValue={profile.phone} />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="location">Location</label>
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="location" name="location" defaultValue={profile.location} />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-secondary font-medium" htmlFor="description">About me</label>
+              <textarea className="w-full h-40 max-h-64 p-2 text-base border-2 border-primary rounded-lg" id="description" name="description" defaultValue={profile.description} />
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          <h3 className="text-xl font-semibold mt-6">Link social media:</h3>
+          <p><b>Note: </b>To remove a social media link, leave the input field blank.</p>
+          <form className="flex flex-col gap-4 my-2">
+            <div className="flex flex-row flex-wrap gap-5">
+              <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="facebook">Facebook</label>
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="facebook" name="facebook" defaultValue={profile.social.facebook} />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="twitter">Twitter</label>
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="twitter" name="twitter" defaultValue={profile.social.twitter} />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="linkedin">Linkedin</label>
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="linkedin" name="linkedin" defaultValue={profile.social.linkedin} />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="instagram">Instagram</label>
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="instagram" name="instagram" defaultValue={profile.social.instagram} />
+              </div>
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+        </div>
+      )
+    }
+
+    const PrivacySection = () => {
+      // first element of privacyOptions is the default selected option
+      const privacyOptions = [
+        { name: "Public", description: "Everyone can see your profile, reviews, and favourite recipes." },
+        { name: "Private", description: "Only you can see your profile, reviews, and favourite recipes." },
+        { name: "Custom", description: "Choose what everyone can see." },
+      ]
+      const [selectedOption, setSelectedOption] = useState(privacyOptions[0]);
+      const [showEmail, setShowEmail] = useState(false);
+
+      return (
+        <div className="flex flex-col gap-1 w-full px-8">
+          <h3 className="text-xl font-semibold">Update privacy option:</h3>
+          <p>Set who can view your profile and activity.</p>
+          <p><b>Note: </b>Everyone can see your created recipes.</p>
+          <form className="flex flex-col gap-4">
+            <p className="text-secondary font-medium">{selectedOption.description}</p>
+            <select defaultValue={selectedOption.name} className="w-36 p-2 text-base border-2 border-primary rounded-lg"
+              onChange={(e) => setSelectedOption(privacyOptions.find(option => option.name === e.target.value))}>
+              {privacyOptions.map((option, index) => (
+                <option key={index} value={option.name}>{option.name}</option>
+              ))}
+            </select>
+            {selectedOption.name === "Custom" && (
+              <div className="flex flex-col gap-1">
+                <label className="text-secondary font-medium" htmlFor="custom">Custom privacy settings</label>
+                <div className="flex flex-row items-center gap-2">
+                  <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="customProfile" name="customProfile" />
+                  <label className="text-secondary" htmlFor="customProfile">Show profile</label>
+                </div>
+                <div className="flex flex-row items-center gap-2">
+                  <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="customReviews" name="customReviews" />
+                  <label className="text-secondary" htmlFor="customReviews">Show reviews</label>
+                </div>
+                <div className="flex flex-row items-center gap-2">
+                  <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="customFav" name="customFav" />
+                  <label className="text-secondary" htmlFor="customFav">Show favourite recipes</label>
+                </div>
+              </div>
+            )}
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          <h3 className="text-xl font-semibold mt-6">Show email in profile:</h3>
+          <p>Choose whether to everyone can view your email in your profile.</p>
+          <form className="flex flex-col gap-4 my-2">
+            <p className="text-secondary font-medium">
+              {showEmail ? "Your email is visible to everyone in your profile." : "Your email is not visible to everyone."}
+            </p>
+            <div className="flex flex-row items-center gap-2">
+              <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="showEmail" name="showEmail" onChange={() => setShowEmail(!showEmail)} />
+              <label className="text-secondary" htmlFor="showEmail">Show email</label>
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          <h3 className="text-xl font-semibold mt-6">Delete account:</h3>
+          <p>Permanently delete your account and all data associated with it.</p>
+          <form className="flex flex-col gap-4 my-2">
+            <button className="w-fit px-4 p-2 bg-red-600 text-white rounded-lg hover:bg-secondary" type="submit" onClick={() => window.location.href = "/"}>Delete account</button>
+          </form>
+        </div>
+      )
+    }
+
+    const SecuritySection = () => {
+      return (
+        <div className="flex flex-col gap-1 w-full px-8">
+          <h3 className="text-xl font-semibold">Change email:</h3>
+          <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1 w-full max-w-64">
+              <label className="text-secondary font-medium" htmlFor="email">Email</label>
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="email" id="email" name="email" defaultValue={profile.email} />
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          <h3 className="text-xl font-semibold mt-6">Change password:</h3>
+          <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1 w-full max-w-64">
+              <label className="text-secondary font-medium" htmlFor="currentPassword">Current password</label>
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="password" id="currentPassword" name="currentPassword" />
+            </div>
+            <div className="flex flex-col gap-1 w-full max-w-64">
+              <label className="text-secondary font-medium" htmlFor="newPassword">New password</label>
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="password" id="newPassword" name="newPassword" />
+            </div>
+            <div className="flex flex-col gap-1 w-full max-w-64">
+              <label className="text-secondary font-medium" htmlFor="confirmPassword">Confirm new password</label>
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="password" id="confirmPassword" name="confirmPassword" />
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          {/* <h3 className="text-xl font-semibold mt-6">Two-factor authentication:</h3>
+          <p>Enable two-factor authentication to add an extra layer of security to your account.</p>
+          <form className="flex flex-col gap-4 my-2">
+            <div className="flex flex-row items-center gap-2">
+              <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="twoFactor" name="twoFactor" />
+              <label className="text-secondary" htmlFor="twoFactor">Enable two-factor authentication</label>
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form> */}
+        </div>
+      )
+    }
+
+    return (
+      <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
+        <h2 className="text-secondary">Settings</h2>
+        <hr className="border-textColor border-1"></hr>
+        {settingSections.map((section, index) => (
+          <div key={index} className='flex flex-col gap-2'>
+            {open[index] ? (
+              <div className='flex flex-row items-center gap-2 mx-2 text-primary hover:text-secondary hover:cursor-pointer' onClick={() => {closeSetting(index)}}>
+                <i className="fa-solid fa-chevron-up text-lg"></i>
+                <h3 className='font-medium'>{section}</h3>
+              </div>
+            ) : (
+              <div className='flex flex-row items-center gap-2 mx-2 text-primary hover:text-secondary hover:cursor-pointer' onClick={() => {openSetting(index)}}>
+                <i className="fa-solid fa-chevron-down text-lg" ></i>
+                <h3 className='font-medium'>{section}</h3>
+              </div>
+            )}
+            {open[index] && section === settingSections[0] && <ProfileSection />}
+            {open[index] && section === settingSections[1] && <PrivacySection />}
+            {open[index] && section === settingSections[2] && <SecuritySection />}
+            <hr className='w-full border-1 mt-2 border-textColor'/>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col md:flex-row w-full h-fit">
       {/* Side navigation bar for computer screen size */}
@@ -326,6 +532,7 @@ export default function ({ slug }) {
       {selectSection.name === navSection[1]["name"] && <FavouriteRecipes />}
       {selectSection.name === navSection[2]["name"] && <YourRecipes />}
       {selectSection.name === navSection[3]["name"] && <YourReviews />}
+      {selectSection.name === navSection[4]["name"] && <Settings />}
     </div>
   )
 }
