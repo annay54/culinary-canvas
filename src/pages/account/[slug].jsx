@@ -14,7 +14,7 @@ export default function ({ slug }) {
     { name: "Your Reviews", icon: "fa-star" },
     { name: "Settings", icon: "fa-gear" },
   ]
-  const [selectSection, setSelectSection] = useState(navSection[4]);
+  const [selectSection, setSelectSection] = useState(navSection[0]);
   const [showSection, setShowSection] = useState(false);
   const profile = {
     name: "John Doe",
