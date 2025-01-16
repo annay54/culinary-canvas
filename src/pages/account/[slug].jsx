@@ -14,8 +14,21 @@ export default function ({ slug }) {
     { name: "Your Reviews", icon: "fa-star" },
     { name: "Settings", icon: "fa-gear" },
   ]
-  const [selectSection, setSelectSection] = useState(navSection[0]);
+  const [selectSection, setSelectSection] = useState(navSection[4]);
   const [showSection, setShowSection] = useState(false);
+  const profile = {
+    name: "John Doe",
+    location: "Toronto, ON",
+    description: "Here at CulinaryCanvas, we provide you delicious, easy-to-follow recipes written by fellow food enthusiasts. CulinaryCanvas forms a community of kitchen experts and food lovers who spreads inspiration to one another by sharing culinary creations and experiences.",
+    email: "email@email.com",
+    phone: "123-123-1234",
+    social: {
+      facebook: "https://facebook.com",
+      twitter: "https://twitter.com",
+      linkedin: "https://linkedin.com",
+      instagram: "https://instagram.com",
+    },
+  }
 
   const Social = ({ icon, link }) => {
     return (
@@ -31,8 +44,8 @@ export default function ({ slug }) {
         <div className="flex flex-row items-center gap-4">
           <Avatar className="w-20 h-20" />
           <div className="flex flex-col gap-2">
-            <h2 className="text-secondary">{slug}</h2>
-            <h3 className="text-xl font-normal">Toronto, ON</h3>
+            <h2 className="text-secondary">{profile.name}</h2>
+            <h3 className="text-xl font-normal">{profile.location}</h3>
           </div>
         </div>
         <div className="flex flex-col min-[600px]:flex-row gap-5 min-[600px]:gap-3 justify-evenly w-full my-3">
@@ -60,25 +73,19 @@ export default function ({ slug }) {
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">About Me</h3>
-          <p>
-            Here at CulinaryCanvas, we provide you delicious, easy-to-follow recipes written by fellow food enthusiasts. CulinaryCanvas forms a community of kitchen experts and food lovers who spreads inspiration to one another by sharing culinary creations and experiences.
-          </p>
+          <p>{profile.description}</p>
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">Contact</h3>
           <div className='flex flex-row gap-4'>
-            <Social icon='facebook-f' link='https://facebook.com' />
-            <Social icon='x-twitter' link='https://twitter.com' />
-            <Social icon='linkedin-in' link='https://linkedin.com' />
-            <Social icon='instagram' link='https://instagram.com' />
-          </div>
-          <div className="flex flex-row gap-3 mt-2">
-            <i className="fa-solid fa-phone text-primary text-xl"></i>
-            <p>123-123-1234</p>
+            <Social icon='facebook-f' link={profile.social.facebook} />
+            <Social icon='x-twitter' link={profile.social.twitter} />
+            <Social icon='linkedin-in' link={profile.social.linkedin} />
+            <Social icon='instagram' link={profile.social.instagram} />
           </div>
           <div className="flex flex-row gap-3 mt-2">
             <i className="fa-solid fa-envelope text-primary text-xl"></i>
-            <p>test@gmail.com</p>
+            <p>{profile.email}</p>
           </div>
         </div>
       </div>
@@ -284,7 +291,7 @@ export default function ({ slug }) {
 
   const Settings = () => {
     // there will be three main sectionns in the settings page: Profile content, privacy, and security
-    const [open, setOpen] = useState(new Array(3).fill(false));
+    const [open, setOpen] = useState(new Array(3).fill(true));
     const settingSections = ["Profile content", "Privacy", "Security"];
     
     const openSetting = (index) => {
@@ -298,7 +305,51 @@ export default function ({ slug }) {
     const ProfileSection = () => {
       return (
         <div className="flex flex-col gap-1 w-full px-8">
-          <h3>Update profile and account content</h3>
+          <h3 className="text-xl font-semibold">Update profile content:</h3>
+          <form className="flex flex-col gap-4 my-2">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-5 w-full">
+              <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="name">Name</label>
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="name" name="name" defaultValue={profile.name} />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="phone">Phone number</label>
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="tel" id="phone" name="phone" defaultValue={profile.phone} />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
+                <label className="text-secondary font-medium" htmlFor="location">Location</label>
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="location" name="location" defaultValue={profile.location} />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-secondary font-medium" htmlFor="description">About me</label>
+              <textarea className="w-full h-40 max-h-64 p-2 text-base border-2 border-primary rounded-lg" id="description" name="description" defaultValue={profile.description} />
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          <h3 className="text-xl font-semibold mt-4">Link social media:</h3>
+          <p><b>Note: </b>To remove a social media link, leave the input field blank.</p>
+          <form className="flex flex-col gap-4 my-2">
+            <div className="flex flex-row flex-wrap gap-5">
+              <div className="flex flex-col gap-1 min-w-40 w-1/4">
+                <label className="text-secondary font-medium" htmlFor="facebook">Facebook</label>
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="facebook" name="facebook" defaultValue={profile.social.facebook} />
+              </div>
+              <div className="flex flex-col gap-1 min-w-40 w-1/4">
+                <label className="text-secondary font-medium" htmlFor="twitter">Twitter</label>
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="twitter" name="twitter" defaultValue={profile.social.twitter} />
+              </div>
+              <div className="flex flex-col gap-1 min-w-40 w-1/4">
+                <label className="text-secondary font-medium" htmlFor="linkedin">Linkedin</label>
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="linkedin" name="linkedin" defaultValue={profile.social.linkedin} />
+              </div>
+              <div className="flex flex-col gap-1 min-w-40 w-1/4">
+                <label className="text-secondary font-medium" htmlFor="instagram">Instagram</label>
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="instagram" name="instagram" defaultValue={profile.social.instagram} />
+              </div>
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
         </div>
       )
     }
