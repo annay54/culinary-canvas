@@ -304,12 +304,12 @@ export default function ({ slug }) {
 
     const ProfileSection = () => {
       return (
-        <div className="flex flex-col gap-1 w-full px-8">
+        <div className="flex flex-col gap-1 w-full px-4 sm:px-8">
           <h3 className="text-xl font-semibold">Update profile content:</h3>
           <form className="flex flex-col gap-4 my-2">
-            <div className="flex flex-col gap-1 w-fit">
+            <div className="flex flex-col gap-1 w-full">
               <label className="text-secondary font-medium" htmlFor="image">Profile image</label>
-              <input className="w-fit p-0 text-base border-0 rounded-none" type="file" id="image" name="image" />
+              <input className="w-full p-0 text-base border-0 rounded-none" type="file" id="image" name="image" />
             </div>
             <div className="flex flex-col sm:flex-row flex-wrap gap-5 w-full">
               <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
@@ -335,19 +335,19 @@ export default function ({ slug }) {
           <p><b>Note: </b>To remove a social media link, leave the input field blank.</p>
           <form className="flex flex-col gap-4 my-2">
             <div className="flex flex-row flex-wrap gap-5">
-              <div className="flex flex-col gap-1 min-w-40 w-1/4">
+              <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="facebook">Facebook</label>
                 <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="facebook" name="facebook" defaultValue={profile.social.facebook} />
               </div>
-              <div className="flex flex-col gap-1 min-w-40 w-1/4">
+              <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="twitter">Twitter</label>
                 <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="twitter" name="twitter" defaultValue={profile.social.twitter} />
               </div>
-              <div className="flex flex-col gap-1 min-w-40 w-1/4">
+              <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="linkedin">Linkedin</label>
                 <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="linkedin" name="linkedin" defaultValue={profile.social.linkedin} />
               </div>
-              <div className="flex flex-col gap-1 min-w-40 w-1/4">
+              <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="instagram">Instagram</label>
                 <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="instagram" name="instagram" defaultValue={profile.social.instagram} />
               </div>
@@ -425,6 +425,38 @@ export default function ({ slug }) {
       return (
         <div className="flex flex-col gap-1 w-full px-8">
           <h3 className="text-xl font-semibold">Change email:</h3>
+          <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1 w-full max-w-64">
+              <label className="text-secondary font-medium" htmlFor="email">Email</label>
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="email" id="email" name="email" defaultValue={profile.email} />
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          <h3 className="text-xl font-semibold mt-6">Change password:</h3>
+          <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1 w-full max-w-64">
+              <label className="text-secondary font-medium" htmlFor="currentPassword">Current password</label>
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="password" id="currentPassword" name="currentPassword" />
+            </div>
+            <div className="flex flex-col gap-1 w-full max-w-64">
+              <label className="text-secondary font-medium" htmlFor="newPassword">New password</label>
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="password" id="newPassword" name="newPassword" />
+            </div>
+            <div className="flex flex-col gap-1 w-full max-w-64">
+              <label className="text-secondary font-medium" htmlFor="confirmPassword">Confirm new password</label>
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="password" id="confirmPassword" name="confirmPassword" />
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form>
+          {/* <h3 className="text-xl font-semibold mt-6">Two-factor authentication:</h3>
+          <p>Enable two-factor authentication to add an extra layer of security to your account.</p>
+          <form className="flex flex-col gap-4 my-2">
+            <div className="flex flex-row items-center gap-2">
+              <input className="w-5 h-5 border-2 border-primary rounded-lg" type="checkbox" id="twoFactor" name="twoFactor" />
+              <label className="text-secondary" htmlFor="twoFactor">Enable two-factor authentication</label>
+            </div>
+            <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
+          </form> */}
         </div>
       )
     }
@@ -436,14 +468,14 @@ export default function ({ slug }) {
         {settingSections.map((section, index) => (
           <div key={index} className='flex flex-col gap-2'>
             {open[index] ? (
-              <div className='flex flex-row items-center gap-2 mx-2 hover:cursor-pointer' onClick={() => {closeSetting(index)}}>
-                <i className="fa-solid fa-chevron-up text-primary text-lg"></i>
-                <h3 className='text-primary font-medium'>{section}</h3>
+              <div className='flex flex-row items-center gap-2 mx-2 text-primary hover:text-secondary hover:cursor-pointer' onClick={() => {closeSetting(index)}}>
+                <i className="fa-solid fa-chevron-up text-lg"></i>
+                <h3 className='font-medium'>{section}</h3>
               </div>
             ) : (
-              <div className='flex flex-row items-center gap-2 mx-2 hover:cursor-pointer' onClick={() => {openSetting(index)}}>
-                <i className="fa-solid fa-chevron-down text-primary text-lg" ></i>
-                <h3 className='text-primary font-medium'>{section}</h3>
+              <div className='flex flex-row items-center gap-2 mx-2 text-primary hover:text-secondary hover:cursor-pointer' onClick={() => {openSetting(index)}}>
+                <i className="fa-solid fa-chevron-down text-lg" ></i>
+                <h3 className='font-medium'>{section}</h3>
               </div>
             )}
             {open[index] && section === settingSections[0] && <ProfileSection />}
