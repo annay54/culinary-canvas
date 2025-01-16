@@ -307,6 +307,10 @@ export default function ({ slug }) {
         <div className="flex flex-col gap-1 w-full px-8">
           <h3 className="text-xl font-semibold">Update profile content:</h3>
           <form className="flex flex-col gap-4 my-2">
+            <div className="flex flex-col gap-1 w-fit">
+              <label className="text-secondary font-medium" htmlFor="image">Profile image</label>
+              <input className="w-fit p-0 text-base border-0 rounded-none" type="file" id="image" name="image" />
+            </div>
             <div className="flex flex-col sm:flex-row flex-wrap gap-5 w-full">
               <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="name">Name</label>
@@ -420,7 +424,7 @@ export default function ({ slug }) {
     const SecuritySection = () => {
       return (
         <div className="flex flex-col gap-1 w-full px-8">
-          <h3>Security section</h3>
+          <h3 className="text-xl font-semibold">Change email:</h3>
         </div>
       )
     }
