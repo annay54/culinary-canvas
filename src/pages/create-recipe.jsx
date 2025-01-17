@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import {Select, SelectItem} from "@nextui-org/react";
+import RecipePage from "@/components/RecipePage";
 
 const CreateRecipe = () => {
-  // there will be a total of 3 steps to create a recipe
+  // there will be a total of 4 steps to create a recipe
   const [step, setStep] = useState(1);
   const [recipe, setRecipe] = useState({"name": "", "description": "", "picture": "", "prepTime": "", "cookTime": "", "servings": ""});
   const [ingredients, setIngredients] = useState([]);
@@ -28,7 +29,7 @@ const CreateRecipe = () => {
       })
     else if (step === 2)
       setIngredients(displayList)
-    else // step === 3
+    else if (step === 3)
       setSteps(displayList)
   }
 
@@ -39,10 +40,13 @@ const CreateRecipe = () => {
       setStep(2);
       setDisplayList(ingredients);
       setEditList(new Array(ingredients.length).fill(false));
-    } else { // step === 2
+    } else if (step === 2) {
       setStep(3);
       setDisplayList(steps);
       setEditList(new Array(steps.length).fill(false));
+    }
+    else { // step === 3
+      setStep(4);
     }
   }
 
@@ -51,10 +55,15 @@ const CreateRecipe = () => {
     window.scrollTo(0, 0);
     if (step === 2) {
       setStep(1);
-    } else { // step === 3
+    } else if (step === 3) {
       setStep(2);
       setDisplayList(ingredients);
       setEditList(new Array(ingredients.length).fill(false));
+    }
+    else { // step === 4
+      setStep(3);
+      setDisplayList(steps);
+      setEditList(new Array(steps.length).fill(false));
     }
   }
 
@@ -87,19 +96,26 @@ const CreateRecipe = () => {
         </div>
         <p className="text-secondary font-medium hidden md:inline">Basic info</p>
       </div>
-      <hr className="border-1.5 border-primary w-1/6 md:mb-5" />
+      <hr className="border-1.5 border-primary w-1/12 lg:w-32 md:mb-5" />
       <div className="flex flex-col items-center gap-0.5">
         <div className={`flex flex-row items-center justify-center rounded-full w-10 h-10 md:w-12 md:h-12 border-primary border-3 ${step >= 2 ? 'bg-primary text-white' : 'bg-inherit text-primary'}`}>
           <h3 className="font-medium text-lg md:text-2xl">2</h3>
         </div>
         <p className="text-secondary font-medium hidden md:inline">Ingredients</p>
       </div>
-      <hr className="border-1.5 border-primary w-1/6 md:mb-5" />
+      <hr className="border-1.5 border-primary w-1/12 lg:w-32 md:mb-5" />
       <div className="flex flex-col items-center gap-0.5">
         <div className={`flex flex-row items-center justify-center rounded-full w-10 h-10 md:w-12 md:h-12 border-primary border-3 ${step >= 3 ? 'bg-primary text-white' : 'bg-inherit text-primary'}`}>
           <h3 className="font-medium text-lg md:text-2xl">3</h3>
         </div>
         <p className="text-secondary font-medium hidden md:inline">Recipe steps</p>
+      </div>
+      <hr className="border-1.5 border-primary w-1/12 lg:w-32 md:mb-5" />
+      <div className="flex flex-col items-center gap-0.5">
+        <div className={`flex flex-row items-center justify-center rounded-full w-10 h-10 md:w-12 md:h-12 border-primary border-3 ${step >= 4 ? 'bg-primary text-white' : 'bg-inherit text-primary'}`}>
+          <h3 className="font-medium text-lg md:text-2xl">4</h3>
+        </div>
+        <p className="text-secondary font-medium hidden md:inline">Preview</p>
       </div>
     </div>
   );
@@ -367,7 +383,7 @@ const CreateRecipe = () => {
             </div>
           </div>
         </>
-      ) : ( // step === 3
+      ) : step === 3 ? ( // step === 3
         <>
           <div className="flex flex-col gap-1 w-full mb-5">
             <h3 className="text-secondary font-medium">Recipe steps</h3>
@@ -395,8 +411,28 @@ const CreateRecipe = () => {
                 <i className="fa-solid fa-arrow-left mr-2"></i>
                 Back
               </button>
-              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={submitRecipe}>Submit</button>
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleNextStep}>
+                Next
+                <i className="fa-solid fa-arrow-right ml-2"></i>
+              </button>
             </div>
+          </div>
+        </>
+      ) : ( // step === 4
+        <>
+          <div className="flex flex-col gap-1 w-full mb-5">
+            <h3 className="text-secondary font-medium">Preview of recipe page</h3>
+          </div>
+          <div className="w-screen -mt-16 -mx-5 sm:-mx-10 md:-mx-20 xl:-mx-56">
+            <RecipePage recipe={recipe}></RecipePage>
+          </div>
+
+          <div className="flex flex-row gap-5 w-fit self-start sm:self-end py-10">
+            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleBackStep}>
+              <i className="fa-solid fa-arrow-left mr-2"></i>
+              Back
+            </button>
+            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={submitRecipe}>Submit</button>
           </div>
         </>
       )}
