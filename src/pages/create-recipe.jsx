@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import {Select, SelectItem} from "@nextui-org/react";
 import RecipePage from "@/components/RecipePage";
+import Tiptap from "@/components/Tiptap";
 
 const CreateRecipe = () => {
   // there will be a total of 4 steps to create a recipe
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(3);
   const [recipe, setRecipe] = useState({"name": "", "description": "", "picture": "", "prepTime": "", "cookTime": "", "servings": ""});
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
@@ -12,6 +13,10 @@ const CreateRecipe = () => {
   // editList: array of boolean values to determine if an item in the list is being edited
   const [displayList, setDisplayList] = useState([]);
   const [editList, setEditList] = useState([]);
+
+  // contents of the Tiptap text editor to store the steps and additional notes
+  const [stepContent, setStepContent] = useState('');
+  const [additionalContent, setAdditionalContent] = useState('');
 
   // first element of list measurements should be the default value
   const measurements = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
@@ -71,21 +76,6 @@ const CreateRecipe = () => {
     saveRecipe();
     window.location.href = "/"; // go back to the home page
     alert("Recipe created successfully!");
-  }
-
-  const pushList = (type) => {
-    if (type === "ingredients") {
-      setDisplayList(displayList.concat({
-        "quantity": document.getElementsByName("quantity")[0].value, 
-        "measurement": document.getElementsByName("measurement")[0].value, 
-        "item": document.getElementsByName("item")[0].value 
-      }));
-      setEditList(editList.concat(false));
-    }
-    else { // type === "steps"
-      setDisplayList(displayList.concat(document.getElementsByName("step")[0].value));
-      setEditList(editList.concat(false));
-    }
   }
 
   const ProgressSteps = () => (
@@ -360,7 +350,14 @@ const CreateRecipe = () => {
               </div>
             </div>
             <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" onClick={() => {
-              pushList("ingredients");
+              // push the new ingredient into the displayList
+              setDisplayList(displayList.concat({
+                "quantity": document.getElementsByName("quantity")[0].value, 
+                "measurement": document.getElementsByName("measurement")[0].value, 
+                "item": document.getElementsByName("item")[0].value 
+              }));
+              setEditList(editList.concat(false));
+              // reset the input fields
               document.getElementsByName("quantity")[0].value = "";
               document.getElementsByName("measurement")[0].value = measurements[0];
               document.getElementsByName("item")[0].value = "";
@@ -390,10 +387,18 @@ const CreateRecipe = () => {
             <p>Insert the steps of your recipe.</p>
             <p>For example: Preheat the oven to 350°F.</p>
             <p><b>Note: </b>Do not include the number of the step as it will automatically number the step once you click on the "Add" button. See the example.</p>
-            <textarea name="step" className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea>
+            <Tiptap content={stepContent} onChange={(newContent) => {console.log(newContent); setStepContent(newContent)}} />
+            {/* <textarea name="step" className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea> */}
             <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" onClick={() => {
-              pushList("steps");
-              document.getElementsByName("step")[0].value = "";
+              // push the new step content into the displayList
+              setDisplayList(displayList.concat(stepContent));
+              setEditList(editList.concat(false));
+              console.log(stepContent);
+              console.log(displayList);
+              // reset the contents in Tiptap text editor
+              setStepContent('');
+              // pushList("steps");
+              // document.getElementsByName("step")[0].value = "";
             }}>
               Add
             </button>
@@ -401,8 +406,9 @@ const CreateRecipe = () => {
           <IngrStep type={"steps"} />
           <div className="flex flex-col gap-1 w-full mt-8">
             <h3 className="text-secondary font-medium">Additional notes</h3>
-            <p>Any additional notes or tips for the recipe. This will appear at the bottom of the recipe page.</p>
-            <textarea className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea>
+            <p>Provide any additional notes or tips for the recipe. This will appear at the bottom of the recipe page.</p>
+            <Tiptap content={additionalContent} onChange={(newContent) => {console.log(newContent); setAdditionalContent(newContent)}} />
+            {/* <textarea className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea> */}
           </div>
           <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
             <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" onClick={saveRecipe}>Save</button>
