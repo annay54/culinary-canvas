@@ -5,8 +5,8 @@ import Tiptap from "@/components/Tiptap";
 
 const CreateRecipe = () => {
   // there will be a total of 4 steps to create a recipe
-  const [step, setStep] = useState(3);
-  const [recipe, setRecipe] = useState({"name": "", "description": "", "picture": "", "prepTime": "", "cookTime": "", "servings": ""});
+  const [step, setStep] = useState(1);
+  const [recipe, setRecipe] = useState({name: "", description: "", picture: "", prepTime: "", cookTime: "", servings: "", tags: "", additionalNotes: ""});
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
   // displayList: array of items from array list to display on the page
@@ -14,9 +14,9 @@ const CreateRecipe = () => {
   const [displayList, setDisplayList] = useState([]);
   const [editList, setEditList] = useState([]);
 
-  // contents of the Tiptap text editor to store the steps and additional notes
-  const [stepContent, setStepContent] = useState('');
-  const [additionalContent, setAdditionalContent] = useState('');
+  // contents of the Tiptap text editor to store the recipe description and additional notes
+  const [aboutContent, setAboutContent] = useState(recipe.description);
+  const [additionalContent, setAdditionalContent] = useState(recipe.additionalNotes);
 
   // first element of list measurements should be the default value
   const measurements = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
@@ -25,17 +25,23 @@ const CreateRecipe = () => {
   const saveRecipe = () => {
     if (step === 1)
       setRecipe({
-        "name": document.getElementsByName("name")[0].value,
-        "description": document.getElementsByName("about")[0].value,
-        "picture": "",
-        "prepTime": document.getElementsByName("prepHour")[0].value + ":" + document.getElementsByName("prepMin")[0].value,
-        "cookTime": document.getElementsByName("cookHour")[0].value + ":" + document.getElementsByName("cookMin")[0].value,
-        "servings": document.getElementsByName("servings")[0].value
+        name: document.getElementsByName("name")[0].value,
+        description: aboutContent,
+        picture: "",
+        prepTime: document.getElementsByName("prepHour")[0].value + ":" + document.getElementsByName("prepMin")[0].value,
+        cookTime: document.getElementsByName("cookHour")[0].value + ":" + document.getElementsByName("cookMin")[0].value,
+        servings: document.getElementsByName("servings")[0].value,
+        tags: ""
       })
     else if (step === 2)
       setIngredients(displayList)
-    else if (step === 3)
+    else if (step === 3) {
       setSteps(displayList)
+      setRecipe({
+        ...recipe,
+        additionalNotes: additionalContent
+      })
+    }
   }
 
   const handleNextStep = () => {
@@ -45,6 +51,7 @@ const CreateRecipe = () => {
       setStep(2);
       setDisplayList(ingredients);
       setEditList(new Array(ingredients.length).fill(false));
+      console.log(recipe);
     } else if (step === 2) {
       setStep(3);
       setDisplayList(steps);
@@ -79,16 +86,15 @@ const CreateRecipe = () => {
   }
 
   const pushList = (type) => {
-    if (type === "ingredients") {
+    if (type === "ingredients")
       setDisplayList(displayList.concat({
-        "quantity": document.getElementsByName("quantity")[0].value, 
-        "measurement": document.getElementsByName("measurement")[0].value, 
-        "item": document.getElementsByName("item")[0].value 
+        quantity: document.getElementsByName("quantity")[0].value, 
+        measurement: document.getElementsByName("measurement")[0].value, 
+        item: document.getElementsByName("item")[0].value 
       }));
-    }
-    else { // type === "steps"
+    else // type === "steps"
       setDisplayList(displayList.concat(document.getElementsByName("step")[0].value));
-    }
+    
     setEditList(editList.concat(false));
   }
 
@@ -190,6 +196,12 @@ const CreateRecipe = () => {
           <div className='flex flex-col gap-2 w-full h-fit self-center'>
           <p className="text-sm">Inserted {displayList.length} ingredient{displayList.length > 1 && "s"}</p>
           <hr className='w-full border-1 border-primary'/>
+          {displayList.length === 0 &&
+            <div className='text-textColor flex flex-col justify-center items-center w-full'>
+              <p className="my-10">No ingredients added yet.</p>
+              <hr className='w-full border-1 border-primary'/>
+            </div>
+          }
           {displayList.map((ingr, index) => (
             <div className="flex flex-col gap-3">
               {editList[index] ? (
@@ -229,6 +241,12 @@ const CreateRecipe = () => {
           <div className='flex flex-col gap-2 w-full h-fit self-center'>
             <p className="text-sm">Inserted {displayList.length} step{displayList.length > 1 && "s"}</p>
             <hr className='w-full border-1 border-primary'/>
+            {displayList.length === 0 &&
+              <div className='text-textColor flex flex-col justify-center items-center w-full'>
+                <p className="my-10">No steps added yet.</p>
+                <hr className='w-full border-1 border-primary'/>
+              </div>
+            }
             {displayList.map((step, index) => (
               <div className="flex flex-col gap-3">
                 {editList[index] ? (
@@ -271,7 +289,7 @@ const CreateRecipe = () => {
           <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">About your recipe</h3>
             <p>Provide a brief description of your recipe.</p>
-            <textarea name="about" defaultValue={recipe.description} className="w-full h-44 max-h-72 border-2 border-primary rounded-lg px-2" />
+            <Tiptap content={aboutContent} onChange={(newContent) => {console.log(newContent); setAboutContent(newContent)}} />
           </div>
           <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">Recipe tags</h3>
@@ -408,7 +426,6 @@ const CreateRecipe = () => {
             <h3 className="text-secondary font-medium">Additional notes</h3>
             <p>Provide any additional notes or tips for the recipe. This will appear at the bottom of the recipe page.</p>
             <Tiptap content={additionalContent} onChange={(newContent) => {console.log(newContent); setAdditionalContent(newContent)}} />
-            {/* <textarea className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea> */}
           </div>
           <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
             <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" onClick={saveRecipe}>Save</button>
