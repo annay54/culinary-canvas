@@ -78,6 +78,20 @@ const CreateRecipe = () => {
     alert("Recipe created successfully!");
   }
 
+  const pushList = (type) => {
+    if (type === "ingredients") {
+      setDisplayList(displayList.concat({
+        "quantity": document.getElementsByName("quantity")[0].value, 
+        "measurement": document.getElementsByName("measurement")[0].value, 
+        "item": document.getElementsByName("item")[0].value 
+      }));
+    }
+    else { // type === "steps"
+      setDisplayList(displayList.concat(document.getElementsByName("step")[0].value));
+    }
+    setEditList(editList.concat(false));
+  }
+
   const ProgressSteps = () => (
     <div className="flex flex-row md:gap-2 items-center justify-center self-center w-full h-fit">
       <div className="flex flex-col items-center gap-0.5">
@@ -350,13 +364,7 @@ const CreateRecipe = () => {
               </div>
             </div>
             <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" onClick={() => {
-              // push the new ingredient into the displayList
-              setDisplayList(displayList.concat({
-                "quantity": document.getElementsByName("quantity")[0].value, 
-                "measurement": document.getElementsByName("measurement")[0].value, 
-                "item": document.getElementsByName("item")[0].value 
-              }));
-              setEditList(editList.concat(false));
+              pushList("ingredients");
               // reset the input fields
               document.getElementsByName("quantity")[0].value = "";
               document.getElementsByName("measurement")[0].value = measurements[0];
@@ -387,18 +395,10 @@ const CreateRecipe = () => {
             <p>Insert the steps of your recipe.</p>
             <p>For example: Preheat the oven to 350°F.</p>
             <p><b>Note: </b>Do not include the number of the step as it will automatically number the step once you click on the "Add" button. See the example.</p>
-            <Tiptap content={stepContent} onChange={(newContent) => {console.log(newContent); setStepContent(newContent)}} />
-            {/* <textarea name="step" className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea> */}
+            <textarea name="step" className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea>
             <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" onClick={() => {
-              // push the new step content into the displayList
-              setDisplayList(displayList.concat(stepContent));
-              setEditList(editList.concat(false));
-              console.log(stepContent);
-              console.log(displayList);
-              // reset the contents in Tiptap text editor
-              setStepContent('');
-              // pushList("steps");
-              // document.getElementsByName("step")[0].value = "";
+              pushList("steps");
+              document.getElementsByName("step")[0].value = "";
             }}>
               Add
             </button>

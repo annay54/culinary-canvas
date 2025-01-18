@@ -3,7 +3,6 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
-import Image from '@tiptap/extension-image'
 
 const Tiptap = ({ content, onChange }) => {
   const handleChange = (newContent) => {
@@ -11,14 +10,14 @@ const Tiptap = ({ content, onChange }) => {
   }
 
   const editor = useEditor({
-    extensions: [StarterKit, Underline, Image],
+    extensions: [StarterKit, Underline],
     editorProps: {
       attributes: {
         class: 'w-full h-44 mx-0 flex flex-col px-4 py-3 justify-start border-b-2 border-r-2 border-l-2 rounded-bl-lg rounded-br-lg border-primary bg-white text-textColour items-start gap-3 font-medium text-base',
       },
     },
     content: content,
-    // immediatelyRender: false,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       handleChange(editor.getHTML())
     },
@@ -104,18 +103,6 @@ const Tiptap = ({ content, onChange }) => {
                 className={`bg-inherit w-9 h-9 p-1 ${editor.isActive("blockquote") ? "bg-primary text-white rounded-lg" : "text-secondary"}`}
                 title="Blockquote"
               ><i className="fa-solid fa-quote-right w-5 h-5"></i></button>
-              {/* Image button */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  const url = window.prompt("Enter the URL of the image:");
-                  if (url) {
-                    editor.chain().focus().setImage({ src: url }).run();
-                  }
-                }}
-                className={`bg-inherit w-9 h-9 p-1 ${editor.isActive("image") ? "bg-primary text-white rounded-lg" : "text-secondary"}`}
-                title="Insert Image"
-              ><i className="fa-solid fa-image w-5 h-5"></i></button>
             </div>
             <div className="w-fit flex gap-1.5 p-1.5 justify-start items-center">
               {/* Undo button */}
