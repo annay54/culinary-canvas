@@ -8,6 +8,7 @@ export default function ({ slug }) {
     const tags = ['Breakfast', 'Easy', 'Quick', 'Healthy', 'Pan fry'];
 
     // list of reviews
+    // const reviews = []
     const reviews = [{
         user: 'Iloverecipes',
         img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -99,6 +100,12 @@ export default function ({ slug }) {
             </div>
 
             {/* list of reviews */}
+            {reviews.length === 0 &&
+              <div className='text-textColor flex flex-col justify-center items-center w-full'>
+                <p className="my-10 text-white">No reviews added yet.</p>
+                <hr className='w-full border-t-1 border-b-0'/>
+              </div>
+            }
             {reviews.map((review) => (
                 <div>
                   <Review 
@@ -107,7 +114,7 @@ export default function ({ slug }) {
                     image={review.img}
                     review={review}
                 />
-                <hr className='border-1' />
+                <hr className='border-t-1 border-b-0' />
               </div>
             ))}
             

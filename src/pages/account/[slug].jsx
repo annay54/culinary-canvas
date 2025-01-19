@@ -145,6 +145,12 @@ export default function ({ slug }) {
           <hr className="border-primary border-1"></hr>
         </div>
         <div className="flex flex-wrap gap-5 justify-center">
+          {recipes.length === 0 &&
+            <div className='text-textColor flex flex-col justify-center items-center w-full'>
+              <p className="my-32">No favourite recipes added yet.</p>
+              <hr className='w-full border-primary border-1'/>
+            </div>
+          }
           {recipes.map((recipe, index) => (
             <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
@@ -194,6 +200,12 @@ export default function ({ slug }) {
           <hr className="border-primary border-1"></hr>
         </div>
         <div className="flex flex-wrap gap-5 justify-center">
+          {recipes.length === 0 &&
+            <div className='text-textColor flex flex-col justify-center items-center w-full'>
+              <p className="my-32">No recipes created yet.</p>
+              <hr className='w-full border-primary border-1'/>
+            </div>
+          }
           {recipes.map((recipe, index) => (
             <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
@@ -271,6 +283,12 @@ export default function ({ slug }) {
           </div>
         </div>
         {/* list of reviews */}
+        {reviews.length === 0 &&
+          <div className='text-textColor flex flex-col justify-center items-center w-full'>
+            <p className="my-32">No reviews created yet.</p>
+            <hr className='w-full border-primary border-1'/>
+          </div>
+        }
         {reviews.map((review) => (
           <div>
             <Review 
