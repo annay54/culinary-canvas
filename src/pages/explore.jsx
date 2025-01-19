@@ -106,6 +106,7 @@ const Explore = () => {
                 mainWrapper: "border-2 border-secondary rounded-xl",
                 listbox: "text-secondary",
                 selectorIcon: "text-secondary",
+                trigger: "bg-white",
               }}
             >
               {tags.map((tag) => (
