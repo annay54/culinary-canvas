@@ -3,14 +3,16 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
+import CharacterCount from '@tiptap/extension-character-count'
 
 const Tiptap = ({ content, onChange }) => {
+  const characterLimit = 2000
   const handleChange = (newContent) => {
     onChange(newContent)
   }
 
   const editor = useEditor({
-    extensions: [StarterKit, Underline],
+    extensions: [StarterKit, Underline, CharacterCount.configure({ limit: characterLimit })],
     editorProps: {
       attributes: {
         class: 'w-full min-h-44 mx-0 flex flex-col px-4 py-3 justify-start border-b-2 border-r-2 border-l-2 rounded-bl-lg rounded-br-lg border-primary bg-white text-textColour items-start gap-3 font-medium text-base',
@@ -129,6 +131,18 @@ const Tiptap = ({ content, onChange }) => {
       )}
 
       <EditorContent style={{ whiteSpace: "pre-line" }} editor={editor} />
+
+      {/* Display character count */}
+      {editor && (
+        <div className="w-full flex justify-end items-center gap-1.5 text-secondary mt-1 pr-2">
+          <p className="text-sm font-semibold border-r-2 border-primary pr-2">
+            {editor.storage.characterCount.characters()} / {characterLimit} characters
+          </p>
+          <p className="text-sm font-semibold">
+            {editor.storage.characterCount.words()} word{editor.storage.characterCount.words() !== 1 && "s"}
+          </p>
+        </div>
+      )}
     </div>
   )
 }
