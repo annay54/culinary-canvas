@@ -106,6 +106,7 @@ const Explore = () => {
                 mainWrapper: "border-2 border-secondary rounded-xl",
                 listbox: "text-secondary",
                 selectorIcon: "text-secondary",
+                trigger: "bg-white",
               }}
             >
               {tags.map((tag) => (
@@ -187,18 +188,18 @@ const Explore = () => {
           {/* Number of results shown from search */}
           <div className="text-secondary w-11/12">
             <hr className="border-primary border-1"></hr>
-            <p className="font-normal text-base my-2">6 out of 20 results</p>
+            <p className="text-textColor font-normal text-base my-2 px-4">6 out of 20 results</p>
             <hr className="border-primary border-1"></hr>
           </div>
           {/* Result recipes from search */}
-          <div className="flex flex-wrap p-6 gap-6 sm:gap-16 justify-center">
+          <div className="flex flex-wrap p-6 gap-5 justify-center">
             {recipes.map((recipe, index) => (
               <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
             ))}
           </div>
           {/* Pagination */}
           <div className="pt-4 pb-8">
-            <Pagination pageLength={4} />
+            <Pagination pageLength={4} mainColour="secondary" textColour="white" hoverColour="" />
           </div>
         </div>
       </div>

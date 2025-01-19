@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function Custom404() {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <i class="fa-solid fa-circle-exclamation text-secondary text-7xl"></i>
+      <i className="fa-solid fa-circle-exclamation text-secondary text-7xl"></i>
       <h1 className="text-primary">404</h1>
       <div className=" flex flex-col gap-2 p-2">
         <h2 className="text-primary">Oops! The page you are looking for does not exist.</h2>
