@@ -13,7 +13,7 @@ const Tiptap = ({ content, onChange }) => {
     extensions: [StarterKit, Underline],
     editorProps: {
       attributes: {
-        class: 'w-full h-44 mx-0 flex flex-col px-4 py-3 justify-start border-b-2 border-r-2 border-l-2 rounded-bl-lg rounded-br-lg border-primary bg-white text-textColour items-start gap-3 font-medium text-base',
+        class: 'w-full min-h-44 mx-0 flex flex-col px-4 py-3 justify-start border-b-2 border-r-2 border-l-2 rounded-bl-lg rounded-br-lg border-primary bg-white text-textColour items-start gap-3 font-medium text-base',
       },
     },
     content: content,

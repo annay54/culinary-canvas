@@ -78,3 +78,19 @@ button {
   color: white;
   transition: all 0.25s ease-in-out;
 }
+
+@layer base {
+  ul, ol {
+    list-style: revert;
+    padding-left: 18px;
+  }
+
+  blockquote {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    padding-left: 10px;
+    border-left: var(--primary) 3px solid;
+    height: fit-content;
+  }
+}
