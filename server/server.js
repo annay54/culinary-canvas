@@ -9,9 +9,9 @@ require("dotenv").config({
   path: path.join(__dirname, "development.env")
 });
 
-const {Client} = require("pg");
+const {Pool, Client} = require("pg");
 
-const client = new Client({
+const pool = new Pool({
   host: process.env.HOST,
   user: process.env.USER,
   database: process.env.DATABASE,
@@ -19,11 +19,15 @@ const client = new Client({
   port: process.env.POSTGRES_PORT
 });
 
-client.connect().then(() => {
-  console.log("Connected to database");
-}).catch(() => {
-  console.log("Cannot connect to database");
-});
+(async () => {
+  try {
+    const {rows} = await pool.query("SELECT current_user");
+    const currentUser = rows[0]["current_user"];
+    console.log(currentUser);
+  } catch (err) {
+    console.error(err);
+  }
+})();
 
 // Make app accept requests from the frontend
 app.use(cors());
