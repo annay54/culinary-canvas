@@ -10,13 +10,15 @@ The platform also offers strong search and discovery features, allowing users to
 
 First, clone this git repository and ensure the commit and files downloaded are up to date.
 
-Install the dependencies for this project, which are listed in the package.json file. Navigate to the project's root directory in your terminal. You should be able to see the package.json file. Run the npm command in your terminal:
+### Frontend
+
+Install the frontend dependencies for this project, which are listed in the package.json file. Navigate to the project's root directory and then navigate to the "client" folder in your terminal. You should be able to see the package.json file. Run the npm command in your terminal:
 
 ```
 npm install
 ```
 
-Then, run the development server:
+Then, run the frontend:
 
 ```bash
 npm run dev
@@ -29,6 +31,26 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to view the web application.
+
+### Backend
+
+Navigate to the project's root directory and then navigate to the "server" folder in your terminal and install the backend dependencies, similar to above:
+
+```
+npm install
+```
+
+To create and initialize the Postgres database and tables, run the sql script in the SQL Shell (psql):
+
+```
+\i 'path_to_sql_file/createDB.sql'
+```
+
+Then, run the backend:
+
+```bash
+npm run dev
+```
 
 ## Additional Notes
 
