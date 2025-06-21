@@ -56,6 +56,6 @@ npm run dev
 
 This project is an ongoing project and it is created using HTML, CSS, Tailwind CSS, JavaScript, and Next.js as the React framework.
 
-To view the wireframe and prototype for CulinaryCanvas, [`click here for the Figma link`](https://www.figma.com/files/team/1420921119875615270/project/282269506/Team-project?fuid=1111645432946840513).
+To view the wireframe and prototype for CulinaryCanvas, [`click here for the Figma link`](https://www.figma.com/design/arefK1SSAZNSUOiwCtFUvj/CulinaryCanvas-Website?m=auto&t=QxrkY81FZB4REbbb-1).
 
 To view the backlog of CulinaryCanvas, which consists of the task distribution and issues, [`click here for the GitHub Backlog link`](https://github.com/users/annay54/projects/1/views/1).
