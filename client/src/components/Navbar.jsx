@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import React from 'react';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
-
+import { useSession } from "next-auth/react";
+import { signInAction } from '@/actions/signIn';
+import { signOutAction } from '@/actions/signOut';
 
 const Navbar = () => {
-  const user = false; // temporary user state
+  const { data: session } = useSession()
 
   return (
     <div className='flex flex-row flex-nowrap justify-between bg-white w-full min-[850px]:h-20 h-16'>
@@ -20,7 +22,7 @@ const Navbar = () => {
         <Link href='/contact' className='font-normal text-xl text-textColor'>Contact</Link>
         <Link href='/about' className='font-normal text-xl text-textColor'>About</Link>
         {/* login or account button */}
-        {user ? (
+        {session ? (
           <Dropdown>
             <DropdownTrigger>
               <Button 
@@ -38,14 +40,22 @@ const Navbar = () => {
             >
               <DropdownItem href='/dashboard' className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
               <DropdownItem href='/create_recipe' className='hover:no-underline py-2'><p>Create recipe</p></DropdownItem>
-              <DropdownItem href='/logout' className='hover:no-underline py-2'><p>Logout</p></DropdownItem>
+              <DropdownItem href='/logout' className='hover:no-underline py-2'>
+                <form action={signOutAction}>
+                  <button className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>
+                    <p>Logout</p>
+                  </button>
+                </form>
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>)
         : (
           <Link href='/login'>
-            <button className='flex flex-nowrap gap-2 items-center bg-primary text-white font-normal text-xl px-4 rounded-lg'>
-              Login
-            </button>
+            <form action={signInAction}>
+              <button className='flex flex-nowrap gap-2 items-center bg-primary text-white font-normal text-xl px-4 rounded-lg'>
+                Login
+              </button>
+            </form>
           </Link>)}
       </div>
       {/* nav links for small screens */}
@@ -59,7 +69,7 @@ const Navbar = () => {
             </Button>
           </DropdownTrigger>
           {/* check if user is login */}
-          {user ? (
+          {session ? (
             <DropdownMenu color='primary' variant='flat' className=''>
               <DropdownItem href='/' className='hover:no-underline py-2'><p>Home</p></DropdownItem>
               <DropdownItem href='/explore' className='hover:no-underline py-2'><p>Explore</p></DropdownItem>
@@ -67,7 +77,13 @@ const Navbar = () => {
               <DropdownItem href='/about' className='hover:no-underline py-2'><p>About</p></DropdownItem>
               <DropdownItem href='/dashboard' className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
               <DropdownItem href='/create_recipe' className='hover:no-underline py-2'><p>Create recipe</p></DropdownItem>
-              <DropdownItem href='/logout' className='hover:no-underline py-2'><p>Logout</p></DropdownItem>
+              <DropdownItem href='/logout' className='hover:no-underline py-2'>
+                <form action={signOutAction}>
+                  <button className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>
+                    <p>Logout</p>
+                  </button>
+                </form>
+              </DropdownItem>
             </DropdownMenu>
           ) : (
             <DropdownMenu color='primary' variant='flat'>
@@ -75,7 +91,13 @@ const Navbar = () => {
               <DropdownItem href='/explore' className='hover:no-underline py-2'><p>Explore</p></DropdownItem>
               <DropdownItem href='/contact' className='hover:no-underline py-2'><p>Contact</p></DropdownItem>
               <DropdownItem href='/about' className='hover:no-underline py-2'><p>About</p></DropdownItem>
-              <DropdownItem href='/login' className='hover:no-underline py-2'><p>Login</p></DropdownItem>
+              <DropdownItem href='/login' className='hover:no-underline py-2'>
+                <form action={signInAction}>
+                  <button className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>
+                    <p>Login</p>
+                  </button>
+                </form>
+              </DropdownItem>
             </DropdownMenu>
           )}
         </Dropdown>
