@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { signUpAction } from "@/actions/signUp";
+import { useRouter } from "next/navigation";
 
 export default function Signup () {
   const [error, setError] = useState({})
   const { data: session } = useSession()
+  const router = useRouter();
 
   if (session) {
     return (
@@ -17,6 +19,7 @@ export default function Signup () {
 
   const handleSubmit = async (event) => {
       event.preventDefault()
+      setError({})
   
       const formData = new FormData(event.target)
       signUpAction(formData).then((res) => {
@@ -38,6 +41,9 @@ export default function Signup () {
         }
         console.log(error)
       })
+
+      // Navigate to the login page
+      router.push("/login")
     }
 
   return (
@@ -48,13 +54,13 @@ export default function Signup () {
         <form onSubmit={handleSubmit} className='flex flex-col gap-4 w-3/5 md:w-1/2 my-32 md:my-0'>
           <h2 className="self-center md:self-auto">Join us</h2>
           <p>Become a member of the Culinary Canvas community.</p>
-          <input type="text" placeholder='First name' name='firstName' className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
+          <input type="text" placeholder='First name' name='firstName' required className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
           {error.firstName && <p className="text-red-600 text-sm font-medium pl-4">* {error.firstName}</p>}
-          <input type="text" placeholder='Last name' name='lastName' className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
+          <input type="text" placeholder='Last name' name='lastName' required className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
           {error.lastName && <p className="text-red-600 text-sm font-medium pl-4">* {error.lastName}</p>}
-          <input type="text" placeholder='Email' name='email' className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
+          <input type="text" placeholder='Email' name='email' required className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
           {error.email && <p className="text-red-600 text-sm font-medium pl-4">* {error.email}</p>}
-          <input type="password" placeholder='Password' name='password' className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
+          <input type="password" placeholder='Password' name='password' required className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
           {error.password && (
             <div>
               <p className="text-red-600 text-sm font-medium pl-4">* Password must:</p>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import {Checkbox} from "@nextui-org/checkbox";
 import { useSession } from "next-auth/react";
 import { signInAction } from "@/actions/signIn";
+import { signIn } from "next-auth/react";
 
 export default function Login () {
   const [remember, setRemember] = useState(false)
@@ -20,6 +21,7 @@ export default function Login () {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    setError({})
 
     const formData = new FormData(event.target)
     formData.set('remember', event.target.remember.checked)
@@ -36,6 +38,12 @@ export default function Login () {
       }
       console.log(error)
     })
+
+    // Create user session
+    signIn('credentials', {
+      ...formData,
+      redirect: false,
+    });
   }
 
   return (
@@ -46,9 +54,9 @@ export default function Login () {
         <form onSubmit={handleSubmit} className='flex flex-col gap-4 w-3/5 md:w-1/2 my-32 md:my-0'>
           <h2 className="self-center md:self-auto">Welcome</h2>
           <p>Log in to your account to share your culinary creations.</p>
-          <input type="text" placeholder='Email' name='email' className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
+          <input type="text" placeholder='Email' name='email' required className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
           {error.email && <p className="text-red-600 text-sm font-medium pl-4">* {error.email}</p>}
-          <input type="password" placeholder='Password' name='password' className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
+          <input type="password" placeholder='Password' name='password' required className='px-4 py-3 border-2 rounded-lg border-secondary text-primary placeholder:text-primary font-normal placeholder:font-normal text-base placeholder:text-base'/>
           {error.password && (
             <div>
               <p className="text-red-600 text-sm font-medium pl-4">* Password must:</p>

@@ -1,7 +1,7 @@
 import { SignupFormSchema } from "@/lib/definitions";
 
 export const signUpAction = async (formData) => {
-    // Validate form fields
+  // Validate form fields
   const validatedFields = SignupFormSchema.safeParse({
     firstName: formData.get('firstName'),
     lastName: formData.get('lastName'),

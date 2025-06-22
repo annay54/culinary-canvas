@@ -5,7 +5,6 @@ export const signInAction = async (formData) => {
   // Validate form fields
   const validatedFields = SigninFormSchema.safeParse({
     email: formData.get('email'),
-    password: formData.get('password'),
   })
 
   // If one or more of the form fields are invalid, return early to prevent unnecessary calls to auth api or database
@@ -15,5 +14,4 @@ export const signInAction = async (formData) => {
     }
   }
 
-  // await signIn("resend", formData);
 };
