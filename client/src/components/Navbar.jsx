@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
-import { useSession } from "next-auth/react";
-import { signInAction } from '@/actions/signIn';
-import { signOutAction } from '@/actions/signOut';
+import { signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
   const { data: session } = useSession()
@@ -40,22 +38,18 @@ const Navbar = () => {
             >
               <DropdownItem href='/dashboard' className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
               <DropdownItem href='/create_recipe' className='hover:no-underline py-2'><p>Create recipe</p></DropdownItem>
-              <DropdownItem href='/logout' className='hover:no-underline py-2'>
-                <form action={signOutAction}>
-                  <button className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>
-                    <p>Logout</p>
-                  </button>
-                </form>
+              <DropdownItem className='hover:no-underline py-2'>
+                <button onClick={signOut} className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>
+                  <p>Logout</p>
+                </button>
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>)
         : (
           <Link href='/login'>
-            <form action={signInAction}>
-              <button className='flex flex-nowrap gap-2 items-center bg-primary text-white font-normal text-xl px-4 rounded-lg'>
-                Login
-              </button>
-            </form>
+            <button className='flex flex-nowrap gap-2 items-center bg-primary text-white font-normal text-xl px-4 rounded-lg'>
+              Login
+            </button>
           </Link>)}
       </div>
       {/* nav links for small screens */}
@@ -77,12 +71,10 @@ const Navbar = () => {
               <DropdownItem href='/about' className='hover:no-underline py-2'><p>About</p></DropdownItem>
               <DropdownItem href='/dashboard' className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
               <DropdownItem href='/create_recipe' className='hover:no-underline py-2'><p>Create recipe</p></DropdownItem>
-              <DropdownItem href='/logout' className='hover:no-underline py-2'>
-                <form action={signOutAction}>
-                  <button className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>
-                    <p>Logout</p>
-                  </button>
-                </form>
+              <DropdownItem className='hover:no-underline py-2'>
+                <button onClick={signOut} className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>
+                  <p>Logout</p>
+                </button>
               </DropdownItem>
             </DropdownMenu>
           ) : (
@@ -91,13 +83,7 @@ const Navbar = () => {
               <DropdownItem href='/explore' className='hover:no-underline py-2'><p>Explore</p></DropdownItem>
               <DropdownItem href='/contact' className='hover:no-underline py-2'><p>Contact</p></DropdownItem>
               <DropdownItem href='/about' className='hover:no-underline py-2'><p>About</p></DropdownItem>
-              <DropdownItem href='/login' className='hover:no-underline py-2'>
-                <form action={signInAction}>
-                  <button className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>
-                    <p>Login</p>
-                  </button>
-                </form>
-              </DropdownItem>
+              <DropdownItem href='/login' className='hover:no-underline py-2'><p>Login</p></DropdownItem>
             </DropdownMenu>
           )}
         </Dropdown>

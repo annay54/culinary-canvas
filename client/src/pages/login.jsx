@@ -13,8 +13,9 @@ export default function Login () {
   // user is already signed in
   if (session) {
     return (
-      <div>
-        Signed in as {session.user.email}
+      <div className="flex flex-col w-full h-screen gap-2 md:gap-5 items-center justify-center text-secondary">
+        <i className="fa-solid fa-triangle-exclamation text-3xl md:text-5xl"></i>
+        <p className="text-base mx-8 lg:text-xl font-semibold">You are already signed in with the email {session.user.email}. Please logout before trying again. ${session.expires}</p>
       </div>
     )
   }
@@ -42,7 +43,6 @@ export default function Login () {
     // Create user session
     signIn('credentials', {
       ...formData,
-      redirect: false,
     });
   }
 
