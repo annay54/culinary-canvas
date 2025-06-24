@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 // import { signIn, signOut } from "next-auth/react"
 // import { pages } from "next/dist/build/templates/app-page"
 
-// import { getUserByEmail } from "./data/users"
+import { getUserByEmail } from "@/pages/util/userAPI.js"
 
 export const authOptions = {
   // Configure one or more authentication providers

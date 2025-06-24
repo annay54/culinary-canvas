@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { signUpAction } from "@/actions/signUp";
 import { useRouter } from "next/navigation";
+import { postRegister } from "./util/userAPI";
 
 export default function Signup () {
   const [error, setError] = useState({})
@@ -43,8 +44,10 @@ export default function Signup () {
         console.log(error)
       })
 
+      // postRegister(formData)
+
       // Navigate to the login page
-      router.push("/login")
+      router.push('/login')
     }
 
   return (

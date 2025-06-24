@@ -4,6 +4,7 @@ import {Checkbox} from "@nextui-org/checkbox";
 import { useSession } from "next-auth/react";
 import { signInAction } from "@/actions/signIn";
 import { signIn } from "next-auth/react";
+import { getUserByEmail } from "@/pages/util/userAPI.js"
 
 export default function Login () {
   const [remember, setRemember] = useState(false)
@@ -32,17 +33,14 @@ export default function Login () {
         if (res.errors?.email) {
           dict['email'] = res.errors.email
         }
-        if (res.errors?.password) {
-          dict['password'] = res.errors.password
-        }
         setError(dict)
       }
-      console.log(error)
     })
 
     // Create user session
     signIn('credentials', {
       ...formData,
+      redirect: false,
     });
   }
 

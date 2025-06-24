@@ -10,7 +10,7 @@ const Navbar = () => {
     <div className='flex flex-row flex-nowrap justify-between bg-white w-full min-[850px]:h-20 h-16'>
       {/* logo and brand name */}
       <a href='/' className='flex flex-row gap-2 items-center hover:no-underline hover:text-secondary pl-[3%] lg:pl-[5%] text-secondary'>
-        <i className="fa-solid fa-kitchen-set fa-2xl"></i>
+        <i aria-hidden className="fa-solid fa-kitchen-set fa-2xl"></i>
         <h2 className='font-bold max-[850px]:hidden'>CulinaryCanvas</h2>
       </a>
       {/* nav links for large screens*/}
@@ -28,7 +28,7 @@ const Navbar = () => {
                 variant='solid'
                 className='flex flex-nowrap gap-2 items-center text-white font-normal text-xl px-4 rounded-lg'
               >
-                <i className="fa-regular fa-user"></i>
+                <i aria-hidden className="fa-regular fa-user"></i>
                 Account
               </Button>
             </DropdownTrigger>
@@ -59,7 +59,7 @@ const Navbar = () => {
             <Button
               className='bg-white text-secondary font-normal text-3xl rounded-lg'
             >
-              <i className="fa-solid fa-bars"></i>
+              <i aria-hidden className="fa-solid fa-bars"></i>
             </Button>
           </DropdownTrigger>
           {/* check if user is login */}
