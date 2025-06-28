@@ -35,10 +35,6 @@ export const User = sequelize.define("User", {
     allowNull: false,
     unique: true,
   },
-  salt: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   password_hash: {
     type: DataTypes.STRING,
     allowNull: false,

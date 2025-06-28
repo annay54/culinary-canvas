@@ -22,7 +22,7 @@ usersRouter.post("/register", async (req, res) => {
     // console.log("email is ", req.body.userData.email);
     // console.log("salt is ", salt);
     // console.log("password_hash is ", password_hash);
-    const [result, metadata] = await sequelize.query(`INSERT INTO users (full_name, email, salt, password_hash) VALUES ('${fullName}', '${req.body.userData.email}', '${salt}', '${password_hash}')`);
+    const [result, metadata] = await sequelize.query(`INSERT INTO users (full_name, email, password_hash) VALUES ('${fullName}', '${req.body.userData.email}', '${password_hash}')`);
 
     if (metadata == 1) {
       console.log("Inserted to table users successfully");
@@ -37,14 +37,14 @@ usersRouter.post("/register", async (req, res) => {
   }
 });
 
-usersRouter.get("/signin", async (req, res) => {
-  // console.log("req.body is", req.body)
+usersRouter.post("/signin", async (req, res) => {
+  console.log("req.body is", req.body)
   const userExist = await User.findOne({
     where: { email: req.body.userData.email },
-    attributes: ["uid", "full_name", "email", "salt", "password_hash"],
+    attributes: ["uid", "full_name", "email", "password_hash"],
   });
 
-  if (userExist === null || !bcrypt.compareSync(bcrypt.hashSync(req.body.userData.password, userExist.salt), userExist.password_hash)) {
+  if (userExist === null || !bcrypt.compareSync(req.body.userData.password, userExist.password_hash)) {
     return res.json({ error: "Incorrect username or password" }).status(401);
   }
 

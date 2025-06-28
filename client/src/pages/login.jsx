@@ -43,10 +43,10 @@ export default function Login () {
     })
 
     // Create user session
-    signIn('credentials', {
-      ...formData,
-      redirect: false,
-    });
+    // signIn('credentials', {
+    //   ...formData,
+    //   redirect: false,
+    // });
   }
 
   return (

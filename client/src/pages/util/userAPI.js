@@ -15,8 +15,6 @@ export async function postRegister(userData) {
 }
 
 export async function getUserByEmail(userData) {
-  console.log("NEXT_PUBLIC_API_URL is ", process.env.NEXT_PUBLIC_API_URL)
-  console.log("userData is ", userData)
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/signin`, {
     method: 'POST',
     headers: {
@@ -26,7 +24,7 @@ export async function getUserByEmail(userData) {
   })
 
   const userInfo = await res.json()
-  console.log(userInfo)
+  console.log("returned user is ", userInfo)
 
   return userInfo
 }
