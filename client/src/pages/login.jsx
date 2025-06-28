@@ -37,6 +37,11 @@ export default function Login () {
       }
     })
 
+    getUserByEmail({
+      email: formData.get("email"),
+      password: formData.get("password"),
+    })
+
     // Create user session
     signIn('credentials', {
       ...formData,

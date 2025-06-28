@@ -44,7 +44,12 @@ export default function Signup () {
         console.log(error)
       })
 
-      // postRegister(formData)
+      postRegister({
+        firstName: formData.get("firstName"),
+        lastName: formData.get("lastName"),
+        email: formData.get("email"),
+        password: formData.get("password"),
+      })
 
       // Navigate to the login page
       router.push('/login')

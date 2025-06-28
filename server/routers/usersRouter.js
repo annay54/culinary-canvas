@@ -1,18 +1,56 @@
 import { Router } from "express";
 import { User } from "../models/users.js";
-// import bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
+import { sequelize } from "../datasource.js";
 
 export const usersRouter = Router();
+const saltRounds = 16
 
 usersRouter.post("/register", async (req, res) => {
+  const userExist = await User.findOne({
+    where: { email: req.body.userData.email },
+  });
+  if (userExist !== null) {
+    return res.json({ error: "User already exists" }).status(422);
+  }
   
+  const salt = bcrypt.genSaltSync(saltRounds)
+  const password_hash = bcrypt.hashSync(req.body.userData.password, salt)
+  try {
+    const fullName = req.body.userData.firstName + " " + req.body.userData.lastName;
+    // console.log("fullname is ", fullName);
+    // console.log("email is ", req.body.userData.email);
+    // console.log("salt is ", salt);
+    // console.log("password_hash is ", password_hash);
+    const [result, metadata] = await sequelize.query(`INSERT INTO users (full_name, email, salt, password_hash) VALUES ('${fullName}', '${req.body.userData.email}', '${salt}', '${password_hash}')`);
+
+    if (metadata == 1) {
+      console.log("Inserted to table users successfully");
+      return res.json({ message: "Successfully created user" })
+    } else {
+      console.log("Insertion to table users failed");
+      return res.json({ error: "User creation failed" }).status(422);
+    }
+  } catch (error) {
+    console.log("error in user creation: ", error);
+    return res.json({ error: "User creation failed" }).status(422);
+  }
 });
 
 usersRouter.get("/signin", async (req, res) => {
   // console.log("req.body is", req.body)
   const userExist = await User.findOne({
-    where: { email: 'john@email.com' },
+    where: { email: req.body.userData.email },
+    attributes: ["uid", "full_name", "email", "salt", "password_hash"],
   });
 
-  return res.json({ userExist })
+  if (userExist === null || !bcrypt.compareSync(bcrypt.hashSync(req.body.userData.password, userExist.salt), userExist.password_hash)) {
+    return res.json({ error: "Incorrect username or password" }).status(401);
+  }
+
+  return res.json({
+    id: userExist.uid,
+    name: userExist.full_name,
+    email: userExist.email,
+  });
 });

@@ -5,12 +5,13 @@ export async function postRegister(userData) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({userData})
+  }).catch(error => {
+    console.error("There is a problem with fetching", error)
   })
 
-  const userInfo = await res.json()
-  console.log(userInfo)
+  const message = await res.json()
 
-  return userInfo
+  return message
 }
 
 export async function getUserByEmail(userData) {

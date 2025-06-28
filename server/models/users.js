@@ -1,6 +1,25 @@
 import { sequelize } from "../datasource.js";
 import { DataTypes } from "sequelize";
 
+const socials = {
+  type: 'socials',
+  fields: [
+    'facebook',
+    'youtube',
+    'tiktok',
+    'instagram',
+  ],
+};
+
+const custom_options = {
+  type: 'custom_options',
+  fields: [
+    'prof',
+    'review',
+    'fav',
+  ],
+};
+
 export const User = sequelize.define("User", {
   uid: {
     type: DataTypes.INTEGER,
@@ -17,7 +36,7 @@ export const User = sequelize.define("User", {
     unique: true,
   },
   salt: {
-    type: DataTypes.STRING(16),
+    type: DataTypes.STRING,
     allowNull: false,
   },
   password_hash: {
@@ -28,10 +47,7 @@ export const User = sequelize.define("User", {
     type: DataTypes.BLOB,
     defaultValue: null,
   },
-  social: {
-    type: DataTypes.ARRAY(DataTypes.STRING, DataTypes.STRING, DataTypes.STRING, DataTypes.STRING),
-    defaultValue: [null, null, null, null],
-  },
+  social: socials,
   location: {
     type: DataTypes.STRING,
     defaultValue: "",
@@ -40,10 +56,7 @@ export const User = sequelize.define("User", {
     type: DataTypes.ENUM("public", "private", "custom"),
     defaultValue: "public",
   },
-  custom_privacy: {
-    type: DataTypes.ARRAY(DataTypes.BOOLEAN, DataTypes.BOOLEAN, DataTypes.BOOLEAN),
-    defaultValue: [true, true, true],
-  },
+  custom_privacy: custom_options,
   show_email: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,

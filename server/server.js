@@ -1,5 +1,6 @@
 import express from "express"
 import cors from "cors"
+import bodyParser from "body-parser";
 // import { Pool, Client } from "pg"
 import * as dotenv from "dotenv";
 import { usersRouter } from "./routers/usersRouter.js";
@@ -8,24 +9,7 @@ import { sequelize } from "./datasource.js";
 const app = express();
 
 dotenv.config();
-
-// const pool = new Pool({
-//   host: process.env.HOST,
-//   user: process.env.USER,
-//   database: process.env.DATABASE,
-//   password: process.env.PASSWORD,
-//   port: process.env.POSTGRES_PORT
-// });
-
-// (async () => {
-//   try {
-//     const {rows} = await pool.query("SELECT current_user");
-//     const currentUser = rows[0]["current_user"];
-//     console.log(currentUser);
-//   } catch (err) {
-//     console.error(err);
-//   }
-// })();
+app.use(bodyParser.json());
 
 // Make app accept requests from the frontend
 app.use(cors({
