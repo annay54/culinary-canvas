@@ -13,7 +13,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
         <Navbar />
         <Component {...pageProps} />
         <Footer />
-        <Toaster position="top-center" reverseOrder="false" />
+        <Toaster position="top-center" reverseOrder="false" containerStyle={{top: 100}} />
       </SessionProvider>
     </NextUIProvider>
   </>

@@ -25,6 +25,10 @@ export async function getUserByEmail(userData) {
 
   const userInfo = await res.json()
   console.log("returned user is ", userInfo)
+  console.log("res status is", res.status)
+  if (userInfo.error) {
+    return null
+  }
 
   return userInfo
 }

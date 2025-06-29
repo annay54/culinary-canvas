@@ -17,18 +17,12 @@ export const authOptions = {
       async authorize(credentials) {
         // user login logic
         try {
-          console.log("authorized user")
-          return {id: 1, name: "John Smith", email: "jsmith@gmail.com"}
-          // const user = getUserByEmail(credentials?.email);
-          // if (user) {
-          //   if (user?.password === credentials?.password) {
-          //     return user;
-          //   } else {
-          //     throw new Error("Check your password");
-          //   }
-          // } else {
-          //   throw new Error("User not found");
-          // }
+          const user = getUserByEmail({
+            email: credentials.email,
+            password: credentials.password,
+          })
+          console.log("user is", user)
+          return user
         } catch (error) {
           throw new Error(error);
         }
