@@ -41,7 +41,7 @@ export default function Login () {
     })
 
     // Create user session
-    signIn('credentials', {
+    const authPromise = signIn('credentials', {
       email: formData.get("email"),
       password: formData.get("password"),
       redirect: false,
@@ -52,6 +52,10 @@ export default function Login () {
       } else {
         toast.error("Login failed. Incorrect username or password.", { id: "loginfailed" })
       }
+    })
+
+    toast.promise(authPromise, {
+      loading: "Loading data...",
     })
   }
 
