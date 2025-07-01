@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { signUpAction } from "@/actions/signUp";
 import { useRouter } from "next/navigation";
 import { postRegister } from "./util/userAPI";
+import toast from "react-hot-toast";
 
 export default function Signup () {
   const [error, setError] = useState({})
@@ -51,12 +52,15 @@ export default function Signup () {
             lastName: formData.get("lastName"),
             email: formData.get("email"),
             password: formData.get("password"),
+          }).then((error) => {
+            if (error) {
+              toast.error("Sign up failed. An account with the same email address already exist.")
+            } else {
+              // Navigate to the login page
+              router.push('/login')
+            }
           })
-
-          // Navigate to the login page
-          router.push('/login')
         }
-        console.log(error)
       })
     }
 
