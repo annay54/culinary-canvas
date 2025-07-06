@@ -1,15 +1,20 @@
 import Link from 'next/link';
 import React from 'react';
+import Image from 'next/image';
 
 const RecipeCard = ({name, author, image, rating}) => {
 
   return (
     <div className='flex flex-col w-[210px] bg-white'>
         {/* image */}
-        <img 
+        {image ? (
+          <img 
             src={image} 
             className='w-full h-[150px] object-cover' 
-        />
+          />
+        ) : (
+          <Image src='/default-image.jpg' alt='Default image' width={300} height={150} />
+        )}
 
         {/* text */}
         <div className='flex flex-col p-4'>
