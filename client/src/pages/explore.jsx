@@ -7,10 +7,13 @@ import toast from "react-hot-toast";
 
 const Explore = () => {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const ratings = [1, 2, 3, 4, 5];
   const tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"];
-  const [values, setValues] = React.useState([]);
+  const [selectTags, setSelectTags] = React.useState([]);
   const [recipes, setRecipes] = React.useState([]);
+  const [min, setMin] = React.useState(0);
+  const [max, setMax] = React.useState(5);
+  const [sortBy, setSortBy] = React.useState("rating");
+  const [sortOrder, setSortOrder] = React.useState("descending");
 
   // Runs below code on page load and when deps parameter value is updated
   useEffect(() => {
@@ -21,6 +24,27 @@ const Explore = () => {
       }
     )
   }, []);
+
+  const handleMinChange = (selectedOption) => {
+    setMin(parseInt(selectedOption.target.value))
+  }
+
+  const handleMaxChange = (selectedOption) => {
+    setMax(parseInt(selectedOption.target.value))
+  }
+
+  const handleSortBy = (selectedOption) => {
+    setSortBy(selectedOption.target.value)
+  }
+
+  const handleSortOrder = (selectedOption) => {
+    setSortOrder(selectedOption.target.value)
+  }
+
+  const handleFilter = (e) => {
+    console.log(e)
+    console.log(min, max, sortBy, sortOrder)
+  }
 
   const FilterContent = ({isMobile = false}) => {
     return (
@@ -43,8 +67,8 @@ const Explore = () => {
           <p className="font-normal text-xl">Rating</p>
           <div className="flex flex-row items-center gap-2 m-2">
             <p className="text-base">Minimum</p>
-            <select className="text-secondary text-base w-12 h-8 p-1 rounded-xl border-2">
-              <option value={null}>-</option>
+            <select className="text-secondary text-base w-12 h-8 p-1 rounded-xl border-2" value={min} onChange={handleMinChange}>
+              <option value={0}>0</option>
               <option value={1}>1</option>
               <option value={2}>2</option>
               <option value={3}>3</option>
@@ -54,8 +78,8 @@ const Explore = () => {
           </div>
           <div className="flex flex-row items-center gap-2 m-2">
             <p className="text-base">Maximum</p>
-            <select className="text-secondary text-base w-12 h-8 p-1 rounded-xl border-2">
-            <option value={null}>-</option>
+            <select className="text-secondary text-base w-12 h-8 p-1 rounded-xl border-2" value={max} onChange={handleMaxChange}>
+              <option value={0}>0</option>
               <option value={1}>1</option>
               <option value={2}>2</option>
               <option value={3}>3</option>
@@ -75,8 +99,8 @@ const Explore = () => {
               variant="flat"
               isMultiline={true}
               selectionMode="multiple"
-              selectedKeys={values}
-              onSelectionChange={setValues}
+              selectedKeys={selectTags}
+              onSelectionChange={setSelectTags}
               classNames={{ 
                 mainWrapper: "border-2 border-secondary rounded-xl",
                 listbox: "text-secondary",
@@ -99,8 +123,9 @@ const Explore = () => {
         {/* Sort by variable section */}
         <RadioGroup
           color="secondary"
-          defaultValue="rating"
+          defaultValue={sortBy}
           className="ml-2"
+          onChange={handleSortBy}
         >
           <Radio value="rating" classNames={{ label:"text-white" }}>Rating</Radio>
           <Radio value="create" classNames={{ label:"text-white" }}>Create date</Radio>
@@ -111,13 +136,14 @@ const Explore = () => {
         {/* De/Ascending sort section */}
         <RadioGroup
           color="secondary"
-          defaultValue="descending"
+          defaultValue={sortOrder}
           className="ml-2"
+          onChange={handleSortOrder}
         >
           <Radio value="descending" classNames={{ label:"text-white" }}>Descending</Radio>
           <Radio value="ascending" classNames={{ label:"text-white" }}>Ascending</Radio>
         </RadioGroup>
-        <button className="rounded-xl w-28 p-2 mx-2 mt-4 mb-8 font-medium hover:opacity-90">Apply</button>
+        <button className="rounded-xl w-28 p-2 mx-2 mt-4 mb-8 font-medium hover:opacity-90" onClick={handleFilter}>Apply</button>
       </>
     )
   }

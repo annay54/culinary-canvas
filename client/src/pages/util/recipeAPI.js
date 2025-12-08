@@ -7,12 +7,17 @@ export async function getAllRecipes(page, numRecipes) {
   })
 
   const recipes = await res.json()
-
-  console.log(recipes)
-
   return recipes.recipes
 }
 
 export async function getAllTags() {
-  
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/recipes/tags`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+
+  const tags = await res.json()
+  return tags.tags
 }
