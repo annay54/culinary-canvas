@@ -47,6 +47,10 @@ export const Recipe = sequelize.define("Recipes", {
     type: DataTypes.BLOB,
     defaultValue: null,
   },
+  rating: {
+    type: DataTypes.DECIMAL,
+    defaultValue: 0,
+  },
   prep_time: recipe_time,
   cook_time: recipe_time,
   tags: {

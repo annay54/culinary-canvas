@@ -56,7 +56,7 @@ export default function Login () {
         })
 
         toast.promise(authPromise, {
-          loading: "Loading data...",
+          loading: "Logging in...",
         })
       }
     })

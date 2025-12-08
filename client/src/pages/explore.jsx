@@ -3,6 +3,7 @@ import RecipeCard from '@/components/RecipeCard';
 import Pagination from "@/components/Pagination";
 import { Select, SelectItem, RadioGroup, Radio } from "@nextui-org/react";
 import { getAllRecipes } from "./util/recipeAPI";
+import toast from "react-hot-toast";
 
 const Explore = () => {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
@@ -11,9 +12,14 @@ const Explore = () => {
   const [values, setValues] = React.useState([]);
   const [recipes, setRecipes] = React.useState([]);
 
+  // Runs below code on page load and when deps parameter value is updated
   useEffect(() => {
     // fetch recipes from database
-    getAllRecipes(1, 10).then((res) => {setRecipes(res)}).catch((err) => {console.error(err)})
+    toast.promise(
+      getAllRecipes(1, 10).then((res) => {setRecipes(res)}).catch((err) => {console.error(err)}), {
+        loading: "Loading recipes...",
+      }
+    )
   }, []);
 
   const FilterContent = ({isMobile = false}) => {
@@ -141,30 +147,37 @@ const Explore = () => {
         </div>
 
         {/* Search and result column */}
-        <div className=" w-full lg:w-3/4 h-auto flex flex-col items-center">
-          {/* hero */}
-          <h1 className="text-secondary mt-6">Explore</h1>
+        <div className="flex flex-col justify-between items-center w-full lg:w-3/4 min-h-screen py-6">
+          <div className="flex flex-col items-center h-full">
+            {/* hero */}
+            <h1 className="text-secondary">Explore</h1>
 
-          {/* Search bar  */}
-          <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
-            <i className="fa-solid fa-search text-base"></i>
-            <input
-              type="text"
-              placeholder="Search for recipes or creators"
-              className=" border-none focus:outline-none font-normal text-base h-9 py-0 w-11/12 placeholder-primary">
-            </input>
-          </div>
-          {/* Number of results shown from search */}
-          <div className="text-secondary w-11/12">
-            <hr className="border-primary border-1"></hr>
-            <p className="text-textColor font-normal text-base my-2 px-4">6 out of 20 results</p>
-            <hr className="border-primary border-1"></hr>
-          </div>
-          {/* Result recipes from search */}
-          <div className="flex flex-wrap p-6 gap-5 justify-center">
-            {recipes.map((recipe, index) => (
-              <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
-            ))}
+            {/* Search bar  */}
+            <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
+              <i className="fa-solid fa-search text-base"></i>
+              <input
+                type="text"
+                placeholder="Search for recipes or creators"
+                className=" border-none focus:outline-none font-normal text-base h-9 py-0 w-11/12 placeholder-primary">
+              </input>
+            </div>
+            {/* Number of results shown from search */}
+            <div className="text-secondary w-11/12">
+              <hr className="border-primary border-1"></hr>
+              <p className="text-textColor font-normal text-base my-2 px-4">{recipes.length} out of {recipes.length} results</p>
+              <hr className="border-primary border-1"></hr>
+            </div>
+            {/* Result recipes from search */}
+            <div className="flex flex-wrap p-6 gap-5 justify-center">
+              {recipes.length == 0 ? ( 
+                <p className="h-full">No recipes found! Try searching for a different recipe.</p>
+              ) : (
+                <>{recipes.map((recipe, index) => (
+                  <RecipeCard key={index} name={recipe.recipe_name} author={recipe.author} image={recipe.img} rating={recipe.rating} />
+                ))}</>
+              )
+              }
+            </div>
           </div>
           {/* Pagination */}
           <div className="pt-4 pb-8">
