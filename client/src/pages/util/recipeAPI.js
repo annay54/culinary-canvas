@@ -7,7 +7,7 @@ export async function getAllRecipes(page, numRecipes) {
   })
 
   const recipes = await res.json()
-  return recipes.recipes
+  return recipes
 }
 
 export async function getAllTags() {
@@ -19,5 +19,5 @@ export async function getAllTags() {
   })
 
   const tags = await res.json()
-  return tags.tags
+  return tags
 }

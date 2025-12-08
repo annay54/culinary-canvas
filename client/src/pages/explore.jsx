@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import RecipeCard from '@/components/RecipeCard';
 import Pagination from "@/components/Pagination";
 import { Select, SelectItem, RadioGroup, Radio } from "@nextui-org/react";
-import { getAllRecipes } from "./util/recipeAPI";
+import { getAllRecipes, getAllTags } from "./util/recipeAPI";
 import toast from "react-hot-toast";
 
 const Explore = () => {
@@ -18,6 +18,7 @@ const Explore = () => {
   // Runs below code on page load and when deps parameter value is updated
   useEffect(() => {
     // fetch recipes from database
+    getAllTags().then((res) => {console.log(res)})
     toast.promise(
       getAllRecipes(1, 10).then((res) => {setRecipes(res)}).catch((err) => {console.error(err)}), {
         loading: "Loading recipes...",

@@ -14,9 +14,7 @@ recipesRouter.get("/all", async (req, res) => {
       distinct: true,
     });
 
-    return res.json({
-      recipes: recipes,
-    });
+    return res.json(recipes);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Failed to fetch recipes." });
@@ -24,5 +22,12 @@ recipesRouter.get("/all", async (req, res) => {
 });
 
 recipesRouter.get("/tags", async (req, res) => {
-  
+  try {
+    const tags = Recipe.getAttributes().tags.type.type.values;
+    
+    return res.json(tags)
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch tags." });
+  }
 });
