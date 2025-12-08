@@ -42,8 +42,14 @@ const Explore = () => {
   }
 
   const handleFilter = (e) => {
-    console.log(e)
-    console.log(min, max, sortBy, sortOrder)
+    // selectTags is a Set object, not a list
+    // create a list using selectTags
+    let extractTags = []
+    for (const tag of selectTags) {
+      extractTags.push(tag)
+    }
+
+    console.log(min, max, extractTags, sortBy, sortOrder)
   }
 
   const FilterContent = ({isMobile = false}) => {
