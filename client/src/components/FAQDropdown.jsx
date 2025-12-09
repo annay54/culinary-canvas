@@ -19,12 +19,12 @@ const FAQDropdown = ({questionList, answerList}) => {
           <div key={index} className='flex flex-col gap-2'>
             {open[index] ? (
               <div className='flex flex-row items-center gap-2 mx-2 hover:cursor-pointer' onClick={() => {closeAnswer(index)}}>
-                <i className="fa-solid fa-chevron-up text-primary text-lg"></i>
+                <i aria-hidden className="fa-solid fa-chevron-up text-primary text-lg"></i>
                 <h3 className='text-primary font-medium'>{question}</h3>
               </div>
             ) : (
               <div className='flex flex-row items-center gap-2 mx-2 hover:cursor-pointer' onClick={() => {openAnswer(index)}}>
-                <i className="fa-solid fa-chevron-down text-primary text-lg" ></i>
+                <i aria-hidden className="fa-solid fa-chevron-down text-primary text-lg" ></i>
                 <h3 className='text-primary font-medium'>{question}</h3>
               </div>
             )}

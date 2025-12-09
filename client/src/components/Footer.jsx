@@ -5,7 +5,7 @@ const Footer = () => {
     const Social = ({ icon, link }) => {
         return (
             <Link href={link} target='_blank' rel='noreferrer' className='flex w-10 h-10 items-center justify-center border border-white text-white hover:no-underline hover:text-white'>
-                <i className={`fa-brands fa-${icon}`}></i>
+                <i aria-hidden className={`fa-brands fa-${icon}`}></i>
             </Link>
         )
     }
@@ -15,7 +15,7 @@ const Footer = () => {
             <div className='flex flex-col lg:flex-row justify-between items-center gap-y-8'>
             {/* logo and brand name */}
                 <div className='flex flex-row gap-2 items-center lg:pl-[5%] text-white'>
-                    <i className="fa-solid fa-kitchen-set fa-2xl"></i>
+                    <i aria-hidden className="fa-solid fa-kitchen-set fa-2xl"></i>
                     <h2 className='font-bold'>CulinaryCanvas</h2>
                 </div>
             

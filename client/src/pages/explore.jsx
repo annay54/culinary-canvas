@@ -14,17 +14,19 @@ const Explore = () => {
   const [max, setMax] = React.useState(5);
   const [sortBy, setSortBy] = React.useState("rating");
   const [sortOrder, setSortOrder] = React.useState("descending");
+  // format of filter array from beginning to end: page, numRecipes, min, max, tags, sortBy, sortOrder
+  const [filter, setFilter] = React.useState([1, 10])
 
   // Runs below code on page load and when deps parameter value is updated
   useEffect(() => {
     // fetch recipes from database
-    getAllTags().then((res) => {console.log(res)})
+    getAllTags().then()
     toast.promise(
-      getAllRecipes(1, 10).then((res) => {setRecipes(res)}).catch((err) => {console.error(err)}), {
+      getAllRecipes(filter).then((res) => {setRecipes(res)}).catch((err) => {console.error(err)}), {
         loading: "Loading recipes...",
       }
     )
-  }, []);
+  }, [filter]);
 
   const handleMinChange = (selectedOption) => {
     setMin(parseInt(selectedOption.target.value))
@@ -51,6 +53,7 @@ const Explore = () => {
     }
 
     console.log(min, max, extractTags, sortBy, sortOrder)
+    setFilter([1, 10, min, max, extractTags, sortBy, sortOrder])
   }
 
   const FilterContent = ({isMobile = false}) => {
@@ -58,13 +61,13 @@ const Explore = () => {
       <>
         <div className="flex flex-row justify-between items-center gap-4">
           <div className="flex flex-row items-center gap-2 mt-2">
-            <i className="fa-solid fa-sliders text-xl"></i>
+            <i aria-hidden className="fa-solid fa-sliders text-xl"></i>
             <h3>Filters</h3>
           </div>
           {/* close button */}
           {isMobile &&
             <button className="p-4 bg-primary" onClick={() => setIsFilterOpen(!isFilterOpen)}>
-              <i className={"fa-solid fa-xmark fa-lg"}></i>
+              <i aria-hidden className={"fa-solid fa-xmark fa-lg"}></i>
             </button>
           }
         </div>
@@ -123,7 +126,7 @@ const Explore = () => {
         </div>
         <hr></hr>
         <div className="flex flex-row items-center gap-2 my-2">
-          <i className="fa-solid fa-sort text-xl"></i>
+          <i aria-hidden className="fa-solid fa-sort text-xl"></i>
           <h3>Sort</h3>
         </div>
         <hr></hr>
@@ -164,7 +167,7 @@ const Explore = () => {
             {/* toggle button */}
             {!isFilterOpen &&
               <button className="absolute top-0 -right-10 lg:hidden p-4 bg-primary" onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                <i className={`fa-solid ${isFilterOpen ? "fa-chevron-left" : "fa-chevron-right"}`}></i>
+                <i aria-hidden className={`fa-solid ${isFilterOpen ? "fa-chevron-left" : "fa-chevron-right"}`}></i>
               </button>
             }
 
@@ -181,13 +184,13 @@ const Explore = () => {
 
         {/* Search and result column */}
         <div className="flex flex-col justify-between items-center w-full lg:w-3/4 min-h-screen py-6">
-          <div className="flex flex-col items-center h-full">
+          <div className="flex flex-col items-center h-full w-full">
             {/* hero */}
             <h1 className="text-secondary">Explore</h1>
 
             {/* Search bar  */}
             <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
-              <i className="fa-solid fa-search text-base"></i>
+              <i aria-hidden className="fa-solid fa-search text-base"></i>
               <input
                 type="text"
                 placeholder="Search for recipes or creators"

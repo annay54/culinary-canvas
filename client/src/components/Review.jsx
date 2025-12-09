@@ -23,7 +23,7 @@ const Review = ({type, image, name, review}) => {
       {/* Rating and date */}
       <div className='flex flex-row gap-1 pl-2 items-center'>
         {[1, 2, 3, 4, 5].map((star, index) => (
-          <i key={index} className={`fa-star text-secondary ${review.rating >= star ? 'fa-solid' : 'fa-regular'}`}></i>
+          <i aria-hidden key={index} className={`fa-star text-secondary ${review.rating >= star ? 'fa-solid' : 'fa-regular'}`}></i>
         ))}
         <p className='text-textColor ml-2'>{review.date}</p>
       </div>
@@ -31,7 +31,7 @@ const Review = ({type, image, name, review}) => {
       <p className={`${type === "user" ? "text-tertiary" : "text-textColor"}`}>{review.review}</p>
       <div className='flex flex-row gap-1'>
         <a href='' className='text-textColor hover:text-secondary font-normal'>
-          <i className='fa-solid fa-thumbs-up mr-1'></i>
+          <i aria-hidden className='fa-solid fa-thumbs-up mr-1'></i>
           Helpful
         </a>
         <p className='text-textColor font-normal'>({review.helpful})</p>

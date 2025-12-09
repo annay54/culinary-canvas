@@ -7,6 +7,8 @@ export const recipesRouter = Router();
 recipesRouter.get("/all", async (req, res) => {
   const limit = parseInt(req.query.numRecipes);
   const offset = (limit * req.query.page) - limit;
+  const filter = req.query.filter;
+  console.log("filter is ", filter)
   try {
     const recipes = await Recipe.findAll({
       limit: limit,

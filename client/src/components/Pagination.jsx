@@ -80,7 +80,7 @@ const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
                     className={`text-${mainColour} px-3 py-2 bg-transparent ${hoverColour === "" ? "hover:bg-primary hover:text-white" : ""} ${currentPage === 1 && "pointer-events-none opacity-50"}`} 
                     onClick={handlePrevious}
                 >
-                    <i className='fa-solid fa-arrow-left'></i>
+                    <i aria-hidden className='fa-solid fa-arrow-left'></i>
                 </button>
                 
                 {pageLength < 6 
@@ -113,7 +113,7 @@ const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
                     className={`text-${mainColour} px-3 py-2 bg-transparent ${hoverColour === "" ? "hover:bg-primary hover:text-white" : ""} ${currentPage === pageLength && "pointer-events-none opacity-50"}`}  
                     onClick={handleNext}
                 >
-                    <i className='fa-solid fa-arrow-right'></i>
+                    <i aria-hidden className='fa-solid fa-arrow-right'></i>
                 </button>
             </div>
 
@@ -126,7 +126,7 @@ const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
                                 className={`bg-transparent rounded-none border-2 justify-between border-${mainColour} text-${mainColour}`}
                             >
                                 {currentPage}
-                                <i className='fa-solid fa-chevron-down'></i>
+                                <i aria-hidden className='fa-solid fa-chevron-down'></i>
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu

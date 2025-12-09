@@ -58,7 +58,7 @@ export default function ({ slug }) {
                                 variant='solid'
                                 className='flex flex-nowrap gap-2 items-center text-white font-normal px-4 rounded-lg'
                             >
-                                <i className="fa-solid fa-sort"></i>
+                                <i aria-hidden className="fa-solid fa-sort"></i>
                                 Sort
                             </Button>
                         </DropdownTrigger>
@@ -80,7 +80,7 @@ export default function ({ slug }) {
                                 variant='solid'
                                 className='flex flex-nowrap gap-2 items-center text-white font-normal px-4 rounded-lg'
                             >
-                                <i className="fa-solid fa-filter"></i>
+                                <i aria-hidden className="fa-solid fa-filter"></i>
                                 Filter
                             </Button>
                         </DropdownTrigger>
@@ -106,8 +106,8 @@ export default function ({ slug }) {
                 <hr className='w-full border-t-1 border-b-0'/>
               </div>
             }
-            {reviews.map((review) => (
-                <div>
+            {reviews.map((review, index) => (
+                <div key={index}>
                   <Review 
                     type='user'
                     name={review.user} 

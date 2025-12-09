@@ -58,6 +58,7 @@ const Carousel = ({recipes}) => {
     <div className='flex flex-col gap-4 self-center'>
       <div className='flex flex-row gap-6 items-center'>
         <i 
+          aria-hidden
           className={`fa-solid fa-chevron-left text-secondary text-2xl hover:cursor-pointer hover:text-primary ${current === 0 ? 'pointer-events-none opacity-50' : ''}`} 
           onClick={() => handlePrevious(numRecipes)}></i>
         {/* Display numRecipes recipes at a time */}
@@ -65,13 +66,16 @@ const Carousel = ({recipes}) => {
           <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
         ))}
         <i 
+          aria-hidden
           className={`fa-solid fa-chevron-right text-secondary text-2xl hover:cursor-pointer hover:text-primary ${current + numRecipes >= length ? 'pointer-events-none opacity-50' : ''}`} 
           onClick={() => handleNext(numRecipes)}></i>
       </div>
       <div className='flex flex-row gap-2 justify-center'>
         {/* Display length / numRecipes circles */}
         {pages.map((index) => (
-          <i key={index} 
+          <i 
+            aria-hidden
+            key={index} 
             className={`fa-circle text-secondary text-xs hover:cursor-pointer hover:text-primary ${index === current / numRecipes ? 'fa-solid' : 'fa-regular'}`}
             onClick={() => {
               if (index < current / numRecipes)
