@@ -38,6 +38,7 @@ CREATE TABLE recipes (
   author VARCHAR(255) NOT NULL,
   about TEXT DEFAULT '',
   img BYTEA DEFAULT NULL,
+  rating DECIMAL DEFAULT 0,
   prep_time recipe_time DEFAULT (0, 0),
   cook_time recipe_time DEFAULT (0, 0),
   tags tag ARRAY DEFAULT '{}',

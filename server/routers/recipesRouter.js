@@ -1,16 +1,35 @@
 import { Router } from "express";
 import { Recipe } from "../models/recipes.js";
 import { sequelize } from "../datasource.js";
+import { Op } from "sequelize";
+
+const sortOrderDict = {"descending": "DESC", "ascending": "ASC"}
 
 export const recipesRouter = Router();
 
 recipesRouter.get("/all", async (req, res) => {
   const limit = parseInt(req.query.numRecipes);
   const offset = (limit * req.query.page) - limit;
-  const filter = req.query.filter;
-  console.log("filter is ", filter)
+  const min = req.query.min;
+  const max = req.query.max;
+  const tags = req.query.tags;
+  const sortBy = req.query.sortBy;
+  const sortOrder = req.query.sortOrder;
   try {
     const recipes = await Recipe.findAll({
+      where: {
+        // [Op.and]: [{
+          rating: {
+              [Op.gte]: min,
+              [Op.lte]: max,
+          }
+        // } , {
+           
+        // }]
+      },
+      // order: [
+      //   []
+      // ],
       limit: limit,
       offset: offset,
       distinct: true,

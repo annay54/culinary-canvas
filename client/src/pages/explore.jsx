@@ -14,8 +14,16 @@ const Explore = () => {
   const [max, setMax] = React.useState(5);
   const [sortBy, setSortBy] = React.useState("rating");
   const [sortOrder, setSortOrder] = React.useState("descending");
-  // format of filter array from beginning to end: page, numRecipes, min, max, tags, sortBy, sortOrder
-  const [filter, setFilter] = React.useState([1, 10])
+  // format of filter array from beginning to end: page, numRecipes, min, max, sortBy, sortOrder, tags
+  const [filter, setFilter] = React.useState({
+    page: 1,
+    numRecipes: 10,
+    min: 0,
+    max: 5,
+    tags: [],
+    sortBy: sortBy,
+    sortOrder: sortOrder,
+  })
 
   // Runs below code on page load and when deps parameter value is updated
   useEffect(() => {
@@ -53,7 +61,15 @@ const Explore = () => {
     }
 
     console.log(min, max, extractTags, sortBy, sortOrder)
-    setFilter([1, 10, min, max, extractTags, sortBy, sortOrder])
+    setFilter({
+      page: 1,
+      numRecipes: 10,
+      min: min,
+      max: max,
+      tags: extractTags,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    })
   }
 
   const FilterContent = ({isMobile = false}) => {
