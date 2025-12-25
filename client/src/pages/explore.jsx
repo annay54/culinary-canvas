@@ -7,7 +7,12 @@ import toast from "react-hot-toast";
 
 const Explore = () => {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"];
+  let tags = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Appetizer', 'Side Dish', 
+'Easy', 'Quick', 'Simple', 'One-Pot', 'No-Bake', 'Beginner-Friendly', 'Healthy', 'Low-Carb', 'Low-Calorie', 'High Protein', 
+'High Fiber', 'Vegan', 'Vegetarian', 'Gluten-Free', 'Dairy-Free', 'Keto', 'Paleo', 'High-Fiber', 'Sugar-Free', 'Low-Fat',
+'Baked', 'Grilled', 'Roasted', 'Fried', 'Slow Cooker', 'Instant Pot', 'Air Fryer', 'Steamed', 'Toasted', 'Kid-Friendly', 'BBQ', 
+'Comfort Food', 'Holiday', 'Italian', 'Mexican', 'Indian', 'Chinese', 'Japanese', 'Thai', 'Mediterranean', 'Middle Eastern', 
+'American', 'French', 'Korean', 'Turkish', 'Spanish', 'Arab', 'Vietnamese', 'Greek', 'Hong Kong', 'Indonesian'];
   const [selectTags, setSelectTags] = React.useState([]);
   const [recipes, setRecipes] = React.useState([]);
   const [min, setMin] = React.useState(0);
@@ -20,7 +25,7 @@ const Explore = () => {
     numRecipes: 10,
     min: 0,
     max: 5,
-    tags: [],
+    tags: tags,
     sortBy: sortBy,
     sortOrder: sortOrder,
   })
@@ -28,7 +33,7 @@ const Explore = () => {
   // Runs below code on page load and when deps parameter value is updated
   useEffect(() => {
     // fetch recipes from database
-    getAllTags().then()
+    // getAllTags().then((res) => {tags = res})
     toast.promise(
       getAllRecipes(filter).then((res) => {setRecipes(res)}).catch((err) => {console.error(err)}), {
         loading: "Loading recipes...",

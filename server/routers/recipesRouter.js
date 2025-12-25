@@ -12,20 +12,24 @@ recipesRouter.get("/all", async (req, res) => {
   const offset = (limit * req.query.page) - limit;
   const min = req.query.min;
   const max = req.query.max;
-  const tags = req.query.tags;
+  // first item in array is a placeholder, thus remove it
+  const tags = [...req.query.tags].splice(1);
   const sortBy = req.query.sortBy;
   const sortOrder = req.query.sortOrder;
   try {
     const recipes = await Recipe.findAll({
       where: {
-        // [Op.and]: [{
+        [Op.and]: [{
           rating: {
               [Op.gte]: min,
               [Op.lte]: max,
           }
-        // } , {
-           
-        // }]
+        } , {
+          // find recipes with at least one tag from list tags
+          tags: { [Op.overlap]: sequelize.cast(tags, 'tag[]') },
+          // find recipes with only tags in list tags
+          // tags: { [Op.contains]: sequelize.cast(tags, 'tag[]') },
+        }]
       },
       // order: [
       //   []
