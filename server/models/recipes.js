@@ -70,6 +70,10 @@ export const Recipe = sequelize.define("Recipes", {
     type: DataTypes.ARRAY(DataTypes.TEXT),
     defaultValue: [],
   },
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: sequelize.literal("CURRENT_TIMESTAMP")
+  }
 }, {
   timestamps: false,
   tableName: "recipes",

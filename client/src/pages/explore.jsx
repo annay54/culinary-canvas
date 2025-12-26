@@ -61,8 +61,13 @@ const Explore = () => {
     // selectTags is a Set object, not a list
     // create a list using selectTags
     let extractTags = []
-    for (const tag of selectTags) {
-      extractTags.push(tag)
+    if (selectTags.length == 0) {
+      extractTags = tags
+    }
+    else {
+      for (const tag of selectTags) {
+        extractTags.push(tag)
+      }
     }
 
     console.log(min, max, extractTags, sortBy, sortOrder)
@@ -160,7 +165,9 @@ const Explore = () => {
         >
           <Radio value="rating" classNames={{ label:"text-white" }}>Rating</Radio>
           <Radio value="create" classNames={{ label:"text-white" }}>Create date</Radio>
-          <Radio value="favourite" classNames={{ label:"text-white" }}>Favourite</Radio>
+          <Radio value="author" classNames={{ label:"text-white" }}>Author name</Radio>
+          <Radio value="recipe" classNames={{ label:"text-white" }}>Recipe name</Radio>
+          {/* <Radio value="favourite" classNames={{ label:"text-white" }}>Favourite</Radio> */}
           <Radio value="time" classNames={{ label:"text-white" }}>Recipe time</Radio>
         </RadioGroup>
         <hr></hr>

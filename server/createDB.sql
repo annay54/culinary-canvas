@@ -46,6 +46,7 @@ CREATE TABLE recipes (
   servings INTEGER DEFAULT 0,
   ingrs ingredient ARRAY DEFAULT '{}',
   steps TEXT ARRAY DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
   CONSTRAINT fk_recipe_author FOREIGN KEY (author) REFERENCES users(email) ON DELETE CASCADE ON UPDATE CASCADE
 );
 

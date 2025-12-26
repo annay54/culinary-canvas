@@ -3,6 +3,7 @@ import { Recipe } from "../models/recipes.js";
 import { sequelize } from "../datasource.js";
 import { Op } from "sequelize";
 
+const sortByDict = {"rating": "rating", "create": "created_at", "author": "author", "recipe": "recipe_name"}
 const sortOrderDict = {"descending": "DESC", "ascending": "ASC"}
 
 export const recipesRouter = Router();
@@ -16,6 +17,11 @@ recipesRouter.get("/all", async (req, res) => {
   const tags = [...req.query.tags].splice(1);
   const sortBy = req.query.sortBy;
   const sortOrder = req.query.sortOrder;
+  let orderBy = sortByDict[sortBy]
+  if (sortBy == "time") {
+    orderBy = sequelize.literal("((prep_time).hr + (cook_time).hr) * 60 + ((prep_time).min + (cook_time).min)")
+  }
+
   try {
     const recipes = await Recipe.findAll({
       where: {
@@ -31,9 +37,9 @@ recipesRouter.get("/all", async (req, res) => {
           // tags: { [Op.contains]: sequelize.cast(tags, 'tag[]') },
         }]
       },
-      // order: [
-      //   []
-      // ],
+      order: [
+        [orderBy, sortOrderDict[sortOrder]]
+      ],
       limit: limit,
       offset: offset,
       distinct: true,

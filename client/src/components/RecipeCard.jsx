@@ -20,7 +20,7 @@ const RecipeCard = ({name, author, image, rating}) => {
         <div className='flex flex-col p-4'>
             <Link href={""}><h3 className='text-primary text-lg xl:text-2xl font-semibold line-clamp-2'>{name}</h3></Link>
             <div className='gap-1 flex flex-row text-[14px] xl:text-base'>by 
-                <Link href={""} className='w-full truncate text-[14px] xl:text-base'>{author}</Link>
+                <Link href={""} className='w-full truncate text-[14px] xl:text-base'>{author.split("@")[0]}</Link>
             </div>
         </div>
 
