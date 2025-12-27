@@ -23,7 +23,7 @@ recipesRouter.get("/all", async (req, res) => {
   }
 
   try {
-    const recipes = await Recipe.findAll({
+    const { rows, count } = await Recipe.findAndCountAll({
       where: {
         [Op.and]: [{
           rating: {
@@ -45,7 +45,10 @@ recipesRouter.get("/all", async (req, res) => {
       distinct: true,
     });
 
-    return res.json(recipes);
+    return res.json({ 
+      recipes: rows,
+      count: count,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Failed to fetch recipes." });

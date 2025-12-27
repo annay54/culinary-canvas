@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 
-const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
-    const [currentPage, setCurrentPage] = useState(1);
+const Pagination = ({pageLength, currentPage, setCurrentPage, mainColour, textColour, hoverColour}) => {
+    // const [currentPage, setCurrentPage] = useState(currentPg);
     const [leftButtons, setLeftButtons] = useState([]);
     const [rightButtons, setRightButtons] = useState([]);
     const [middleButtons, setMiddleButtons] = useState([]);

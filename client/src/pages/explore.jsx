@@ -13,16 +13,20 @@ const Explore = () => {
 'Baked', 'Grilled', 'Roasted', 'Fried', 'Slow Cooker', 'Instant Pot', 'Air Fryer', 'Steamed', 'Toasted', 'Kid-Friendly', 'BBQ', 
 'Comfort Food', 'Holiday', 'Italian', 'Mexican', 'Indian', 'Chinese', 'Japanese', 'Thai', 'Mediterranean', 'Middle Eastern', 
 'American', 'French', 'Korean', 'Turkish', 'Spanish', 'Arab', 'Vietnamese', 'Greek', 'Hong Kong', 'Indonesian'];
-  const [selectTags, setSelectTags] = React.useState([]);
+  const [selectTags, setSelectTags] = React.useState(new Set());
   const [recipes, setRecipes] = React.useState([]);
   const [min, setMin] = React.useState(0);
   const [max, setMax] = React.useState(5);
   const [sortBy, setSortBy] = React.useState("rating");
   const [sortOrder, setSortOrder] = React.useState("descending");
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [maxPage, setMaxPage] = React.useState(1);
+  const numRecipes = 12; // keep it 12; maximum number of recipes in a page
+  const [filterTotal, setFilterTotal] = React.useState(0);
   // format of filter array from beginning to end: page, numRecipes, min, max, sortBy, sortOrder, tags
   const [filter, setFilter] = React.useState({
-    page: 1,
-    numRecipes: 10,
+    page: currentPage,
+    numRecipes: numRecipes,
     min: 0,
     max: 5,
     tags: tags,
@@ -34,12 +38,18 @@ const Explore = () => {
   useEffect(() => {
     // fetch recipes from database
     // getAllTags().then((res) => {tags = res})
+    filter.page = currentPage;
     toast.promise(
-      getAllRecipes(filter).then((res) => {setRecipes(res)}).catch((err) => {console.error(err)}), {
+      getAllRecipes(filter).then((res) => {
+          setRecipes(res.recipes);
+          const count = res.count;
+          setFilterTotal(count);
+          setMaxPage(Math.ceil(count / numRecipes));
+        }).catch((err) => {console.error(err)}), {
         loading: "Loading recipes...",
       }
     )
-  }, [filter]);
+  }, [filter, currentPage]);
 
   const handleMinChange = (selectedOption) => {
     setMin(parseInt(selectedOption.target.value))
@@ -61,7 +71,8 @@ const Explore = () => {
     // selectTags is a Set object, not a list
     // create a list using selectTags
     let extractTags = []
-    if (selectTags.length == 0) {
+    console.log("selected tags:", selectTags, selectTags.size)
+    if (selectTags.size == 0) {
       extractTags = tags
     }
     else {
@@ -71,9 +82,11 @@ const Explore = () => {
     }
 
     console.log(min, max, extractTags, sortBy, sortOrder)
+    // when applying filters, reset current page
+    setCurrentPage(1);
     setFilter({
-      page: 1,
-      numRecipes: 10,
+      page: currentPage,
+      numRecipes: numRecipes,
       min: min,
       max: max,
       tags: extractTags,
@@ -228,7 +241,7 @@ const Explore = () => {
             {/* Number of results shown from search */}
             <div className="text-secondary w-11/12">
               <hr className="border-primary border-1"></hr>
-              <p className="text-textColor font-normal text-base my-2 px-4">{recipes.length} out of {recipes.length} results</p>
+              <p className="text-textColor font-normal text-base my-2 px-4">{recipes.length} out of {filterTotal} results</p>
               <hr className="border-primary border-1"></hr>
             </div>
             {/* Result recipes from search */}
@@ -245,7 +258,7 @@ const Explore = () => {
           </div>
           {/* Pagination */}
           <div className="pt-4 pb-8">
-            <Pagination pageLength={4} mainColour="secondary" textColour="white" hoverColour="" />
+            <Pagination pageLength={maxPage} currentPage={currentPage} setCurrentPage={setCurrentPage} mainColour="secondary" textColour="white" hoverColour="" />
           </div>
         </div>
       </div>
