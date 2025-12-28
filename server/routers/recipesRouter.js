@@ -11,6 +11,7 @@ export const recipesRouter = Router();
 recipesRouter.get("/all", async (req, res) => {
   const limit = parseInt(req.query.numRecipes);
   const offset = (limit * req.query.page) - limit;
+  const search = req.query.search;
   const min = req.query.min;
   const max = req.query.max;
   // first item in array is a placeholder, thus remove it
@@ -35,6 +36,16 @@ recipesRouter.get("/all", async (req, res) => {
           tags: { [Op.overlap]: sequelize.cast(tags, 'tag[]') },
           // find recipes with only tags in list tags
           // tags: { [Op.contains]: sequelize.cast(tags, 'tag[]') },
+        } , {
+            [Op.or]: [{
+            recipe_name: {
+              [Op.iLike]: `%${search}%`
+            }
+          }, {
+            author: {
+              [Op.iLike]: `%${search}%@%`
+            }
+          }]
         }]
       },
       order: [

@@ -12,7 +12,6 @@ const Pagination = ({pageLength, currentPage, setCurrentPage, mainColour, textCo
     }, [pageLength]);
 
     const handlePageChange = (index) => {
-        console.log('index', index);
         if (pageLength >= 6)  {
             if (index <= 2) {
                 console.log('here 1');

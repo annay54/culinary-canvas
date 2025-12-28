@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import RecipeCard from '@/components/RecipeCard';
 import Pagination from "@/components/Pagination";
 import { Select, SelectItem, RadioGroup, Radio } from "@nextui-org/react";
-import { getAllRecipes, getAllTags } from "./util/recipeAPI";
+import { getAllRecipes, getAllTags, getSearchRecipes } from "./util/recipeAPI";
 import toast from "react-hot-toast";
 
 const Explore = () => {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  let tags = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Appetizer', 'Side Dish', 
+  const tags = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Appetizer', 'Side Dish', 
 'Easy', 'Quick', 'Simple', 'One-Pot', 'No-Bake', 'Beginner-Friendly', 'Healthy', 'Low-Carb', 'Low-Calorie', 'High Protein', 
 'High Fiber', 'Vegan', 'Vegetarian', 'Gluten-Free', 'Dairy-Free', 'Keto', 'Paleo', 'High-Fiber', 'Sugar-Free', 'Low-Fat',
 'Baked', 'Grilled', 'Roasted', 'Fried', 'Slow Cooker', 'Instant Pot', 'Air Fryer', 'Steamed', 'Toasted', 'Kid-Friendly', 'BBQ', 
@@ -22,7 +22,8 @@ const Explore = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [maxPage, setMaxPage] = React.useState(1);
   const numRecipes = 12; // keep it 12; maximum number of recipes in a page
-  const [filterTotal, setFilterTotal] = React.useState(0);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [recipeTotal, setRecipeTotal] = React.useState(0);
   // format of filter array from beginning to end: page, numRecipes, min, max, sortBy, sortOrder, tags
   const [filter, setFilter] = React.useState({
     page: currentPage,
@@ -38,12 +39,13 @@ const Explore = () => {
   useEffect(() => {
     // fetch recipes from database
     // getAllTags().then((res) => {tags = res})
+
     filter.page = currentPage;
     toast.promise(
-      getAllRecipes(filter).then((res) => {
+      getAllRecipes(searchQuery, filter).then((res) => {
           setRecipes(res.recipes);
           const count = res.count;
-          setFilterTotal(count);
+          setRecipeTotal(count);
           setMaxPage(Math.ceil(count / numRecipes));
         }).catch((err) => {console.error(err)}), {
         loading: "Loading recipes...",
@@ -93,6 +95,29 @@ const Explore = () => {
       sortBy: sortBy,
       sortOrder: sortOrder,
     })
+  }
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" || e.type === "click") {
+      const search = e.target.value || document.getElementById("searchBar").value;
+      setSearchQuery(search);
+      // reset selected filters and current page
+      setCurrentPage(1);
+      setMin(0);
+      setMax(5);
+      setSelectTags(new Set());
+      setSortBy("rating");
+      setSortOrder("descending");
+      setFilter({
+        page: currentPage,
+        numRecipes: numRecipes,
+        min: min,
+        max: max,
+        tags: tags,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+      })
+    }
   }
 
   const FilterContent = ({isMobile = false}) => {
@@ -230,18 +255,21 @@ const Explore = () => {
             <h1 className="text-secondary">Explore</h1>
 
             {/* Search bar  */}
-            <div className="border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
-              <i aria-hidden className="fa-solid fa-search text-base"></i>
+            <div className="flex flex-row-reverse justify-between items-center border-2 border-solid border-primary text-primary bg-white py-0 px-3 my-4 h-10 w-4/5 rounded-xl">
+              <i aria-hidden onClick={handleSearch} className="fa-solid fa-search text-base"></i>
               <input
+                id="searchBar"
                 type="text"
                 placeholder="Search for recipes or creators"
-                className=" border-none focus:outline-none font-normal text-base h-9 py-0 w-11/12 placeholder-primary">
+                className=" border-none focus:outline-none font-normal text-base h-9 p-0 w-11/12 placeholder-primary"
+                onKeyUp={handleSearch}
+                >
               </input>
             </div>
             {/* Number of results shown from search */}
             <div className="text-secondary w-11/12">
               <hr className="border-primary border-1"></hr>
-              <p className="text-textColor font-normal text-base my-2 px-4">{recipes.length} out of {filterTotal} results</p>
+              <p className="text-textColor font-normal text-base my-2 px-4">{recipes.length} out of {recipeTotal} results</p>
               <hr className="border-primary border-1"></hr>
             </div>
             {/* Result recipes from search */}

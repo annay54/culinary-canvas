@@ -1,5 +1,7 @@
+const USERS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/users`
+
 export async function postRegister(userData) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/register`, {
+  const res = await fetch(`${USERS_API_URL}/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -15,7 +17,7 @@ export async function postRegister(userData) {
 }
 
 export async function getUserByEmail(userData) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/signin`, {
+  const res = await fetch(`${USERS_API_URL}/signin`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
