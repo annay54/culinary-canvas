@@ -4,7 +4,6 @@ import {Checkbox} from "@nextui-org/checkbox";
 import { useSession } from "next-auth/react";
 import { signInAction } from "@/actions/signIn";
 import { signIn } from "next-auth/react";
-import { getUserByEmail } from "@/pages/util/userAPI.js"
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -18,7 +17,7 @@ export default function Login () {
   if (session) {
     return (
       <div className="flex flex-col w-full h-screen gap-2 md:gap-5 items-center justify-center text-secondary">
-        <i className="fa-solid fa-triangle-exclamation text-3xl md:text-5xl"></i>
+        <i aria-hidden className="fa-solid fa-triangle-exclamation text-3xl md:text-5xl"></i>
         <p className="text-base mx-8 lg:text-xl font-semibold">You are already signed in with the email {session.user.email}. Please logout before trying again. ${session.expires}</p>
       </div>
     )
@@ -36,26 +35,30 @@ export default function Login () {
         if (res.errors?.email) {
           dict['email'] = res.errors.email
         }
+        if (res.errors?.password) {
+          dict['password'] = res.errors.password
+        }
         setError(dict)
       }
-    })
+      else {
+        // Create user session
+        const authPromise = signIn('credentials', {
+          email: formData.get("email"),
+          password: formData.get("password"),
+          redirect: false,
+        }).then(({ ok, error }) => {
+          if (ok) {
+            console.log("login successful, now redirecting to home page.")
+            router.push('/')
+          } else {
+            toast.error("Login failed. Incorrect username or password.", { id: "loginfailed" })
+          }
+        })
 
-    // Create user session
-    const authPromise = signIn('credentials', {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      redirect: false,
-    }).then(({ ok, error }) => {
-      if (ok) {
-        console.log("login successful, now redirecting to home page.")
-        router.push('/')
-      } else {
-        toast.error("Login failed. Incorrect username or password.", { id: "loginfailed" })
+        toast.promise(authPromise, {
+          loading: "Logging in...",
+        })
       }
-    })
-
-    toast.promise(authPromise, {
-      loading: "Loading data...",
     })
   }
 

@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 // import { Pool, Client } from "pg"
 import * as dotenv from "dotenv";
 import { usersRouter } from "./routers/usersRouter.js";
+import { recipesRouter } from "./routers/recipesRouter.js";
 import { sequelize } from "./datasource.js";
 
 const app = express();
@@ -28,6 +29,7 @@ try {
 
 // API route to fetch data
 app.use("/api/users", usersRouter)
+app.use("/api/recipes", recipesRouter)
 
 // Run application
 app.listen(process.env.APP_PORT, (err) => {

@@ -38,6 +38,7 @@ CREATE TABLE recipes (
   author VARCHAR(255) NOT NULL,
   about TEXT DEFAULT '',
   img BYTEA DEFAULT NULL,
+  rating DECIMAL DEFAULT 0,
   prep_time recipe_time DEFAULT (0, 0),
   cook_time recipe_time DEFAULT (0, 0),
   tags tag ARRAY DEFAULT '{}',
@@ -45,6 +46,7 @@ CREATE TABLE recipes (
   servings INTEGER DEFAULT 0,
   ingrs ingredient ARRAY DEFAULT '{}',
   steps TEXT ARRAY DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
   CONSTRAINT fk_recipe_author FOREIGN KEY (author) REFERENCES users(email) ON DELETE CASCADE ON UPDATE CASCADE
 );
 

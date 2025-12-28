@@ -139,7 +139,7 @@ const CreateRecipe = () => {
           onClick={() => {
             setEditList(editList.map((value, i) => i === index.index ? true : value))
           }}>
-          <i className="fa-regular fa-pen-to-square text-white w-5 h-5"></i>
+          <i aria-hidden className="fa-regular fa-pen-to-square text-white w-5 h-5"></i>
         </button>
       )
     }
@@ -153,7 +153,7 @@ const CreateRecipe = () => {
             // update editList to reflect the new list with all values set to false values
             setEditList(new Array(displayList.length).fill(false))
           }}>
-          <i className="fa-regular fa-trash-can text-white w-5 h-5"></i>
+          <i aria-hidden className="fa-regular fa-trash-can text-white w-5 h-5"></i>
         </button>
       )
     }
@@ -174,7 +174,7 @@ const CreateRecipe = () => {
             }
             setEditList(editList.map((value, i) => i === index.index ? false : value))
         }}>
-          <i className="fa-solid fa-check text-white w-5 h-5"></i>
+          <i aria-hidden className="fa-solid fa-check text-white w-5 h-5"></i>
         </button>
       )
     }
@@ -185,7 +185,7 @@ const CreateRecipe = () => {
           onClick={() => {
             setEditList(editList.map((value, i) => i === index.index ? false : value))
           }}>
-          <i className="fa-solid fa-xmark text-white w-5 h-5"></i>
+          <i aria-hidden className="fa-solid fa-xmark text-white w-5 h-5"></i>
         </button>
       )
     }
@@ -318,7 +318,7 @@ const CreateRecipe = () => {
             <h3 className="text-secondary font-medium">Upload a picture of your recipe</h3>
             <p>Recommended size: 800x400 pixels</p>
             <div className="flex flex-col w-full h-56 bg-white border-2 border-primary rounded-lg items-center justify-center">
-              <i className="fa-solid fa-image text-4xl text-primary"></i>
+              <i aria-hidden className="fa-solid fa-image text-4xl text-primary"></i>
               <h3 className="font-medium">Drag & drop or browse</h3>
               <p className="text-gray-600 font-normal text-base">Supports: JPEG, JPG, PNG</p>
             </div>
@@ -352,7 +352,7 @@ const CreateRecipe = () => {
             <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-center" onClick={saveRecipe}>Save</button>
             <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleNextStep}>
               Next
-              <i className="fa-solid fa-arrow-right ml-2"></i>
+              <i aria-hidden className="fa-solid fa-arrow-right ml-2"></i>
             </button>
           </div>
         </>
@@ -396,12 +396,12 @@ const CreateRecipe = () => {
             <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" onClick={saveRecipe}>Save</button>
             <div className="flex flex-row gap-5">
               <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleBackStep}>
-                <i className="fa-solid fa-arrow-left mr-2"></i>
+                <i aria-hidden className="fa-solid fa-arrow-left mr-2"></i>
                 Back
               </button>
               <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleNextStep}>
                 Next
-                <i className="fa-solid fa-arrow-right ml-2"></i>
+                <i aria-hidden className="fa-solid fa-arrow-right ml-2"></i>
               </button>
             </div>
           </div>
@@ -431,12 +431,12 @@ const CreateRecipe = () => {
             <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" onClick={saveRecipe}>Save</button>
             <div className="flex flex-row gap-5">
               <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleBackStep}>
-                <i className="fa-solid fa-arrow-left mr-2"></i>
+                <i aria-hidden className="fa-solid fa-arrow-left mr-2"></i>
                 Back
               </button>
               <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleNextStep}>
                 Next
-                <i className="fa-solid fa-arrow-right ml-2"></i>
+                <i aria-hidden className="fa-solid fa-arrow-right ml-2"></i>
               </button>
             </div>
           </div>
@@ -452,7 +452,7 @@ const CreateRecipe = () => {
 
           <div className="flex flex-row gap-5 w-fit self-start sm:self-end py-10">
             <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleBackStep}>
-              <i className="fa-solid fa-arrow-left mr-2"></i>
+              <i aria-hidden className="fa-solid fa-arrow-left mr-2"></i>
               Back
             </button>
             <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={submitRecipe}>Submit</button>
