@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Avatar } from "@nextui-org/avatar";
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 import RecipeCard from "@/components/RecipeCard";
 import Pagination from "@/components/Pagination";
 import Review from "@/components/Review";
+import { useSession } from "next-auth/react";
+import { getUserInfo } from "../util/userAPI";
 
 export default function ({ slug }) {
+  const { data: session } = useSession()
+
   const navSection = [
     { name: "Profile", icon: "fa-user" }, // first element is also the default selected section
     { name: "Favourite Recipes", icon: "fa-heart" },
@@ -29,6 +33,14 @@ export default function ({ slug }) {
       instagram: "https://instagram.com",
     },
   }
+
+  useEffect(() => {
+    console.log(slug)
+    if (session) {
+      console.log(session.user.email)
+      getUserInfo()
+    }
+  }, [session])
 
   const Social = ({ icon, link }) => {
     return (
