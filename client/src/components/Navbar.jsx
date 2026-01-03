@@ -36,7 +36,8 @@ const Navbar = () => {
               color='primary'
               variant='flat'
             >
-              <DropdownItem href={'/account/' + session.user.email.split("@")[0] + '-' + session.user.id} className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
+              {/* encode the symbol @ as the string '%40'  */}
+              <DropdownItem href={'/account/' + session.user.email.split("@")[0] + '%40' + session.user.id} className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
               <DropdownItem href='/create_recipe' className='hover:no-underline py-2'><p>Create recipe</p></DropdownItem>
               <DropdownItem className='hover:no-underline py-2'>
                 <button onClick={signOut} className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>

@@ -35,10 +35,12 @@ export default function ({ slug }) {
   }
 
   useEffect(() => {
-    console.log(slug)
-    if (session) {
-      console.log(session.user.email)
-      getUserInfo()
+    const username = slug.split("@")[0]
+    const id = slug.split("@")[1]
+    console.log("username and id:", username, id)
+    if (session && session.user.id == id && session.user.email.split("@")[0] == username) {
+      console.log("User dashboard; this is your account")
+      // getUserInfo()
     }
   }, [session])
 
@@ -301,8 +303,8 @@ export default function ({ slug }) {
             <hr className='w-full border-primary border-1'/>
           </div>
         }
-        {reviews.map((review) => (
-          <div>
+        {reviews.map((review, index) => (
+          <div key={index}>
             <Review 
               type='recipe'
               name={review.recipe} 
@@ -523,13 +525,13 @@ export default function ({ slug }) {
       {/* Side navigation bar for computer screen size */}
       <div className="hidden md:flex flex-col py-2 min-w-48 w-1/5 bg-primary text-white">
         {navSection.map((section, index) => (
-          <>
+          <div key={index}>
             <div className={`flex flex-row items-center gap-2 px-6 py-3 hover:cursor-pointer ${selectSection.name === section.name ? "bg-secondary" : "hover:bg-secondary hover:bg-opacity-60"}`} onClick={() => setSelectSection(section)}>
               <i aria-hidden className={`fa-solid ${section.icon} text-lg`}></i>
               <h3 className="text-xl">{section.name}</h3>
             </div>
             <hr className="border-white w-11/12 self-center"></hr>
-          </>
+          </div>
         ))}
       </div>
       {/* Top navigation bar for mobile screen size */}
@@ -544,7 +546,7 @@ export default function ({ slug }) {
       </div>
       <div className={`md:hidden flex flex-col bg-primary text-white w-full h-fit ${showSection ? "flex" : "hidden"}`}>
         {navSection.map((section, index) => (
-          <>
+          <div key={index}>
             {section.name !== selectSection.name && <>
               <div className={`flex flex-row items-center gap-2 px-6 py-3 hover:bg-secondary hover:bg-opacity-60 hover:cursor-pointer`} 
                 onClick={() => {setSelectSection(section); setShowSection(false)}}
@@ -554,7 +556,7 @@ export default function ({ slug }) {
               </div>
               <hr className="border-white w-11/12 self-center"></hr>
             </>}
-          </>
+          </div>
         ))}
       </div>
       {/* Content displayed */}
