@@ -54,3 +54,51 @@ usersRouter.post("/signin", async (req, res) => {
     email: userExist.email,
   });
 });
+
+usersRouter.get("/info", async (req, res) => {
+  const uid = parseInt(req.query.id)
+  console.log("start")
+  const userExist = await User.findOne({
+    where: { uid: uid },
+    attributes: ["uid", "full_name", "email", "profile_img", "social", "location", "about", "privacy", "custom_privacy", "show_email" ],
+  });
+
+  if (userExist === null) {
+    console.log("User does not exist")
+    return res.status(401).json({ error: "User does not exist" });
+  }
+
+  // transforming fetched social and custom_privacy database data from string to list
+  const socialList = userExist.social.substring(1, userExist.social.length - 1).split(",")
+  let customPrivacyList = []
+  for (const elem of userExist.custom_privacy.substring(1, userExist.custom_privacy.length - 1).split(",")) {
+    if (elem === "t") {
+      customPrivacyList.push(true)
+    }
+    else {
+      customPrivacyList.push(false)
+    }
+  }
+
+  return res.json({
+    uid: userExist.uid,
+    full_name: userExist.full_name,
+    email: userExist.email,
+    profile_img: userExist.profile_img,
+    social: {
+      facebook: socialList[0],
+      youtube: socialList[1],
+      tiktok: socialList[2],
+      instagram: socialList[3],
+    },
+    location: userExist.location,
+    about: userExist.about,
+    privacy: userExist.privacy,
+    custom_privacy: {
+      prof: customPrivacyList[0], 
+      review: customPrivacyList[1], 
+      fav: customPrivacyList[2],
+    },
+    show_email: userExist.show_email,
+  });
+});

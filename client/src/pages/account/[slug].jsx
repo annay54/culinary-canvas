@@ -7,6 +7,7 @@ import Pagination from "@/components/Pagination";
 import Review from "@/components/Review";
 import { useSession } from "next-auth/react";
 import { getUserInfo } from "../util/userAPI";
+import toast from "react-hot-toast";
 
 export default function ({ slug }) {
   const { data: session } = useSession()
@@ -20,28 +21,80 @@ export default function ({ slug }) {
   ]
   const [selectSection, setSelectSection] = useState(navSection[0]);
   const [showSection, setShowSection] = useState(false);
-  const profile = {
-    name: "John Doe",
-    location: "Toronto, ON",
-    description: "Here at CulinaryCanvas, we provide you delicious, easy-to-follow recipes written by fellow food enthusiasts. CulinaryCanvas forms a community of kitchen experts and food lovers who spreads inspiration to one another by sharing culinary creations and experiences.",
-    email: "email@email.com",
-    phone: "123-123-1234",
+  const [userProfile, setUserProfile] = useState({
+    name: "",
+    username: "",
+    description: "",
+    email: "",
+    location: "",
+    about: "",
     social: {
-      facebook: "https://facebook.com",
-      twitter: "https://twitter.com",
-      linkedin: "https://linkedin.com",
-      instagram: "https://instagram.com",
+      facebook: "",
+      youtube: "",
+      tiktok: "",
+      instagram: "",
     },
-  }
+    profile_img: null,
+    privacy: "public",
+    custom_privacy: {
+      prof: true, 
+      review: true, 
+      fav: true,
+    },
+    show_email: "false",
+  })
+  // const profile = {
+  //   name: "John Doe",
+  //   username: "john-doe",
+  //   location: "Toronto, ON",
+  //   description: "Here at CulinaryCanvas, we provide you delicious, easy-to-follow recipes written by fellow food enthusiasts. CulinaryCanvas forms a community of kitchen experts and food lovers who spreads inspiration to one another by sharing culinary creations and experiences.",
+  //   email: "email@email.com",
+  //   social: {
+  //     facebook: "https://facebook.com",
+  //     twitter: "https://twitter.com",
+  //     linkedin: "https://linkedin.com",
+  //     instagram: "https://instagram.com",
+  //   },
+  // }
 
   useEffect(() => {
     const username = slug.split("@")[0]
     const id = slug.split("@")[1]
     console.log("username and id:", username, id)
-    if (session && session.user.id == id && session.user.email.split("@")[0] == username) {
-      console.log("User dashboard; this is your account")
-      // getUserInfo()
-    }
+    toast.promise(
+      getUserInfo(id).then((res) => {
+          console.log("res is ", res)
+          setUserProfile({
+            name: res.full_name,
+            username: res.email.split("@")[0],
+            description: "",
+            email: res.email,
+            location: res.location,
+            about: res.about,
+            social: {
+              facebook: res.social.facebook,
+              youtube: res.social.youtube,
+              tiktok: res.social.tiktok,
+              instagram: res.social.instagram,
+            },
+            profile_img: res.profile_img,
+            privacy: res.privacy,
+            custom_privacy: {
+              prof: res.custom_privacy.prof, 
+              review: res.custom_privacy.review, 
+              fav: res.custom_privacy.fav,
+            },
+            show_email: res.show_email,
+          })
+          console.log("userProfile is ", userProfile)
+          if (session && session.user.id == id && session.user.email.split("@")[0] == username) {
+            console.log("User dashboard; this is your account")
+            // getUserInfo()
+          }
+        }).catch((err) => {console.error(err)}), {
+        loading: "Loading user information...",
+      }
+    )
   }, [session])
 
   const Social = ({ icon, link }) => {
@@ -58,8 +111,11 @@ export default function ({ slug }) {
         <div className="flex flex-row items-center gap-4">
           <Avatar className="w-20 h-20" />
           <div className="flex flex-col gap-2">
-            <h2 className="text-secondary">{profile.name}</h2>
-            <h3 className="text-xl font-normal">{profile.location}</h3>
+            <div className="flex gap-2 items-baseline">
+              <h2 className="text-secondary">{userProfile.name},</h2>
+              <h3 className="font-medium">{userProfile.username}</h3>
+            </div>
+            <h3 className="text-xl font-normal">{userProfile.location}</h3>
           </div>
         </div>
         <div className="flex flex-col min-[600px]:flex-row gap-5 min-[600px]:gap-3 justify-evenly w-full my-3">
@@ -87,19 +143,23 @@ export default function ({ slug }) {
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">About Me</h3>
-          <p>{profile.description}</p>
+          <p>{userProfile.description}</p>
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">Contact</h3>
           <div className='flex flex-row gap-4'>
-            <Social icon='facebook-f' link={profile.social.facebook} />
-            <Social icon='x-twitter' link={profile.social.twitter} />
-            <Social icon='linkedin-in' link={profile.social.linkedin} />
-            <Social icon='instagram' link={profile.social.instagram} />
+            {userProfile.social.facebook !== "" && <Social icon='facebook-f' link={userProfile.social.facebook} />}
+            {userProfile.social.youtube !== "" && <Social icon='youtube' link={userProfile.social.youtube} />}
+            {userProfile.social.tiktok !== "" && <Social icon='tiktok' link={userProfile.social.tiktok} />}
+            {userProfile.social.instagram !== "" && <Social icon='instagram' link={userProfile.social.instagram} />}
+            {/* <Social icon='facebook-f' link={userProfile.social.facebook} />
+            <Social icon='x-twitter' link={userProfile.social.twitter} />
+            <Social icon='linkedin-in' link={userProfile.social.linkedin} />
+            <Social icon='instagram' link={userProfile.social.instagram} /> */}
           </div>
           <div className="flex flex-row gap-3 mt-2">
             <i aria-hidden className="fa-solid fa-envelope text-primary text-xl"></i>
-            <p>{profile.email}</p>
+            <p>{userProfile.email}</p>
           </div>
         </div>
       </div>
@@ -346,20 +406,16 @@ export default function ({ slug }) {
             <div className="flex flex-col sm:flex-row flex-wrap gap-5 w-full">
               <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="name">Name</label>
-                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="name" name="name" defaultValue={profile.name} />
-              </div>
-              <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
-                <label className="text-secondary font-medium" htmlFor="phone">Phone number</label>
-                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="tel" id="phone" name="phone" defaultValue={profile.phone} />
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="name" name="name" defaultValue={userProfile.name} />
               </div>
               <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="location">Location</label>
-                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="location" name="location" defaultValue={profile.location} />
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="location" name="location" defaultValue={userProfile.location} />
               </div>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-secondary font-medium" htmlFor="description">About me</label>
-              <textarea className="w-full h-40 max-h-64 p-2 text-base border-2 border-primary rounded-lg" id="description" name="description" defaultValue={profile.description} />
+              <textarea className="w-full h-40 max-h-64 p-2 text-base border-2 border-primary rounded-lg" id="description" name="description" defaultValue={userProfile.description} />
             </div>
             <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
           </form>
@@ -369,19 +425,19 @@ export default function ({ slug }) {
             <div className="flex flex-row flex-wrap gap-5">
               <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="facebook">Facebook</label>
-                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="facebook" name="facebook" defaultValue={profile.social.facebook} />
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="facebook" name="facebook" defaultValue={userProfile.social.facebook} />
               </div>
               <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="twitter">Twitter</label>
-                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="twitter" name="twitter" defaultValue={profile.social.twitter} />
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="twitter" name="twitter" defaultValue={userProfile.social.twitter} />
               </div>
               <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="linkedin">Linkedin</label>
-                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="linkedin" name="linkedin" defaultValue={profile.social.linkedin} />
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="linkedin" name="linkedin" defaultValue={userProfile.social.linkedin} />
               </div>
               <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="instagram">Instagram</label>
-                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="instagram" name="instagram" defaultValue={profile.social.instagram} />
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="instagram" name="instagram" defaultValue={userProfile.social.instagram} />
               </div>
             </div>
             <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
@@ -460,7 +516,7 @@ export default function ({ slug }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-1 w-full max-w-64">
               <label className="text-secondary font-medium" htmlFor="email">Email</label>
-              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="email" id="email" name="email" defaultValue={profile.email} />
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="email" id="email" name="email" defaultValue={userProfile.email} />
             </div>
             <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
           </form>

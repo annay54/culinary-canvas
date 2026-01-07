@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import RecipeCard from '@/components/RecipeCard';
 import Pagination from "@/components/Pagination";
 import { Select, SelectItem, RadioGroup, Radio } from "@nextui-org/react";
-import { getAllRecipes, getAllTags, getSearchRecipes } from "./util/recipeAPI";
+import { getAllRecipes } from "./util/recipeAPI";
 import toast from "react-hot-toast";
 
 const Explore = () => {

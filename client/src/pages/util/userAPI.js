@@ -35,13 +35,15 @@ export async function getUserByEmail(userData) {
   return userInfo
 }
 
-export async function getUserInfo(email) {
-  const res = await fetch(`${USERS_API_URL}/info?email=${email}`, {
+export async function getUserInfo(id) {
+  const res = await fetch(`${USERS_API_URL}/info?id=${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     },
   })
+  const user = await res.json()
+  console.log(user)
 
-  return await res.json()
+  return user
 }

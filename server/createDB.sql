@@ -27,6 +27,7 @@ CREATE TABLE users (
   profile_img BYTEA DEFAULT NULL,
   social socials DEFAULT (NULL, NULL, NULL, NULL),
   location TEXT DEFAULT '',
+  about TEXT DEFAULT '',
   privacy privacy_options DEFAULT 'public',
   custom_privacy custom_options DEFAULT (true, true, true),
   show_email BOOLEAN DEFAULT false
