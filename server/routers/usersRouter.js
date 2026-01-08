@@ -56,7 +56,7 @@ usersRouter.post("/signin", async (req, res) => {
 });
 
 usersRouter.get("/info", async (req, res) => {
-  const uid = parseInt(req.query.id)
+  const uid = parseInt(req.query.value)
   console.log("start")
   const userExist = await User.findOne({
     where: { uid: uid },
@@ -80,7 +80,7 @@ usersRouter.get("/info", async (req, res) => {
     }
   }
 
-  return res.json({
+  return res.status(200).json({
     uid: userExist.uid,
     full_name: userExist.full_name,
     email: userExist.email,

@@ -36,7 +36,8 @@ export async function getUserByEmail(userData) {
 }
 
 export async function getUserInfo(id) {
-  const res = await fetch(`${USERS_API_URL}/info?id=${id}`, {
+  // param "value" in the fetch url is an user id
+  const res = await fetch(`${USERS_API_URL}/info?value=${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'

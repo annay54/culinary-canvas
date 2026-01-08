@@ -8,6 +8,7 @@ import Review from "@/components/Review";
 import { useSession } from "next-auth/react";
 import { getUserInfo } from "../util/userAPI";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function ({ slug }) {
   const { data: session } = useSession()
@@ -19,12 +20,13 @@ export default function ({ slug }) {
     { name: "Your Reviews", icon: "fa-star" },
     { name: "Settings", icon: "fa-gear" },
   ]
+  const router = useRouter();
   const [selectSection, setSelectSection] = useState(navSection[0]);
   const [showSection, setShowSection] = useState(false);
+  const [isUser, setIsUser] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "",
     username: "",
-    description: "",
     email: "",
     location: "",
     about: "",
@@ -64,34 +66,44 @@ export default function ({ slug }) {
     toast.promise(
       getUserInfo(id).then((res) => {
           console.log("res is ", res)
-          setUserProfile({
-            name: res.full_name,
-            username: res.email.split("@")[0],
-            description: "",
-            email: res.email,
-            location: res.location,
-            about: res.about,
-            social: {
-              facebook: res.social.facebook,
-              youtube: res.social.youtube,
-              tiktok: res.social.tiktok,
-              instagram: res.social.instagram,
-            },
-            profile_img: res.profile_img,
-            privacy: res.privacy,
-            custom_privacy: {
-              prof: res.custom_privacy.prof, 
-              review: res.custom_privacy.review, 
-              fav: res.custom_privacy.fav,
-            },
-            show_email: res.show_email,
-          })
-          console.log("userProfile is ", userProfile)
-          if (session && session.user.id == id && session.user.email.split("@")[0] == username) {
-            console.log("User dashboard; this is your account")
-            // getUserInfo()
+          // check if username in the slug matches to an existing user 
+          if (username !== res.email.split("@")[0]) {
+            console.log("user does not exist, username is ", username, " real username is", res.email.split("@")[0], " res status is ", res.status, "res is ", res)
+            // automatically redirects to the 404 page; fixes the 'Abort fetching component for route: "/404"' error
+            router.push("/notfound")
           }
-        }).catch((err) => {console.error(err)}), {
+          else {
+            setUserProfile({
+              name: res.full_name,
+              username: res.email.split("@")[0],
+              email: res.email,
+              location: res.location,
+              about: res.about,
+              social: {
+                facebook: res.social.facebook,
+                youtube: res.social.youtube,
+                tiktok: res.social.tiktok,
+                instagram: res.social.instagram,
+              },
+              profile_img: res.profile_img,
+              privacy: res.privacy,
+              custom_privacy: {
+                prof: res.custom_privacy.prof, 
+                review: res.custom_privacy.review, 
+                fav: res.custom_privacy.fav,
+              },
+              show_email: res.show_email,
+            })
+            console.log("userProfile is ", userProfile)
+            if (session && session.user.id == id && session.user.email.split("@")[0] == username) {
+              console.log("User dashboard; this is your account")
+              setIsUser(true)
+            }
+          }
+        }).catch((err) => {
+          // automatically redirects to the 404 page; fixes the 'Abort fetching component for route: "/404"' error
+          router.push("/notfound")
+        }), {
         loading: "Loading user information...",
       }
     )
@@ -110,8 +122,8 @@ export default function ({ slug }) {
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <div className="flex flex-row items-center gap-4">
           <Avatar className="w-20 h-20" />
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-2 items-baseline">
+          <div className="flex flex-col gap-0 md:gap-2">
+            <div className="flex flex-col md:flex-row gap-0 md:gap-2 items-baseline">
               <h2 className="text-secondary">{userProfile.name},</h2>
               <h3 className="font-medium">{userProfile.username}</h3>
             </div>
@@ -143,7 +155,7 @@ export default function ({ slug }) {
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">About Me</h3>
-          <p>{userProfile.description}</p>
+          <p>{userProfile.about}</p>
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">Contact</h3>
@@ -414,8 +426,8 @@ export default function ({ slug }) {
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-secondary font-medium" htmlFor="description">About me</label>
-              <textarea className="w-full h-40 max-h-64 p-2 text-base border-2 border-primary rounded-lg" id="description" name="description" defaultValue={userProfile.description} />
+              <label className="text-secondary font-medium" htmlFor="about">About me</label>
+              <textarea className="w-full h-40 max-h-64 p-2 text-base border-2 border-primary rounded-lg" id="about" name="about" defaultValue={userProfile.about} />
             </div>
             <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
           </form>
@@ -582,11 +594,14 @@ export default function ({ slug }) {
       <div className="hidden md:flex flex-col py-2 min-w-48 w-1/5 bg-primary text-white">
         {navSection.map((section, index) => (
           <div key={index}>
-            <div className={`flex flex-row items-center gap-2 px-6 py-3 hover:cursor-pointer ${selectSection.name === section.name ? "bg-secondary" : "hover:bg-secondary hover:bg-opacity-60"}`} onClick={() => setSelectSection(section)}>
-              <i aria-hidden className={`fa-solid ${section.icon} text-lg`}></i>
-              <h3 className="text-xl">{section.name}</h3>
-            </div>
-            <hr className="border-white w-11/12 self-center"></hr>
+            {/* If user is viewing their own profile, display settings in the nav bar */}
+            {(section.name !== "Settings" || (isUser && section.name === "Settings")) && <>
+              <div className={`flex flex-row items-center gap-2 px-6 py-3 hover:cursor-pointer ${selectSection.name === section.name ? "bg-secondary" : "hover:bg-secondary hover:bg-opacity-60"}`} onClick={() => setSelectSection(section)}>
+                <i aria-hidden className={`fa-solid ${section.icon} text-lg`}></i>
+                <h3 className="text-xl">{section.name}</h3>
+              </div>
+              <hr className="border-white w-11/12 self-center"></hr>
+            </>}
           </div>
         ))}
       </div>
@@ -603,7 +618,8 @@ export default function ({ slug }) {
       <div className={`md:hidden flex flex-col bg-primary text-white w-full h-fit ${showSection ? "flex" : "hidden"}`}>
         {navSection.map((section, index) => (
           <div key={index}>
-            {section.name !== selectSection.name && <>
+            {/* If user is viewing their own profile, display settings in the nav bar */}
+            {(section.name !== "Settings" || (isUser && section.name === "Settings")) && section.name !== selectSection.name && <>
               <div className={`flex flex-row items-center gap-2 px-6 py-3 hover:bg-secondary hover:bg-opacity-60 hover:cursor-pointer`} 
                 onClick={() => {setSelectSection(section); setShowSection(false)}}
               >
