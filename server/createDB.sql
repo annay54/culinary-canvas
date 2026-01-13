@@ -52,10 +52,9 @@ CREATE TABLE recipes (
 );
 
 CREATE TABLE fav_recipes (
-  user_email VARCHAR(255) NOT NULL,
+  uid INTEGER NOT NULL,
   recid INTEGER NOT NULL,
-  PRIMARY KEY (user_email, recid),
-  CONSTRAINT fk_fav_user FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE ON UPDATE CASCADE,
+  PRIMARY KEY (uid, recid),
   CONSTRAINT fk_fav_recipe FOREIGN KEY (recid) REFERENCES recipes(recid) ON DELETE SET NULL
 );
 
@@ -140,12 +139,12 @@ INSERT INTO recipes (recipe_name, author, about, prep_time, cook_time, tags, ser
       'Remove from heat and stir in the carrots and the rest of the green onions for garnish. Add sesame oil, soy sauce, and salt to taste.'
     ]);
 
-INSERT INTO fav_recipes (user_email, recid) VALUES 
-  ('john@email.com', 1),
-  ('john@email.com', 3),
-  ('mary_sue@email.com', 3),
-  ('notlarry@email.com', 1),
-  ('notlarry@email.com', 2);
+INSERT INTO fav_recipes (uid, recid) VALUES 
+  (1, 1),
+  (1, 3),
+  (2, 3),
+  (3, 1),
+  (3, 2);
 
 INSERT INTO reviews (author, recipe, comment, rating) VALUES 
   ('john@email.com', 1, 'This is the best pancake recipe I''ve ever tried. It''s so easy and quick to make. I love it!', 5),

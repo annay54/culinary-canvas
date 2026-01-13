@@ -1,11 +1,18 @@
 import { Router } from "express";
 import { User } from "../models/users.js";
+import { FavRecipes } from "../models/favRecipes.js";
+import { Recipe } from "../models/recipes.js";
 import bcrypt from "bcrypt";
 import { sequelize } from "../datasource.js";
 
 export const usersRouter = Router();
 const saltRounds = 16
 
+/**
+ * Create a new user account with the given name, email, and password by adding 
+ * a new row entity to the User table in the database. Return a message stating
+ * a successful or unsuccessful operation.
+ */
 usersRouter.post("/register", async (req, res) => {
   const userExist = await User.findOne({
     where: { email: req.body.userData.email },
@@ -37,6 +44,10 @@ usersRouter.post("/register", async (req, res) => {
   }
 });
 
+/**
+ * Check if user of a matching email and password exist in the database. Return 
+ * the id, name, and email of the user if exist. This is used when user logs in.
+ */
 usersRouter.post("/signin", async (req, res) => {
   console.log("req.body is", req.body)
   const userExist = await User.findOne({
@@ -55,6 +66,9 @@ usersRouter.post("/signin", async (req, res) => {
   });
 });
 
+/**
+ * Return all of user's information, except for the password, if exist.
+ */
 usersRouter.get("/info", async (req, res) => {
   const uid = parseInt(req.query.value)
   console.log("start")
@@ -101,4 +115,42 @@ usersRouter.get("/info", async (req, res) => {
     },
     show_email: userExist.show_email,
   });
+});
+
+/**
+ * Return all favourite recipes of the user with the specified identifier.
+ */
+usersRouter.get("/fav-recipes", async (req, res) => {
+  const limit = parseInt(req.query.numRecipes);
+  const offset = (limit * req.query.page) - limit;
+
+  try {
+    const { rows, count } = await FavRecipes.findAndCountAll({
+      include: [{
+        model: Recipe,
+      }],
+      where: { uid: 1 },
+      limit: limit,
+      offset: offset,
+      distinct: true,
+    });
+
+    console.log("rows is", rows, " count is", count)
+    // console.log("recipes is", rows[0].Recipe)
+
+    // Get and return only the recipes
+    let recipes = []
+    rows.forEach((elem) => {
+      recipes.push(elem.Recipe)
+    })
+    console.log("recipes is", recipes)
+
+    return res.json({ 
+      recipes: recipes,
+      count: count,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch recipes." });
+  }
 });

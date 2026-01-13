@@ -1,9 +1,10 @@
 import { sequelize } from "../datasource.js";
 import { DataTypes } from "sequelize";
+import { Recipe } from "../models/recipes.js"
 
 export const FavRecipes = sequelize.define("FavRecipes", {
-  user_email: {
-    type: DataTypes.STRING,
+  uid: {
+    type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey: true,
   },
@@ -16,3 +17,6 @@ export const FavRecipes = sequelize.define("FavRecipes", {
   timestamps: false,
   tableName: "fav_recipes",
 });
+
+Recipe.hasMany(FavRecipes, { foreignKey: "recid" });
+FavRecipes.belongsTo(Recipe, { foreignKey: "recid" });

@@ -26,8 +26,6 @@ export async function getUserByEmail(userData) {
   })
 
   const userInfo = await res.json()
-  console.log("returned user is ", userInfo)
-  console.log("res status is", res.status)
   if (userInfo.error) {
     return null
   }
@@ -44,7 +42,17 @@ export async function getUserInfo(id) {
     },
   })
   const user = await res.json()
-  console.log(user)
-
   return user
+}
+
+export async function getFavRecipes(id, page, numRecipes) {
+  const res = await fetch(`${USERS_API_URL}/fav-recipes?value=${id}&page=${page}&numRecipes=${numRecipes}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+
+  const recipes = await res.json()
+  return recipes
 }
