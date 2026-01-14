@@ -6,7 +6,7 @@ import RecipeCard from "@/components/RecipeCard";
 import Pagination from "@/components/Pagination";
 import Review from "@/components/Review";
 import { useSession } from "next-auth/react";
-import { getFavRecipes, getUserInfo } from "../util/userAPI";
+import { getFavRecipes, getUserRecipes, getUserInfo } from "../util/userAPI";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -29,7 +29,7 @@ export default function ({ slug }) {
   const [yourReviews, setYourReviews] = useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [maxPage, setMaxPage] = React.useState(1);
-  const numItems = 1; // keep it 12; maximum number of recipes/reviews in a page
+  const numItems = 12; // keep it 12; maximum number of recipes/reviews in a page
   const [itemTotal, setItemTotal] = React.useState(0); // number of recipes/reviews from database
   const [userProfile, setUserProfile] = useState({
     id: 0,
@@ -127,7 +127,7 @@ export default function ({ slug }) {
             const recipes = res.recipes;
             console.log("count is ", count, "recipes is ", recipes)
             setFavRecipes(res.recipes);
-            setItemTotal(2);
+            setItemTotal(count);
             setMaxPage(Math.ceil(count / numItems));
           }).catch((err) => {
             console.error(err)
@@ -138,6 +138,20 @@ export default function ({ slug }) {
     }
     // If user selected Your Recipes in the navbar, display the recipes created by user
     else if (selectSection.name === navSection[2]["name"]) {
+      toast.promise(
+        getUserRecipes(userProfile.email, currentPage, numItems).then((res) => {
+            const count = res.count;
+            const recipes = res.recipes;
+            console.log("count is ", count, "recipes is ", recipes)
+            setYourRecipes(res.recipes);
+            setItemTotal(count);
+            setMaxPage(Math.ceil(count / numItems));
+          }).catch((err) => {
+            console.error(err)
+          }), {
+          loading: "Loading recipes...",
+        }
+      )
     }
     // If user selected Your Reviewss in the navbar, display the reviews posted by user
     else if (selectSection.name === navSection[3]["name"]) {
@@ -277,39 +291,39 @@ export default function ({ slug }) {
           ))}
         </div>
         <div className="flex pt-4 pb-8 justify-center">
-          <Pagination pageLength={2} currentPage={currentPage} setCurrentPage={setCurrentPage} mainColour="secondary" textColour="white" hoverColour="" />
+          <Pagination pageLength={maxPage} currentPage={currentPage} setCurrentPage={setCurrentPage} mainColour="secondary" textColour="white" hoverColour="" />
         </div>
       </div>
     )
   }
 
   const YourRecipes = () => {
-    const recipes = [{
-      name: 'Steak 1',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 2',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 3',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 4',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 5',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }];
+    // const recipes = [{
+    //   name: 'Steak 1',
+    //   author: 'master_chief',
+    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    //   rating: 4,
+    // }, {
+    //   name: 'Steak 2',
+    //   author: 'master_chief',
+    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    //   rating: 4,
+    // }, {
+    //   name: 'Steak 3',
+    //   author: 'master_chief',
+    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    //   rating: 4,
+    // }, {
+    //   name: 'Steak 4',
+    //   author: 'master_chief',
+    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    //   rating: 4,
+    // }, {
+    //   name: 'Steak 5',
+    //   author: 'master_chief',
+    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    //   rating: 4,
+    // }];
 
     return (
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
@@ -317,22 +331,22 @@ export default function ({ slug }) {
         {/* Number of results shown from search */}
         <div className="text-secondary w-full">
           <hr className="border-primary border-1"></hr>
-          <p className="text-textColor font-normal text-base my-2 px-4">6 out of 20 results</p>
+          <p className="text-textColor font-normal text-base my-2 px-4">{yourRecipes.length} out of {itemTotal} results</p>
           <hr className="border-primary border-1"></hr>
         </div>
         <div className="flex flex-wrap gap-5 justify-center">
-          {recipes.length === 0 &&
+          {yourRecipes.length === 0 &&
             <div className='text-textColor flex flex-col justify-center items-center w-full'>
               <p className="my-32">No recipes created yet.</p>
               <hr className='w-full border-primary border-1'/>
             </div>
           }
-          {recipes.map((recipe, index) => (
-            <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+          {yourRecipes.map((recipe, index) => (
+            <RecipeCard key={index} name={recipe.recipe_name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
         </div>
         <div className="flex pt-4 pb-8 justify-center">
-          <Pagination pageLength={4} mainColour="secondary" textColour="white" hoverColour="" />
+          <Pagination pageLength={maxPage} currentPage={currentPage} setCurrentPage={setCurrentPage} mainColour="secondary" textColour="white" hoverColour="" />
         </div>
       </div>
     )

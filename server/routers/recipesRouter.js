@@ -84,3 +84,30 @@ recipesRouter.get("/tags", async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch tags." });
   }
 });
+
+/**
+ * Return all recipes created by the user with the specified identifier.
+ */
+recipesRouter.get("/user-created", async (req, res) => {
+  const limit = parseInt(req.query.numRecipes);
+  const offset = (limit * req.query.page) - limit;
+
+  try {
+    const { rows, count } = await Recipe.findAndCountAll({
+      where: { author: req.query.value },
+      limit: limit,
+      offset: offset,
+      distinct: true,
+    });
+
+    console.log("rows is", rows, " count is", count)
+
+    return res.json({ 
+      recipes: rows,
+      count: count,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch recipes." });
+  }
+});

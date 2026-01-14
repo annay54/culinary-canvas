@@ -125,17 +125,17 @@ usersRouter.get("/fav-recipes", async (req, res) => {
   const offset = (limit * req.query.page) - limit;
 
   try {
-    const { rows, count } = await FavRecipes.findAndCountAll({
+    const rows = await FavRecipes.findAll({
       include: [{
         model: Recipe,
       }],
-      where: { uid: 1 },
+      where: { uid: req.query.value },
       limit: limit,
       offset: offset,
       distinct: true,
     });
 
-    console.log("rows is", rows, " count is", count)
+    console.log("rows is", rows, " count is", rows.length)
     // console.log("recipes is", rows[0].Recipe)
 
     // Get and return only the recipes
@@ -147,7 +147,7 @@ usersRouter.get("/fav-recipes", async (req, res) => {
 
     return res.json({ 
       recipes: recipes,
-      count: count,
+      count: recipes.length,
     });
   } catch (error) {
     console.log(error);
