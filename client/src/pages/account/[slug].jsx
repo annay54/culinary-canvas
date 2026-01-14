@@ -6,7 +6,7 @@ import RecipeCard from "@/components/RecipeCard";
 import Pagination from "@/components/Pagination";
 import Review from "@/components/Review";
 import { useSession } from "next-auth/react";
-import { getFavRecipes, getUserRecipes, getUserInfo } from "../util/userAPI";
+import { getFavRecipes, getUserRecipes, getUserInfo, getUserReviews } from "../util/userAPI";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -127,7 +127,7 @@ export default function ({ slug }) {
             const recipes = res.recipes;
             console.log("count is ", count, "recipes is ", recipes)
             setFavRecipes(res.recipes);
-            setItemTotal(count);
+            setItemTotal(res.count);
             setMaxPage(Math.ceil(count / numItems));
           }).catch((err) => {
             console.error(err)
@@ -144,7 +144,7 @@ export default function ({ slug }) {
             const recipes = res.recipes;
             console.log("count is ", count, "recipes is ", recipes)
             setYourRecipes(res.recipes);
-            setItemTotal(count);
+            setItemTotal(res.count);
             setMaxPage(Math.ceil(count / numItems));
           }).catch((err) => {
             console.error(err)
@@ -153,8 +153,22 @@ export default function ({ slug }) {
         }
       )
     }
-    // If user selected Your Reviewss in the navbar, display the reviews posted by user
+    // If user selected Your Reviews in the navbar, display the reviews posted by user
     else if (selectSection.name === navSection[3]["name"]) {
+      toast.promise(
+        getUserReviews(userProfile.email, currentPage, numItems).then((res) => {
+            const count = res.count;
+            const reviews = res.reviews;
+            console.log("count is ", count, "reviews is ", reviews)
+            setYourReviews(res.reviews);
+            setItemTotal(res.count);
+            setMaxPage(Math.ceil(count / numItems));
+          }).catch((err) => {
+            console.error(err)
+          }), {
+          loading: "Loading reviews...",
+        }
+      )
     }
   }, [selectSection, currentPage])
 
@@ -228,48 +242,7 @@ export default function ({ slug }) {
   }
 
   const FavouriteRecipes = () => {
-    // const recipes = [{
-    //   name: 'Steak 1',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 2',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 3',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 4',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 5',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 6',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 7',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 8',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }];
-
+    
     return (
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <h2 className="text-secondary">Favourite Recipes</h2>
@@ -279,7 +252,7 @@ export default function ({ slug }) {
           <p className="text-textColor font-normal text-base my-2 px-4">{favRecipes.length} out of {itemTotal} results</p>
           <hr className="border-primary border-1"></hr>
         </div>
-        <div className="flex flex-wrap gap-5 justify-center">
+        <div className="flex flex-wrap gap-5 justify-start">
           {favRecipes.length === 0 &&
             <div className='text-textColor flex flex-col justify-center items-center w-full'>
               <p className="my-32">No favourite recipes added yet.</p>
@@ -298,33 +271,7 @@ export default function ({ slug }) {
   }
 
   const YourRecipes = () => {
-    // const recipes = [{
-    //   name: 'Steak 1',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 2',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 3',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 4',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }, {
-    //   name: 'Steak 5',
-    //   author: 'master_chief',
-    //   image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //   rating: 4,
-    // }];
-
+    
     return (
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <h2 className="text-secondary">Your Recipes</h2>
@@ -334,7 +281,7 @@ export default function ({ slug }) {
           <p className="text-textColor font-normal text-base my-2 px-4">{yourRecipes.length} out of {itemTotal} results</p>
           <hr className="border-primary border-1"></hr>
         </div>
-        <div className="flex flex-wrap gap-5 justify-center">
+        <div className="flex flex-wrap gap-5 justify-start">
           {yourRecipes.length === 0 &&
             <div className='text-textColor flex flex-col justify-center items-center w-full'>
               <p className="my-32">No recipes created yet.</p>
@@ -353,27 +300,12 @@ export default function ({ slug }) {
   }
 
   const YourReviews = () => {
-    const reviews = [{
-      recipe: 'Iloverecipes',
-      img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-      date: '05/26/2014',
-      review: "This is the best pancake recipe I've ever tried. It's so easy and quick to make. I love it!",
-      helpful: 20
-    }, {
-      recipe: 'foodie',
-      img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 3,
-      date: '06/13/2015',
-      review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur",
-      helpful: 0
-    }];
 
     return (
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <h2 className="text-secondary">Your Reviews</h2>
         <div className='flex flex-wrap md:flex-row pl-4 items-center justify-between border-t-2 border-b-2 border-primary'>
-          <p className="font-normal text-base">30 reviews</p>
+          <p className="font-normal text-base">{yourReviews.length} out of {itemTotal} results</p>
           <div className='flex flex-row gap-2'>
             {/* sort button */}
             <Dropdown>
@@ -418,25 +350,26 @@ export default function ({ slug }) {
           </div>
         </div>
         {/* list of reviews */}
-        {reviews.length === 0 &&
+        {yourReviews.length === 0 &&
           <div className='text-textColor flex flex-col justify-center items-center w-full'>
             <p className="my-32">No reviews created yet.</p>
             <hr className='w-full border-primary border-1'/>
           </div>
         }
-        {reviews.map((review, index) => (
+        {yourReviews.map((review, index) => (
           <div key={index}>
             <Review 
               type='recipe'
-              name={review.recipe} 
-              image={review.img}
+              name={review.Recipe.recipe_name} 
+              image={review.Recipe.img}
+              link={review.recipe}
               review={review}
             />
             <hr className="border-primary border-1" />
           </div>
         ))}            
         <div className='flex justify-center w-full'>
-          <Pagination pageLength={reviews.length} mainColour="secondary" textColour="white" hoverColour="" />
+          <Pagination pageLength={maxPage} currentPage={currentPage} setCurrentPage={setCurrentPage} mainColour="secondary" textColour="white" hoverColour="" />
         </div>
       </div>
     )

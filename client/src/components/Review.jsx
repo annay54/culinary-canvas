@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-const Review = ({type, image, name, review}) => {
+const Review = ({type, image, name, link, review}) => {
   // type represent whether the review is in the recipe page or user dashboard
   // type is either 'recipe' or 'user', and image and name correspond to the type value
 
@@ -14,7 +14,7 @@ const Review = ({type, image, name, review}) => {
           className={`min-w-[80px] h-full object-cover ${type === "user" ? "rounded-full": "rounded-none"}`}
         />
         <Link 
-          href={""} 
+          href={`${type === "user" ? `/account/${link}` : `/recipe/${link}`}`} 
           className={`${type === "user" ? "text-tertiary hover:text-tertiary" : "text-primary"} text-2xl font-sans font-semibold text-ellipsis overflow-hidden whitespace-nowrap`}
         >
           {name}
@@ -25,10 +25,10 @@ const Review = ({type, image, name, review}) => {
         {[1, 2, 3, 4, 5].map((star, index) => (
           <i aria-hidden key={index} className={`fa-star text-secondary ${review.rating >= star ? 'fa-solid' : 'fa-regular'}`}></i>
         ))}
-        <p className='text-textColor ml-2'>{review.date}</p>
+        <p className='text-textColor ml-2'>{review.created_at}</p>
       </div>
       {/* Review comment and helpful count */}
-      <p className={`${type === "user" ? "text-tertiary" : "text-textColor"}`}>{review.review}</p>
+      <p className={`${type === "user" ? "text-tertiary" : "text-textColor"}`}>{review.comment}</p>
       <div className='flex flex-row gap-1'>
         <a href='' className='text-textColor hover:text-secondary font-normal'>
           <i aria-hidden className='fa-solid fa-thumbs-up mr-1'></i>

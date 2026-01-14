@@ -273,7 +273,7 @@ const Explore = () => {
               <hr className="border-primary border-1"></hr>
             </div>
             {/* Result recipes from search */}
-            <div className="flex flex-wrap p-6 gap-5 justify-center">
+            <div className="flex flex-wrap p-6 gap-5 px-12 justify-start">
               {recipes.length == 0 ? ( 
                 <p className="h-full">No recipes found! Try searching for a different recipe.</p>
               ) : (

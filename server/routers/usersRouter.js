@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { User } from "../models/users.js";
 import { FavRecipes } from "../models/favRecipes.js";
+import { Review } from "../models/reviews.js";
 import { Recipe } from "../models/recipes.js";
 import bcrypt from "bcrypt";
 import { sequelize } from "../datasource.js";
@@ -125,6 +126,9 @@ usersRouter.get("/fav-recipes", async (req, res) => {
   const offset = (limit * req.query.page) - limit;
 
   try {
+    // separately call findAll and count, instead of using findAndCountAll,
+    // due to usage of the include option (ex., SQL JOIN);
+    // otherwise not accurate count
     const rows = await FavRecipes.findAll({
       include: [{
         model: Recipe,
@@ -133,6 +137,10 @@ usersRouter.get("/fav-recipes", async (req, res) => {
       limit: limit,
       offset: offset,
       distinct: true,
+    });
+
+    const count = await FavRecipes.count({
+      where: { uid: req.query.value },
     });
 
     console.log("rows is", rows, " count is", rows.length)
@@ -147,7 +155,45 @@ usersRouter.get("/fav-recipes", async (req, res) => {
 
     return res.json({ 
       recipes: recipes,
-      count: recipes.length,
+      count: count,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch recipes." });
+  }
+});
+
+/**
+ * Return all favourite recipes of the user with the specified identifier.
+ */
+usersRouter.get("/reviews", async (req, res) => {
+  const limit = parseInt(req.query.numRecipes);
+  const offset = (limit * req.query.page) - limit;
+
+  try {
+    // separately call findAll and count, instead of using findAndCountAll,
+    // due to usage of the include option (ex., SQL JOIN); 
+    // otherwise, not accurate count
+    const rows = await Review.findAll({
+      include: [{
+        model: Recipe,
+        attributes: ["recipe_name", "img"],
+      }],
+      where: { author: req.query.value },
+      limit: limit,
+      offset: offset,
+      distinct: true,
+    });
+    
+    const count = await Review.count({
+      where: { author: req.query.value },
+    });
+
+    console.log("count is", count)
+
+    return res.json({ 
+      reviews: rows,
+      count: count,
     });
   } catch (error) {
     console.log(error);

@@ -69,3 +69,15 @@ export async function getUserRecipes(email, page, numRecipes) {
   const recipes = await res.json()
   return recipes
 }
+
+export async function getUserReviews(email, page, numRecipes) {
+  const res = await fetch(`${USERS_API_URL}/reviews?value=${email}&page=${page}&numRecipes=${numRecipes}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+
+  const reviews = await res.json()
+  return reviews
+}
