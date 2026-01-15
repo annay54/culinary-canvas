@@ -260,7 +260,7 @@ export default function ({ slug }) {
             </div>
           }
           {favRecipes.map((recipe, index) => (
-            <RecipeCard key={index} name={recipe.recipe_name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+            <RecipeCard key={index} recid={recipe.recid} name={recipe.recipe_name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
         </div>
         <div className="flex pt-4 pb-8 justify-center">
@@ -289,7 +289,7 @@ export default function ({ slug }) {
             </div>
           }
           {yourRecipes.map((recipe, index) => (
-            <RecipeCard key={index} name={recipe.recipe_name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+            <RecipeCard key={index} recid={recipe.recid} name={recipe.recipe_name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
         </div>
         <div className="flex pt-4 pb-8 justify-center">

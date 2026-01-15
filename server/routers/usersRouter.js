@@ -56,6 +56,11 @@ usersRouter.post("/signin", async (req, res) => {
     attributes: ["uid", "full_name", "email", "password_hash"],
   });
 
+  // not sign in; to return the user's id given their email
+  if (userExist !== null && req.body.userData.password === null) {
+    return res.json(userExist.uid)
+  }
+
   if (userExist === null || !bcrypt.compareSync(req.body.userData.password, userExist.password_hash)) {
     return res.status(401).json({ error: "Incorrect username or password" });
   }

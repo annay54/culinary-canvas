@@ -278,7 +278,7 @@ const Explore = () => {
                 <p className="h-full">No recipes found! Try searching for a different recipe.</p>
               ) : (
                 <>{recipes.map((recipe, index) => (
-                  <RecipeCard key={index} name={recipe.recipe_name} author={recipe.author} image={recipe.img} rating={recipe.rating} />
+                  <RecipeCard key={index} recid={recipe.recid} name={recipe.recipe_name} author={recipe.author} image={recipe.img} rating={recipe.rating} />
                 ))}</>
               )
               }
