@@ -37,16 +37,22 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, user, account }) {
       // Persist the OAuth access_token to the token right after signin
-      if (account) {
-        token.accessToken = "account.access_token"
+      if (user) {
+        token.id = user.id;
       }
       return token
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
       session.accessToken = "token.accessToken"
+      console.log("session.user is ", session.user)
+      if (token.id) {
+        console.log("token.id is ", token.id)
+        session.user.id = token.id;
+      }
+      // session.user.id = user.id;
       return session
     }
   }

@@ -8,6 +8,11 @@ const sortOrderDict = {"descending": "DESC", "ascending": "ASC"}
 
 export const recipesRouter = Router();
 
+/**
+ * Return "limit"-number of recipes matching the specified min and max rating, 
+ * tags, and custom recipe/author name searches starting at offset. The fetched 
+ * recipes are sorted by the specified option in the selected order.
+ */
 recipesRouter.get("/all", async (req, res) => {
   const limit = parseInt(req.query.numRecipes);
   const offset = (limit * req.query.page) - limit;
@@ -66,6 +71,9 @@ recipesRouter.get("/all", async (req, res) => {
   }
 });
 
+/**
+ * Return all the recipe tags in the database.
+ */
 recipesRouter.get("/tags", async (req, res) => {
   try {
     const tags = Recipe.getAttributes().tags.type.type.values;
@@ -74,5 +82,32 @@ recipesRouter.get("/tags", async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Failed to fetch tags." });
+  }
+});
+
+/**
+ * Return all recipes created by the user with the specified identifier.
+ */
+recipesRouter.get("/user-created", async (req, res) => {
+  const limit = parseInt(req.query.numRecipes);
+  const offset = (limit * req.query.page) - limit;
+
+  try {
+    const { rows, count } = await Recipe.findAndCountAll({
+      where: { author: req.query.value },
+      limit: limit,
+      offset: offset,
+      distinct: true,
+    });
+
+    console.log("rows is", rows, " count is", count)
+
+    return res.json({ 
+      recipes: rows,
+      count: count,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch recipes." });
   }
 });

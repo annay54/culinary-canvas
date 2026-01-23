@@ -1,7 +1,8 @@
 import { sequelize } from "../datasource.js";
 import { DataTypes, INTEGER } from "sequelize";
+import { Recipe } from "./recipes.js";
 
-export const User = sequelize.define("User", {
+export const Review = sequelize.define("Review", {
   revid: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -36,3 +37,8 @@ export const User = sequelize.define("User", {
   timestamps: false,
   tableName: "reviews",
 });
+
+// "recipe" is the foreign key field in the Review model
+// "recid" is the primary key field in the Recipe model 
+Recipe.hasMany(Review, { foreignKey: "recipe", sourceKey: "recid" });
+Review.belongsTo(Recipe, { foreignKey: "recipe", targetKey: "recid" });

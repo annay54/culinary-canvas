@@ -63,7 +63,7 @@ const Carousel = ({recipes}) => {
           onClick={() => handlePrevious(numRecipes)}></i>
         {/* Display numRecipes recipes at a time */}
         {showRecipes.map((recipe, index) => (
-          <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+          <RecipeCard key={index} recid={recipe.recid} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
         ))}
         <i 
           aria-hidden

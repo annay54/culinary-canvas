@@ -36,7 +36,8 @@ const Navbar = () => {
               color='primary'
               variant='flat'
             >
-              <DropdownItem href='/dashboard' className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
+              {/* encode the symbol @ as the string '%40'  */}
+              <DropdownItem href={'/account/' + session.user.email.split("@")[0] + '%40' + session.user.id} className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
               <DropdownItem href='/create_recipe' className='hover:no-underline py-2'><p>Create recipe</p></DropdownItem>
               <DropdownItem className='hover:no-underline py-2'>
                 <button onClick={signOut} className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>
@@ -69,7 +70,7 @@ const Navbar = () => {
               <DropdownItem href='/explore' className='hover:no-underline py-2'><p>Explore</p></DropdownItem>
               <DropdownItem href='/contact' className='hover:no-underline py-2'><p>Contact</p></DropdownItem>
               <DropdownItem href='/about' className='hover:no-underline py-2'><p>About</p></DropdownItem>
-              <DropdownItem href='/dashboard' className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
+              <DropdownItem href={'/account/'+session.user.email.split("@")[0]} className='hover:no-underline py-2'><p>My dashboard</p></DropdownItem>
               <DropdownItem href='/create_recipe' className='hover:no-underline py-2'><p>Create recipe</p></DropdownItem>
               <DropdownItem className='hover:no-underline py-2'>
                 <button onClick={signOut} className='flex items-start p-0 bg-transparent text-textColor hover:text-primary w-full'>

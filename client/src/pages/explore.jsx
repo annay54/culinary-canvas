@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import RecipeCard from '@/components/RecipeCard';
 import Pagination from "@/components/Pagination";
 import { Select, SelectItem, RadioGroup, Radio } from "@nextui-org/react";
-import { getAllRecipes, getAllTags, getSearchRecipes } from "./util/recipeAPI";
+import { getAllRecipes } from "./util/recipeAPI";
 import toast from "react-hot-toast";
 
 const Explore = () => {
@@ -273,12 +273,12 @@ const Explore = () => {
               <hr className="border-primary border-1"></hr>
             </div>
             {/* Result recipes from search */}
-            <div className="flex flex-wrap p-6 gap-5 justify-center">
+            <div className="flex flex-wrap p-6 gap-5 px-12 justify-start">
               {recipes.length == 0 ? ( 
                 <p className="h-full">No recipes found! Try searching for a different recipe.</p>
               ) : (
                 <>{recipes.map((recipe, index) => (
-                  <RecipeCard key={index} name={recipe.recipe_name} author={recipe.author} image={recipe.img} rating={recipe.rating} />
+                  <RecipeCard key={index} recid={recipe.recid} name={recipe.recipe_name} author={recipe.author} image={recipe.img} rating={recipe.rating} />
                 ))}</>
               )
               }

@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Avatar } from "@nextui-org/avatar";
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 import RecipeCard from "@/components/RecipeCard";
 import Pagination from "@/components/Pagination";
 import Review from "@/components/Review";
+import { useSession } from "next-auth/react";
+import { getFavRecipes, getUserRecipes, getUserInfo, getUserReviews } from "../util/userAPI";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function ({ slug }) {
+  const { data: session } = useSession()
+
   const navSection = [
     { name: "Profile", icon: "fa-user" }, // first element is also the default selected section
     { name: "Favourite Recipes", icon: "fa-heart" },
@@ -14,20 +20,165 @@ export default function ({ slug }) {
     { name: "Your Reviews", icon: "fa-star" },
     { name: "Settings", icon: "fa-gear" },
   ]
+  const router = useRouter();
   const [selectSection, setSelectSection] = useState(navSection[0]);
   const [showSection, setShowSection] = useState(false);
-  const profile = {
-    name: "John Doe",
-    location: "Toronto, ON",
-    description: "Here at CulinaryCanvas, we provide you delicious, easy-to-follow recipes written by fellow food enthusiasts. CulinaryCanvas forms a community of kitchen experts and food lovers who spreads inspiration to one another by sharing culinary creations and experiences.",
-    email: "email@email.com",
-    phone: "123-123-1234",
+  const [isUser, setIsUser] = useState(false);
+  const [favRecipes, setFavRecipes] = useState([]);
+  const [yourRecipes, setYourRecipes] = useState([]);
+  const [yourReviews, setYourReviews] = useState([]);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [maxPage, setMaxPage] = React.useState(1);
+  const numItems = 12; // keep it 12; maximum number of recipes/reviews in a page
+  // number of recipes/reviews from database
+  const [favRecTotal, setFavRecTotal] = React.useState(0);
+  const [recipeTotal, setRecipeTotal] = React.useState(0);
+  const [reviewTotal, setReviewTotal] = React.useState(0);
+  const [userProfile, setUserProfile] = useState({
+    id: 0,
+    name: "",
+    username: "",
+    email: "",
+    location: "",
+    about: "",
     social: {
-      facebook: "https://facebook.com",
-      twitter: "https://twitter.com",
-      linkedin: "https://linkedin.com",
-      instagram: "https://instagram.com",
+      facebook: "",
+      youtube: "",
+      tiktok: "",
+      instagram: "",
     },
+    profile_img: null,
+    privacy: "public",
+    custom_privacy: {
+      prof: true, 
+      review: true, 
+      fav: true,
+    },
+    show_email: "false",
+  })
+
+  useEffect(() => {
+    const username = slug.split("@")[0]
+    const id = slug.split("@")[1]
+    console.log("username and id:", username, id)
+    toast.promise(
+      getUserInfo(id).then((res) => {
+          console.log("res is ", res)
+          // check if username in the slug matches to an existing user 
+          if (username !== res.email.split("@")[0]) {
+            console.log("user does not exist, username is ", username, " real username is", res.email.split("@")[0], " res status is ", res.status, "res is ", res)
+            // automatically redirects to the 404 page; fixes the 'Abort fetching component for route: "/404"' error
+            router.push("/notfound")
+          }
+          else {
+            setUserProfile({
+              id: id,
+              name: res.full_name,
+              username: res.email.split("@")[0],
+              email: res.email,
+              location: res.location,
+              about: res.about,
+              social: {
+                facebook: res.social.facebook,
+                youtube: res.social.youtube,
+                tiktok: res.social.tiktok,
+                instagram: res.social.instagram,
+              },
+              profile_img: res.profile_img,
+              privacy: res.privacy,
+              custom_privacy: {
+                prof: res.custom_privacy.prof, 
+                review: res.custom_privacy.review, 
+                fav: res.custom_privacy.fav,
+              },
+              show_email: res.show_email,
+            })
+            console.log("userProfile is ", userProfile)
+            if (session && session.user.id == id && session.user.email.split("@")[0] == username) {
+              console.log("User dashboard; this is your account")
+              setIsUser(true)
+            }
+          }
+        }).catch((err) => {
+          // automatically redirects to the 404 page; fixes the 'Abort fetching component for route: "/404"' error
+          router.push("/notfound")
+        }), {
+        loading: "Loading user information...",
+      }
+    )
+    // call the below functions to get the number of favourite recipes, created recipes, and reviews for profile page
+    setFavouriteRecipes()
+    setUserRecipes()
+    setUserReviews()
+  }, [session])
+
+  useEffect(() => {
+    // If user selected Favourite Recipes in the navbar, display the favourite recipes
+    if (selectSection.name === navSection[1]["name"]) {
+      setFavouriteRecipes()
+    }
+    // If user selected Your Recipes in the navbar, display the recipes created by user
+    else if (selectSection.name === navSection[2]["name"]) {
+      setUserRecipes()
+    }
+    // If user selected Your Reviews in the navbar, display the reviews posted by user
+    else if (selectSection.name === navSection[3]["name"]) {
+      setUserReviews()
+    }
+  }, [selectSection, currentPage])
+  
+  /** Get user's favourite recipes from db using api endpoint */
+  function setFavouriteRecipes() {
+    toast.promise(
+        getFavRecipes(userProfile.id, currentPage, numItems).then((res) => {
+            const count = res.count;
+            const recipes = res.recipes;
+            console.log("count is ", count, "recipes is ", recipes)
+            setFavRecipes(res.recipes);
+            setFavRecTotal(res.count);
+            setMaxPage(Math.ceil(count / numItems));
+          }).catch((err) => {
+            console.error(err)
+          }), {
+          loading: "Loading recipes...",
+        }
+      )
+  }
+
+  /** Get user's favourite recipes from db using api endpoint */
+  function setUserRecipes() {
+    toast.promise(
+        getUserRecipes(userProfile.email, currentPage, numItems).then((res) => {
+            const count = res.count;
+            const recipes = res.recipes;
+            console.log("count is ", count, "recipes is ", recipes)
+            setYourRecipes(res.recipes);
+            setRecipeTotal(res.count);
+            setMaxPage(Math.ceil(count / numItems));
+          }).catch((err) => {
+            console.error(err)
+          }), {
+          loading: "Loading recipes...",
+        }
+      )
+  }
+
+  /** Get user's favourite recipes from db using api endpoint */
+  function setUserReviews() {
+    toast.promise(
+        getUserReviews(userProfile.email, currentPage, numItems).then((res) => {
+            const count = res.count;
+            const reviews = res.reviews;
+            console.log("count is ", count, "reviews is ", reviews)
+            setYourReviews(res.reviews);
+            setReviewTotal(res.count);
+            setMaxPage(Math.ceil(count / numItems));
+          }).catch((err) => {
+            console.error(err)
+          }), {
+          loading: "Loading reviews...",
+        }
+      )
   }
 
   const Social = ({ icon, link }) => {
@@ -43,9 +194,12 @@ export default function ({ slug }) {
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <div className="flex flex-row items-center gap-4">
           <Avatar className="w-20 h-20" />
-          <div className="flex flex-col gap-2">
-            <h2 className="text-secondary">{profile.name}</h2>
-            <h3 className="text-xl font-normal">{profile.location}</h3>
+          <div className="flex flex-col gap-0 md:gap-2">
+            <div className="flex flex-col md:flex-row gap-0 md:gap-2 items-baseline">
+              <h2 className="text-secondary">{userProfile.name},</h2>
+              <h3 className="font-medium">{userProfile.username}</h3>
+            </div>
+            <h3 className="text-xl font-normal">{userProfile.location}</h3>
           </div>
         </div>
         <div className="flex flex-col min-[600px]:flex-row gap-5 min-[600px]:gap-3 justify-evenly w-full my-3">
@@ -54,38 +208,42 @@ export default function ({ slug }) {
               <i aria-hidden className="fa-solid fa-heart text-primary text-xl"></i>
               <h3 className="text-primary text-xl">Favourite Recipes</h3>
             </div>
-            <h3 className="text-xl">10</h3>
+            <h3 className="text-xl">{favRecTotal}</h3>
           </div>
           <div className="flex flex-col gap-1 justify-center items-center bg-white p-5 lg:w-1/4 min-[850px]:px-7 min-w-36 min-h-36">
             <div className="flex flex-row items-center gap-3">
               <i aria-hidden className="fa-solid fa-book text-primary text-xl"></i>
               <h3 className="text-primary text-xl">Your Recipes</h3>
             </div>
-            <h3 className="text-xl">16</h3>
+            <h3 className="text-xl">{recipeTotal}</h3>
           </div>
           <div className="flex flex-col gap-1 justify-center items-center bg-white p-5 lg:w-1/4 min-[850px]:px-7 min-w-36 min-h-36">
             <div className="flex flex-row items-center gap-3">
               <i aria-hidden className="fa-solid fa-star text-primary text-xl"></i>
               <h3 className="text-primary text-xl">Your Reviews</h3>
             </div>
-            <h3 className="text-xl">32</h3>
+            <h3 className="text-xl">{reviewTotal}</h3>
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">About Me</h3>
-          <p>{profile.description}</p>
+          <p>{userProfile.about}</p>
         </div>
         <div className="flex flex-col gap-2 w-full">
           <h3 className="text-secondary font-semibold">Contact</h3>
           <div className='flex flex-row gap-4'>
-            <Social icon='facebook-f' link={profile.social.facebook} />
-            <Social icon='x-twitter' link={profile.social.twitter} />
-            <Social icon='linkedin-in' link={profile.social.linkedin} />
-            <Social icon='instagram' link={profile.social.instagram} />
+            {userProfile.social.facebook !== "" && <Social icon='facebook-f' link={userProfile.social.facebook} />}
+            {userProfile.social.youtube !== "" && <Social icon='youtube' link={userProfile.social.youtube} />}
+            {userProfile.social.tiktok !== "" && <Social icon='tiktok' link={userProfile.social.tiktok} />}
+            {userProfile.social.instagram !== "" && <Social icon='instagram' link={userProfile.social.instagram} />}
+            {/* <Social icon='facebook-f' link={userProfile.social.facebook} />
+            <Social icon='x-twitter' link={userProfile.social.twitter} />
+            <Social icon='linkedin-in' link={userProfile.social.linkedin} />
+            <Social icon='instagram' link={userProfile.social.instagram} /> */}
           </div>
           <div className="flex flex-row gap-3 mt-2">
             <i aria-hidden className="fa-solid fa-envelope text-primary text-xl"></i>
-            <p>{profile.email}</p>
+            <p>{userProfile.email}</p>
           </div>
         </div>
       </div>
@@ -93,152 +251,70 @@ export default function ({ slug }) {
   }
 
   const FavouriteRecipes = () => {
-    const recipes = [{
-      name: 'Steak 1',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 2',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 3',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 4',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 5',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 6',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 7',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 8',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }];
-
+    
     return (
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <h2 className="text-secondary">Favourite Recipes</h2>
         {/* Number of results shown from search */}
         <div className="text-secondary w-full">
           <hr className="border-primary border-1"></hr>
-          <p className="text-textColor font-normal text-base my-2 px-4">6 out of 20 results</p>
+          <p className="text-textColor font-normal text-base my-2 px-4">{favRecipes.length} out of {favRecTotal} results</p>
           <hr className="border-primary border-1"></hr>
         </div>
-        <div className="flex flex-wrap gap-5 justify-center">
-          {recipes.length === 0 &&
+        <div className="flex flex-wrap gap-5 justify-start">
+          {favRecipes.length === 0 &&
             <div className='text-textColor flex flex-col justify-center items-center w-full'>
               <p className="my-32">No favourite recipes added yet.</p>
               <hr className='w-full border-primary border-1'/>
             </div>
           }
-          {recipes.map((recipe, index) => (
-            <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+          {favRecipes.map((recipe, index) => (
+            <RecipeCard key={index} recid={recipe.recid} name={recipe.recipe_name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
         </div>
         <div className="flex pt-4 pb-8 justify-center">
-          <Pagination pageLength={4} mainColour="secondary" textColour="white" hoverColour="" />
+          <Pagination pageLength={maxPage} currentPage={currentPage} setCurrentPage={setCurrentPage} mainColour="secondary" textColour="white" hoverColour="" />
         </div>
       </div>
     )
   }
 
   const YourRecipes = () => {
-    const recipes = [{
-      name: 'Steak 1',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 2',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 3',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 4',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }, {
-      name: 'Steak 5',
-      author: 'master_chief',
-      image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?q=80&w=1885&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-    }];
-
+    
     return (
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <h2 className="text-secondary">Your Recipes</h2>
         {/* Number of results shown from search */}
         <div className="text-secondary w-full">
           <hr className="border-primary border-1"></hr>
-          <p className="text-textColor font-normal text-base my-2 px-4">6 out of 20 results</p>
+          <p className="text-textColor font-normal text-base my-2 px-4">{yourRecipes.length} out of {recipeTotal} results</p>
           <hr className="border-primary border-1"></hr>
         </div>
-        <div className="flex flex-wrap gap-5 justify-center">
-          {recipes.length === 0 &&
+        <div className="flex flex-wrap gap-5 justify-start">
+          {yourRecipes.length === 0 &&
             <div className='text-textColor flex flex-col justify-center items-center w-full'>
               <p className="my-32">No recipes created yet.</p>
               <hr className='w-full border-primary border-1'/>
             </div>
           }
-          {recipes.map((recipe, index) => (
-            <RecipeCard key={index} name={recipe.name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
+          {yourRecipes.map((recipe, index) => (
+            <RecipeCard key={index} recid={recipe.recid} name={recipe.recipe_name} author={recipe.author} image={recipe.image} rating={recipe.rating} />
           ))}
         </div>
         <div className="flex pt-4 pb-8 justify-center">
-          <Pagination pageLength={4} mainColour="secondary" textColour="white" hoverColour="" />
+          <Pagination pageLength={maxPage} currentPage={currentPage} setCurrentPage={setCurrentPage} mainColour="secondary" textColour="white" hoverColour="" />
         </div>
       </div>
     )
   }
 
   const YourReviews = () => {
-    const reviews = [{
-      recipe: 'Iloverecipes',
-      img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 4,
-      date: '05/26/2014',
-      review: "This is the best pancake recipe I've ever tried. It's so easy and quick to make. I love it!",
-      helpful: 20
-    }, {
-      recipe: 'foodie',
-      img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      rating: 3,
-      date: '06/13/2015',
-      review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur",
-      helpful: 0
-    }];
 
     return (
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <h2 className="text-secondary">Your Reviews</h2>
         <div className='flex flex-wrap md:flex-row pl-4 items-center justify-between border-t-2 border-b-2 border-primary'>
-          <p className="font-normal text-base">30 reviews</p>
+          <p className="font-normal text-base">{yourReviews.length} out of {reviewTotal} results</p>
           <div className='flex flex-row gap-2'>
             {/* sort button */}
             <Dropdown>
@@ -283,25 +359,26 @@ export default function ({ slug }) {
           </div>
         </div>
         {/* list of reviews */}
-        {reviews.length === 0 &&
+        {yourReviews.length === 0 &&
           <div className='text-textColor flex flex-col justify-center items-center w-full'>
             <p className="my-32">No reviews created yet.</p>
             <hr className='w-full border-primary border-1'/>
           </div>
         }
-        {reviews.map((review) => (
-          <div>
+        {yourReviews.map((review, index) => (
+          <div key={index}>
             <Review 
               type='recipe'
-              name={review.recipe} 
-              image={review.img}
+              name={review.Recipe.recipe_name} 
+              image={review.Recipe.img}
+              link={review.recipe}
               review={review}
             />
             <hr className="border-primary border-1" />
           </div>
         ))}            
         <div className='flex justify-center w-full'>
-          <Pagination pageLength={reviews.length} mainColour="secondary" textColour="white" hoverColour="" />
+          <Pagination pageLength={maxPage} currentPage={currentPage} setCurrentPage={setCurrentPage} mainColour="secondary" textColour="white" hoverColour="" />
         </div>
       </div>
     )
@@ -332,20 +409,16 @@ export default function ({ slug }) {
             <div className="flex flex-col sm:flex-row flex-wrap gap-5 w-full">
               <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="name">Name</label>
-                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="name" name="name" defaultValue={profile.name} />
-              </div>
-              <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
-                <label className="text-secondary font-medium" htmlFor="phone">Phone number</label>
-                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="tel" id="phone" name="phone" defaultValue={profile.phone} />
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="name" name="name" defaultValue={userProfile.name} />
               </div>
               <div className="flex flex-col gap-1 w-full sm:w-5/12 lg:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="location">Location</label>
-                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="location" name="location" defaultValue={profile.location} />
+                <input className="lg:min-w-44 w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="location" name="location" defaultValue={userProfile.location} />
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-secondary font-medium" htmlFor="description">About me</label>
-              <textarea className="w-full h-40 max-h-64 p-2 text-base border-2 border-primary rounded-lg" id="description" name="description" defaultValue={profile.description} />
+              <label className="text-secondary font-medium" htmlFor="about">About me</label>
+              <textarea className="w-full h-40 max-h-64 p-2 text-base border-2 border-primary rounded-lg" id="about" name="about" defaultValue={userProfile.about} />
             </div>
             <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
           </form>
@@ -355,19 +428,19 @@ export default function ({ slug }) {
             <div className="flex flex-row flex-wrap gap-5">
               <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="facebook">Facebook</label>
-                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="facebook" name="facebook" defaultValue={profile.social.facebook} />
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="facebook" name="facebook" defaultValue={userProfile.social.facebook} />
               </div>
               <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="twitter">Twitter</label>
-                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="twitter" name="twitter" defaultValue={profile.social.twitter} />
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="twitter" name="twitter" defaultValue={userProfile.social.twitter} />
               </div>
               <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="linkedin">Linkedin</label>
-                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="linkedin" name="linkedin" defaultValue={profile.social.linkedin} />
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="linkedin" name="linkedin" defaultValue={userProfile.social.linkedin} />
               </div>
               <div className="flex flex-col gap-1 w-full sm:min-w-40 sm:w-1/4">
                 <label className="text-secondary font-medium" htmlFor="instagram">Instagram</label>
-                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="instagram" name="instagram" defaultValue={profile.social.instagram} />
+                <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="text" id="instagram" name="instagram" defaultValue={userProfile.social.instagram} />
               </div>
             </div>
             <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
@@ -446,7 +519,7 @@ export default function ({ slug }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-1 w-full max-w-64">
               <label className="text-secondary font-medium" htmlFor="email">Email</label>
-              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="email" id="email" name="email" defaultValue={profile.email} />
+              <input className="w-full p-2 text-base border-2 border-primary rounded-lg" type="email" id="email" name="email" defaultValue={userProfile.email} />
             </div>
             <button className="w-32 p-2 bg-primary text-white rounded-lg hover:bg-secondary" type="submit">Save</button>
           </form>
@@ -511,13 +584,22 @@ export default function ({ slug }) {
       {/* Side navigation bar for computer screen size */}
       <div className="hidden md:flex flex-col py-2 min-w-48 w-1/5 bg-primary text-white">
         {navSection.map((section, index) => (
-          <>
-            <div className={`flex flex-row items-center gap-2 px-6 py-3 hover:cursor-pointer ${selectSection.name === section.name ? "bg-secondary" : "hover:bg-secondary hover:bg-opacity-60"}`} onClick={() => setSelectSection(section)}>
-              <i aria-hidden className={`fa-solid ${section.icon} text-lg`}></i>
-              <h3 className="text-xl">{section.name}</h3>
-            </div>
-            <hr className="border-white w-11/12 self-center"></hr>
-          </>
+          <div key={index}>
+            {/* If user is viewing their own profile, display settings in the nav bar */}
+            {(section.name !== "Settings" || (isUser && section.name === "Settings")) && <>
+              <div className={`flex flex-row items-center gap-2 px-6 py-3 hover:cursor-pointer ${selectSection.name === section.name ? "bg-secondary" : "hover:bg-secondary hover:bg-opacity-60"}`} 
+                onClick={() => {
+                  setSelectSection(section);
+                  // Reset the current page when going to any section from the navbar
+                  setCurrentPage(1);
+                }}
+              >
+                <i aria-hidden className={`fa-solid ${section.icon} text-lg`}></i>
+                <h3 className="text-xl">{section.name}</h3>
+              </div>
+              <hr className="border-white w-11/12 self-center"></hr>
+            </>}
+          </div>
         ))}
       </div>
       {/* Top navigation bar for mobile screen size */}
@@ -532,17 +614,23 @@ export default function ({ slug }) {
       </div>
       <div className={`md:hidden flex flex-col bg-primary text-white w-full h-fit ${showSection ? "flex" : "hidden"}`}>
         {navSection.map((section, index) => (
-          <>
-            {section.name !== selectSection.name && <>
+          <div key={index}>
+            {/* If user is viewing their own profile, display settings in the nav bar */}
+            {(section.name !== "Settings" || (isUser && section.name === "Settings")) && section.name !== selectSection.name && <>
               <div className={`flex flex-row items-center gap-2 px-6 py-3 hover:bg-secondary hover:bg-opacity-60 hover:cursor-pointer`} 
-                onClick={() => {setSelectSection(section); setShowSection(false)}}
+                onClick={() => {
+                  setSelectSection(section); 
+                  setShowSection(false); 
+                  // Reset the current page when going to any section from the navbar
+                  setCurrentPage(1);
+                }}
               >
                 <i aria-hidden className={`fa-solid ${section.icon} text-md`}></i>
                 <h3 className="text-lg">{section.name}</h3>
               </div>
               <hr className="border-white w-11/12 self-center"></hr>
             </>}
-          </>
+          </div>
         ))}
       </div>
       {/* Content displayed */}

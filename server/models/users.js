@@ -48,6 +48,10 @@ export const User = sequelize.define("User", {
     type: DataTypes.STRING,
     defaultValue: "",
   },
+  about: {
+    type: DataTypes.STRING,
+    defaultValue: "",
+  },
   privacy: {
     type: DataTypes.ENUM("public", "private", "custom"),
     defaultValue: "public",
