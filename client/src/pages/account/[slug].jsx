@@ -30,7 +30,10 @@ export default function ({ slug }) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [maxPage, setMaxPage] = React.useState(1);
   const numItems = 12; // keep it 12; maximum number of recipes/reviews in a page
-  const [itemTotal, setItemTotal] = React.useState(0); // number of recipes/reviews from database
+  // number of recipes/reviews from database
+  const [favRecTotal, setFavRecTotal] = React.useState(0);
+  const [recipeTotal, setRecipeTotal] = React.useState(0);
+  const [reviewTotal, setReviewTotal] = React.useState(0);
   const [userProfile, setUserProfile] = useState({
     id: 0,
     name: "",
@@ -53,19 +56,6 @@ export default function ({ slug }) {
     },
     show_email: "false",
   })
-  // const profile = {
-  //   name: "John Doe",
-  //   username: "john-doe",
-  //   location: "Toronto, ON",
-  //   description: "Here at CulinaryCanvas, we provide you delicious, easy-to-follow recipes written by fellow food enthusiasts. CulinaryCanvas forms a community of kitchen experts and food lovers who spreads inspiration to one another by sharing culinary creations and experiences.",
-  //   email: "email@email.com",
-  //   social: {
-  //     facebook: "https://facebook.com",
-  //     twitter: "https://twitter.com",
-  //     linkedin: "https://linkedin.com",
-  //     instagram: "https://instagram.com",
-  //   },
-  // }
 
   useEffect(() => {
     const username = slug.split("@")[0]
@@ -116,18 +106,36 @@ export default function ({ slug }) {
         loading: "Loading user information...",
       }
     )
+    // call the below functions to get the number of favourite recipes, created recipes, and reviews for profile page
+    setFavouriteRecipes()
+    setUserRecipes()
+    setUserReviews()
   }, [session])
 
   useEffect(() => {
     // If user selected Favourite Recipes in the navbar, display the favourite recipes
     if (selectSection.name === navSection[1]["name"]) {
-      toast.promise(
+      setFavouriteRecipes()
+    }
+    // If user selected Your Recipes in the navbar, display the recipes created by user
+    else if (selectSection.name === navSection[2]["name"]) {
+      setUserRecipes()
+    }
+    // If user selected Your Reviews in the navbar, display the reviews posted by user
+    else if (selectSection.name === navSection[3]["name"]) {
+      setUserReviews()
+    }
+  }, [selectSection, currentPage])
+  
+  /** Get user's favourite recipes from db using api endpoint */
+  function setFavouriteRecipes() {
+    toast.promise(
         getFavRecipes(userProfile.id, currentPage, numItems).then((res) => {
             const count = res.count;
             const recipes = res.recipes;
             console.log("count is ", count, "recipes is ", recipes)
             setFavRecipes(res.recipes);
-            setItemTotal(res.count);
+            setFavRecTotal(res.count);
             setMaxPage(Math.ceil(count / numItems));
           }).catch((err) => {
             console.error(err)
@@ -135,16 +143,17 @@ export default function ({ slug }) {
           loading: "Loading recipes...",
         }
       )
-    }
-    // If user selected Your Recipes in the navbar, display the recipes created by user
-    else if (selectSection.name === navSection[2]["name"]) {
-      toast.promise(
+  }
+
+  /** Get user's favourite recipes from db using api endpoint */
+  function setUserRecipes() {
+    toast.promise(
         getUserRecipes(userProfile.email, currentPage, numItems).then((res) => {
             const count = res.count;
             const recipes = res.recipes;
             console.log("count is ", count, "recipes is ", recipes)
             setYourRecipes(res.recipes);
-            setItemTotal(res.count);
+            setRecipeTotal(res.count);
             setMaxPage(Math.ceil(count / numItems));
           }).catch((err) => {
             console.error(err)
@@ -152,16 +161,17 @@ export default function ({ slug }) {
           loading: "Loading recipes...",
         }
       )
-    }
-    // If user selected Your Reviews in the navbar, display the reviews posted by user
-    else if (selectSection.name === navSection[3]["name"]) {
-      toast.promise(
+  }
+
+  /** Get user's favourite recipes from db using api endpoint */
+  function setUserReviews() {
+    toast.promise(
         getUserReviews(userProfile.email, currentPage, numItems).then((res) => {
             const count = res.count;
             const reviews = res.reviews;
             console.log("count is ", count, "reviews is ", reviews)
             setYourReviews(res.reviews);
-            setItemTotal(res.count);
+            setReviewTotal(res.count);
             setMaxPage(Math.ceil(count / numItems));
           }).catch((err) => {
             console.error(err)
@@ -169,8 +179,7 @@ export default function ({ slug }) {
           loading: "Loading reviews...",
         }
       )
-    }
-  }, [selectSection, currentPage])
+  }
 
   const Social = ({ icon, link }) => {
     return (
@@ -199,21 +208,21 @@ export default function ({ slug }) {
               <i aria-hidden className="fa-solid fa-heart text-primary text-xl"></i>
               <h3 className="text-primary text-xl">Favourite Recipes</h3>
             </div>
-            <h3 className="text-xl">10</h3>
+            <h3 className="text-xl">{favRecTotal}</h3>
           </div>
           <div className="flex flex-col gap-1 justify-center items-center bg-white p-5 lg:w-1/4 min-[850px]:px-7 min-w-36 min-h-36">
             <div className="flex flex-row items-center gap-3">
               <i aria-hidden className="fa-solid fa-book text-primary text-xl"></i>
               <h3 className="text-primary text-xl">Your Recipes</h3>
             </div>
-            <h3 className="text-xl">16</h3>
+            <h3 className="text-xl">{recipeTotal}</h3>
           </div>
           <div className="flex flex-col gap-1 justify-center items-center bg-white p-5 lg:w-1/4 min-[850px]:px-7 min-w-36 min-h-36">
             <div className="flex flex-row items-center gap-3">
               <i aria-hidden className="fa-solid fa-star text-primary text-xl"></i>
               <h3 className="text-primary text-xl">Your Reviews</h3>
             </div>
-            <h3 className="text-xl">32</h3>
+            <h3 className="text-xl">{reviewTotal}</h3>
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
@@ -249,7 +258,7 @@ export default function ({ slug }) {
         {/* Number of results shown from search */}
         <div className="text-secondary w-full">
           <hr className="border-primary border-1"></hr>
-          <p className="text-textColor font-normal text-base my-2 px-4">{favRecipes.length} out of {itemTotal} results</p>
+          <p className="text-textColor font-normal text-base my-2 px-4">{favRecipes.length} out of {favRecTotal} results</p>
           <hr className="border-primary border-1"></hr>
         </div>
         <div className="flex flex-wrap gap-5 justify-start">
@@ -278,7 +287,7 @@ export default function ({ slug }) {
         {/* Number of results shown from search */}
         <div className="text-secondary w-full">
           <hr className="border-primary border-1"></hr>
-          <p className="text-textColor font-normal text-base my-2 px-4">{yourRecipes.length} out of {itemTotal} results</p>
+          <p className="text-textColor font-normal text-base my-2 px-4">{yourRecipes.length} out of {recipeTotal} results</p>
           <hr className="border-primary border-1"></hr>
         </div>
         <div className="flex flex-wrap gap-5 justify-start">
@@ -305,7 +314,7 @@ export default function ({ slug }) {
       <div className="flex flex-col gap-5 p-10 xl:px-20 w-full">
         <h2 className="text-secondary">Your Reviews</h2>
         <div className='flex flex-wrap md:flex-row pl-4 items-center justify-between border-t-2 border-b-2 border-primary'>
-          <p className="font-normal text-base">{yourReviews.length} out of {itemTotal} results</p>
+          <p className="font-normal text-base">{yourReviews.length} out of {reviewTotal} results</p>
           <div className='flex flex-row gap-2'>
             {/* sort button */}
             <Dropdown>

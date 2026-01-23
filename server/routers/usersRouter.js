@@ -26,10 +26,6 @@ usersRouter.post("/register", async (req, res) => {
   const password_hash = bcrypt.hashSync(req.body.userData.password, salt)
   try {
     const fullName = req.body.userData.firstName + " " + req.body.userData.lastName;
-    // console.log("fullname is ", fullName);
-    // console.log("email is ", req.body.userData.email);
-    // console.log("salt is ", salt);
-    // console.log("password_hash is ", password_hash);
     const [result, metadata] = await sequelize.query(`INSERT INTO users (full_name, email, password_hash) VALUES ('${fullName}', '${req.body.userData.email}', '${password_hash}')`);
 
     if (metadata == 1) {
@@ -77,7 +73,6 @@ usersRouter.post("/signin", async (req, res) => {
  */
 usersRouter.get("/info", async (req, res) => {
   const uid = parseInt(req.query.value)
-  console.log("start")
   const userExist = await User.findOne({
     where: { uid: uid },
     attributes: ["uid", "full_name", "email", "profile_img", "social", "location", "about", "privacy", "custom_privacy", "show_email" ],
@@ -148,15 +143,11 @@ usersRouter.get("/fav-recipes", async (req, res) => {
       where: { uid: req.query.value },
     });
 
-    console.log("rows is", rows, " count is", rows.length)
-    // console.log("recipes is", rows[0].Recipe)
-
     // Get and return only the recipes
     let recipes = []
     rows.forEach((elem) => {
       recipes.push(elem.Recipe)
     })
-    console.log("recipes is", recipes)
 
     return res.json({ 
       recipes: recipes,
@@ -193,8 +184,6 @@ usersRouter.get("/reviews", async (req, res) => {
     const count = await Review.count({
       where: { author: req.query.value },
     });
-
-    console.log("count is", count)
 
     return res.json({ 
       reviews: rows,
