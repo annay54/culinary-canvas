@@ -35,7 +35,7 @@ const RecipePage = ({ recipe }) => {
       {/* favourite button */}
       <div className='flex justify-end -mt-6 md:-mt-10'>
         <button className='p-0 bg-transparent'>
-          <i className='fa-star text-primary fa-2xl fa-regular'></i>
+          <i aria-hidden className='fa-star text-primary fa-2xl fa-regular'></i>
         </button>
       </div>
 
@@ -54,8 +54,8 @@ const RecipePage = ({ recipe }) => {
           <div className='flex flex-row gap-2 items-center'>
             <h2 className='text-primary max-md:text-xl'>4.1</h2>
             <div className='flex flex-row gap-1'>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <i className={`fa-star text-primary fa-lg ${4 >= star ? "fa-solid" : "fa-regular"}`} />
+              {[1, 2, 3, 4, 5].map((star, index) => (
+                <i aria-hidden key={index} className={`fa-star text-primary fa-lg ${4 >= star ? "fa-solid" : "fa-regular"}`} />
               ))}
             </div>
             <div>(532)</div>
@@ -64,11 +64,11 @@ const RecipePage = ({ recipe }) => {
           {/* time and review */}
           <div className='flex flex-wrap md:flex-row gap-x-8'>
             <div className='flex flex-row gap-2 items-center'>
-              <i className='fa-solid fa-clock text-textColor' />
+              <i aria-hidden className='fa-solid fa-clock text-textColor' />
               <span>20 minutes</span>
             </div>
             <div className='flex flex-row gap-2 items-center'>
-              <i className='fa-solid fa-comment text-textColor' />
+              <i aria-hidden className='fa-solid fa-comment text-textColor' />
               <span>30 reviews</span>
             </div>
           </div>
@@ -76,8 +76,8 @@ const RecipePage = ({ recipe }) => {
 
         {/* tags */}
         <div className='flex flex-wrap gap-2'>
-          {tags.map((tag) => (
-            <RecipeTag tag={tag} />
+          {tags.map((tag, index) => (
+            <RecipeTag key={index} tag={tag} />
           ))}
         </div>
 

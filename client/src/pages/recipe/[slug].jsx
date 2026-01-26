@@ -10,14 +10,14 @@ export default function ({ slug }) {
     // list of reviews
     // const reviews = []
     const reviews = [{
-        user: 'Iloverecipes',
+        user: 'mary_sue@email.com',
         img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         rating: 4,
         date: '05/26/2014',
         review: "This is the best pancake recipe I've ever tried. It's so easy and quick to make. I love it!",
         helpful: 20
     }, {
-        user: 'foodie',
+        user: 'john@email.com',
         img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         rating: 3,
         date: '06/13/2015',
@@ -58,7 +58,7 @@ export default function ({ slug }) {
                                 variant='solid'
                                 className='flex flex-nowrap gap-2 items-center text-white font-normal px-4 rounded-lg'
                             >
-                                <i className="fa-solid fa-sort"></i>
+                                <i aria-hidden className="fa-solid fa-sort"></i>
                                 Sort
                             </Button>
                         </DropdownTrigger>
@@ -80,7 +80,7 @@ export default function ({ slug }) {
                                 variant='solid'
                                 className='flex flex-nowrap gap-2 items-center text-white font-normal px-4 rounded-lg'
                             >
-                                <i className="fa-solid fa-filter"></i>
+                                <i aria-hidden className="fa-solid fa-filter"></i>
                                 Filter
                             </Button>
                         </DropdownTrigger>
@@ -106,8 +106,8 @@ export default function ({ slug }) {
                 <hr className='w-full border-t-1 border-b-0'/>
               </div>
             }
-            {reviews.map((review) => (
-                <div>
+            {reviews.map((review, index) => (
+                <div key={index}>
                   <Review 
                     type='user'
                     name={review.user} 

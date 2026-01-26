@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 
-const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
-    const [currentPage, setCurrentPage] = useState(1);
+const Pagination = ({pageLength, currentPage, setCurrentPage, mainColour, textColour, hoverColour}) => {
+    // const [currentPage, setCurrentPage] = useState(currentPg);
     const [leftButtons, setLeftButtons] = useState([]);
     const [rightButtons, setRightButtons] = useState([]);
     const [middleButtons, setMiddleButtons] = useState([]);
@@ -12,7 +12,6 @@ const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
     }, [pageLength]);
 
     const handlePageChange = (index) => {
-        console.log('index', index);
         if (pageLength >= 6)  {
             if (index <= 2) {
                 console.log('here 1');
@@ -80,7 +79,7 @@ const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
                     className={`text-${mainColour} px-3 py-2 bg-transparent ${hoverColour === "" ? "hover:bg-primary hover:text-white" : ""} ${currentPage === 1 && "pointer-events-none opacity-50"}`} 
                     onClick={handlePrevious}
                 >
-                    <i className='fa-solid fa-arrow-left'></i>
+                    <i aria-hidden className='fa-solid fa-arrow-left'></i>
                 </button>
                 
                 {pageLength < 6 
@@ -113,7 +112,7 @@ const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
                     className={`text-${mainColour} px-3 py-2 bg-transparent ${hoverColour === "" ? "hover:bg-primary hover:text-white" : ""} ${currentPage === pageLength && "pointer-events-none opacity-50"}`}  
                     onClick={handleNext}
                 >
-                    <i className='fa-solid fa-arrow-right'></i>
+                    <i aria-hidden className='fa-solid fa-arrow-right'></i>
                 </button>
             </div>
 
@@ -126,7 +125,7 @@ const Pagination = ({pageLength, mainColour, textColour, hoverColour}) => {
                                 className={`bg-transparent rounded-none border-2 justify-between border-${mainColour} text-${mainColour}`}
                             >
                                 {currentPage}
-                                <i className='fa-solid fa-chevron-down'></i>
+                                <i aria-hidden className='fa-solid fa-chevron-down'></i>
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu

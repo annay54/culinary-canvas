@@ -22,7 +22,7 @@ export default function About () {
         const LinkComp = ({link, icon, text}) => {
             return (
                 <div className="flex flex-row hover:text-secondary items-center w-full justify-center gap-1">
-                    <i className={icon}></i>
+                    <i aria-hidden className={icon}></i>
                     <Link href={link} target="_blank" rel="noreferrer">
                         <p className="break-all text-center hover:text-secondary">{text}</p>
                     </Link>
