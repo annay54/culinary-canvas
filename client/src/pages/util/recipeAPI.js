@@ -18,6 +18,17 @@ export async function getAllRecipes(search, filter) {
   return await res.json();
 }
 
+export async function getRecipeById(id) {
+  const res = await fetch(`${RECIPES_API_URL}/info?id=${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+
+  return await res.json();
+}
+
 export async function getAllTags() {
   const res = await fetch(`${RECIPES_API_URL}/tags`, {
     method: 'GET',

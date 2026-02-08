@@ -1,5 +1,5 @@
 import { sequelize } from "../datasource.js";
-import { DataTypes, INTEGER } from "sequelize";
+import { DataTypes } from "sequelize";
 import { Recipe } from "./recipes.js";
 
 export const Review = sequelize.define("Review", {
@@ -30,7 +30,7 @@ export const Review = sequelize.define("Review", {
     defaultValue: 0,
   },
   helpful: {
-    type: INTEGER,
+    type: DataTypes.INTEGER,
     defaultValue: 0,
   },
 }, {

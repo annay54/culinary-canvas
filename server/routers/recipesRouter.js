@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Recipe } from "../models/recipes.js";
+import { RecipeIngrs } from "../models/recipeIngrs.js";
 import { sequelize } from "../datasource.js";
 import { Op } from "sequelize";
 
@@ -70,6 +71,29 @@ recipesRouter.get("/all", async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch recipes." });
   }
 });
+
+/**
+ * Return the recipe information with the specified identifier.
+ */
+recipesRouter.get("/info", async (req, res) => {
+  const recipe = await Recipe.findOne({ where: { recid: req.query.id } });
+  if (!recipe) {
+    return res.status(404).json({ error: "Recipe not found." });
+  }
+  try {
+    const ingrs = await RecipeIngrs.findAll({ 
+      where: { recid: req.query.id },
+      attributes: ["item", "quantity", "unit"],
+    });
+    return res.json({
+      recipe: recipe,
+      ingrs: ingrs,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch recipe ingredients." });
+  }
+})
 
 /**
  * Return all the recipe tags in the database.

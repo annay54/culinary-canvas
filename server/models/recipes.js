@@ -7,21 +7,11 @@ const tagOptions = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert'
 'Baked', 'Grilled', 'Roasted', 'Fried', 'Slow Cooker', 'Instant Pot', 'Air Fryer', 'Steamed', 'Toasted', 'Kid-Friendly', 'BBQ', 
 'Comfort Food', 'Holiday', 'Italian', 'Mexican', 'Indian', 'Chinese', 'Japanese', 'Thai', 'Mediterranean', 'Middle Eastern', 
 'American', 'French', 'Korean', 'Turkish', 'Spanish', 'Arab', 'Vietnamese', 'Greek', 'Hong Kong', 'Indonesian'];
-const units = ['none', 'tsp', 'tbsp', 'cup', 'pinch', 'oz', 'ml', 'l', 'lbs', 'g', 'kg', 'slice'];
 const recipe_time = {
   type: 'recipe_time',
   fields: [
     'hr',
     'min',
-  ],
-};
-
-const ingredient = {
-  type: 'ingredient',
-  fields: [
-    'item',
-    'quantity',
-    'unit',
   ],
 };
 
@@ -65,7 +55,6 @@ export const Recipe = sequelize.define("Recipes", {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
-  ingrs: ingredient,
   steps: {
     type: DataTypes.ARRAY(DataTypes.TEXT),
     defaultValue: [],
