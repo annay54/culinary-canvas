@@ -2,6 +2,7 @@ import { Router } from "express";
 import { Recipe } from "../models/recipes.js";
 import { RecipeIngrs } from "../models/recipeIngrs.js";
 import { Review } from "../models/reviews.js";
+import { FavRecipes } from "../models/favRecipes.js";
 import { User } from "../models/users.js";
 import { sequelize } from "../datasource.js";
 import { Op } from "sequelize";

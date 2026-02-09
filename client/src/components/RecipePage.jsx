@@ -2,9 +2,19 @@ import React from "react";
 import RecipeTag from "./RecipeTag";
 import { Avatar } from "@nextui-org/avatar";
 import { useSession } from "next-auth/react";
+import { isFavRecipe } from "@/pages/util/favRecipeAPI";
 
 const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
   const { data: session } = useSession()
+  const [isFav, setIsFav] = React.useState(false);
+
+  React.useEffect(() => {
+    if (session) {
+      isFavRecipe(recipe.recid, session.user.id).then((res) => {
+        setIsFav(res);
+      })
+    }
+  }, [session])
 
   const Instruction = ({ step, description }) => (
     <div className='flex flex-row gap-2'>
@@ -40,7 +50,7 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
       {session && (
         <div className='flex justify-end -mt-6 md:-mt-10'>
           <button className='p-0 bg-transparent z-50'>
-            <i aria-hidden className='fa-star text-primary fa-2xl fa-regular'></i>
+            <i aria-hidden className={`fa-star text-primary fa-2xl ${isFav ? 'fa-solid' : 'fa-regular'}`}></i>
           </button>
         </div>
       )}

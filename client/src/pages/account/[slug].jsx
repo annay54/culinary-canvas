@@ -6,7 +6,9 @@ import RecipeCard from "@/components/RecipeCard";
 import Pagination from "@/components/Pagination";
 import Review from "@/components/Review";
 import { useSession } from "next-auth/react";
-import { getFavRecipes, getUserRecipes, getUserInfo, getUserReviews } from "../util/userAPI";
+import { getFavRecipes } from "../util/favRecipeAPI";
+import { getUserRecipes } from "../util/recipeAPI";
+import { getUserInfo, getUserReviews } from "../util/userAPI";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
