@@ -1,9 +1,10 @@
 import React from "react";
 import RecipeTag from "./RecipeTag";
 import { Avatar } from "@nextui-org/avatar";
+import { useSession } from "next-auth/react";
 
 const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
-  const tags = ['Breakfast', 'Easy', 'Quick', 'Healthy', 'Pan fry'];
+  const { data: session } = useSession()
 
   const Instruction = ({ step, description }) => (
     <div className='flex flex-row gap-2'>
@@ -35,12 +36,14 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
         <h1 className='text-secondary max-md:text-4xl max-md:py-2'>{recipe.recipe_name}</h1>
       </div>
 
-      {/* favourite button */}
-      <div className='flex justify-end -mt-6 md:-mt-10'>
-        <button className='p-0 bg-transparent z-50'>
-          <i aria-hidden className='fa-star text-primary fa-2xl fa-regular'></i>
-        </button>
-      </div>
+      {/* Show favourite button when user is logged in */}
+      {session && (
+        <div className='flex justify-end -mt-6 md:-mt-10'>
+          <button className='p-0 bg-transparent z-50'>
+            <i aria-hidden className='fa-star text-primary fa-2xl fa-regular'></i>
+          </button>
+        </div>
+      )}
 
       <div className='flex flex-col gap-4 mt-2 md:mt-8'>
         {/* author */}
