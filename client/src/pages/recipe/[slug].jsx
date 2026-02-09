@@ -4,29 +4,14 @@ import Review from '@/components/Review';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 import React from 'react'
 import toast from "react-hot-toast";
-import { getRecipeById } from "@/pages/util/recipeAPI";
+import { getRecipeById, getRecipeReviews } from "@/pages/util/recipeAPI";
 import { useRouter } from "next/navigation";
 
 export default function ({ slug }) {
   const router = useRouter();
   const [recipe, setRecipe] = React.useState(null);
   const [ingrs, setIngrs] = React.useState(null);
-  // list of reviews
-  const reviews = [{
-        user: 'mary_sue@email.com',
-        img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        rating: 4,
-        date: '05/26/2014',
-        review: "This is the best pancake recipe I've ever tried. It's so easy and quick to make. I love it!",
-        helpful: 20
-    }, {
-        user: 'john@email.com',
-        img: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        rating: 3,
-        date: '06/13/2015',
-        review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur",
-        helpful: 0
-    }];
+  const [reviews, setReviews] = React.useState([]);
   
   React.useEffect(() => {
     toast.promise(
@@ -40,6 +25,10 @@ export default function ({ slug }) {
         else {
           setRecipe(res.recipe);
           setIngrs(res.ingrs);
+          getRecipeReviews(slug).then((res) => {
+            console.log("reviews are", res)
+            setReviews(res)
+          })
         }
       }), {
         loading: "Loading recipe...",
@@ -55,7 +44,7 @@ export default function ({ slug }) {
         <div className='flex flex-col w-full gap-4 md:px-[10%] px-[5%] py-12 bg-primary text-white'>
               <h2>Reviews</h2>
               <div className='flex flex-wrap md:flex-row px-4 items-center justify-between border-t-1.5 border-b-1.5 border-white'>
-                  <p>30 reviews</p>
+                  <p>{reviews.length} reviews</p>
                   <div className='flex flex-row gap-2'>
                       {/* sort button */}
                       <Dropdown>
@@ -117,8 +106,9 @@ export default function ({ slug }) {
                   <div key={index}>
                     <Review 
                       type='user'
-                      name={review.user} 
-                      image={review.img}
+                      name={review.author} 
+                      uid={review.User.uid}
+                      image={review.User.profile_img}
                       review={review}
                   />
                   <hr className='border-t-1 border-b-0' />

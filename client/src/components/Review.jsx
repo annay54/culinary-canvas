@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Avatar } from "@nextui-org/avatar";
 import { getUserByEmail } from '@/pages/util/userAPI';
 
-const Review = ({type, image, name, link, review}) => {
+const Review = ({type, image, name, uid, link, review}) => {
   // type represent whether the review is in the recipe page or user dashboard
   // type is either 'recipe' or 'user', and image and name correspond to the type value
   // if type is 'user', then name will be the email of user
-  const [uid, setUid] = useState(0);
+  // const [uid, setUid] = useState(0);
   const username = name.split("@")[0];
+
   useEffect(() => {
     if (type === "user") {
       getUserByEmail({ email: name, password: null }).then((res) => {
         console.log("user id is", res)
-        setUid(res)
+        // setUid(res)
       })
     }
     
@@ -22,10 +24,14 @@ const Review = ({type, image, name, link, review}) => {
     <div className='flex flex-col p-5 gap-3'>
       {/* Image and name of review in recipe page or user dashboard */}
       <div className='flex flex-row items-center gap-4 w-full h-[80px]'>
-        <img 
-          src={image} 
-          className={`min-w-[80px] h-full object-cover ${type === "user" ? "rounded-full": "rounded-none"}`}
-        />
+        {type === "user" ? (
+          <Avatar className='min-w-[80px] h-full object-cover rounded-full' image={image ? image : null} />
+        ) : (
+          <img 
+            src={image} 
+            className='min-w-[80px] h-full object-cover rounded-none'
+          />
+        )}
         <Link 
           href={`${type === "user" ? `/account/${username}%40${uid}` : `/recipe/${link}`}`} 
           className={`${type === "user" ? "text-tertiary hover:text-tertiary" : "text-primary"} text-2xl font-sans font-semibold text-ellipsis overflow-hidden whitespace-nowrap`}

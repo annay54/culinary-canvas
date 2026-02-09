@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { Recipe } from "../models/recipes.js";
 import { RecipeIngrs } from "../models/recipeIngrs.js";
+import { Review } from "../models/reviews.js";
+import { User } from "../models/users.js";
 import { sequelize } from "../datasource.js";
 import { Op } from "sequelize";
 
@@ -92,6 +94,26 @@ recipesRouter.get("/info", async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Failed to fetch recipe ingredients." });
+  }
+})
+
+/**
+ * Return all reviews of the recipe with the specified identifier.
+ */
+recipesRouter.get("/reviews", async (req, res) => {
+  try {
+    const reviews = await Review.findAll({ 
+      include: [{
+        model: User,
+        attributes: ["profile_img", "uid"],
+      }],
+      where: { recipe: req.query.id },
+      distinct: true,
+    });
+    return res.json(reviews);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch reviews." });
   }
 })
 

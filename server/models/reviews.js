@@ -1,6 +1,7 @@
 import { sequelize } from "../datasource.js";
 import { DataTypes } from "sequelize";
 import { Recipe } from "./recipes.js";
+import { User } from "./users.js";
 
 export const Review = sequelize.define("Review", {
   revid: {
@@ -42,3 +43,8 @@ export const Review = sequelize.define("Review", {
 // "recid" is the primary key field in the Recipe model 
 Recipe.hasMany(Review, { foreignKey: "recipe", sourceKey: "recid" });
 Review.belongsTo(Recipe, { foreignKey: "recipe", targetKey: "recid" });
+
+// "author" is the foreign key field in the Review model
+// "email" is the primary key field in the User model 
+User.hasMany(Review, { foreignKey: "author", sourceKey: "email" });
+Review.belongsTo(User, { foreignKey: "author", targetKey: "email" });
