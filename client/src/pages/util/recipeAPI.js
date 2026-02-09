@@ -29,8 +29,8 @@ export async function getRecipeById(id) {
   return await res.json();
 }
 
-export async function getRecipeReviews(id) {
-  const res = await fetch(`${RECIPES_API_URL}/reviews?id=${id}`, {
+export async function getRecipeReviews(id, page, numReviews) {
+  const res = await fetch(`${RECIPES_API_URL}/reviews?id=${id}&page=${page}&numReviews=${numReviews}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'applucation/json'

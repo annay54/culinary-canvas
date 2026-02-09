@@ -101,16 +101,32 @@ recipesRouter.get("/info", async (req, res) => {
  * Return all reviews of the recipe with the specified identifier.
  */
 recipesRouter.get("/reviews", async (req, res) => {
+  const limit = parseInt(req.query.numReviews);
+  const offset = (limit * req.query.page) - limit;
+
   try {
+    // separately call findAll and count, instead of using findAndCountAll,
+    // due to usage of the include option (ex., SQL JOIN); 
+    // otherwise, not accurate count
     const reviews = await Review.findAll({ 
       include: [{
         model: User,
         attributes: ["profile_img", "uid"],
       }],
       where: { recipe: req.query.id },
+      limit: limit,
+      offset: offset,
       distinct: true,
     });
-    return res.json(reviews);
+
+    const count = await Review.count({
+      where: { recipe: req.query.id },
+    });
+
+    return res.json({ 
+      reviews: reviews,
+      count: count,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Failed to fetch reviews." });

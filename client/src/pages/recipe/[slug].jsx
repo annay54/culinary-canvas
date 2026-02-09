@@ -12,6 +12,9 @@ export default function ({ slug }) {
   const [recipe, setRecipe] = React.useState(null);
   const [ingrs, setIngrs] = React.useState(null);
   const [reviews, setReviews] = React.useState([]);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [maxPage, setMaxPage] = React.useState(1);
+  const numReviews = 10; // keep it 10; maximum number of reviews in a page
   
   React.useEffect(() => {
     toast.promise(
@@ -25,16 +28,20 @@ export default function ({ slug }) {
         else {
           setRecipe(res.recipe);
           setIngrs(res.ingrs);
-          getRecipeReviews(slug).then((res) => {
-            console.log("reviews are", res)
-            setReviews(res)
-          })
         }
       }), {
         loading: "Loading recipe...",
       }
     )
   }, [slug])
+
+  React.useEffect(() => {
+    getRecipeReviews(slug, currentPage, numReviews).then((res) => {
+      console.log("reviews are", res)
+      setReviews(res.reviews)
+      setMaxPage(Math.ceil(res.count / numReviews));
+    })
+  }, [currentPage])
 
   return (
     <>
@@ -117,7 +124,7 @@ export default function ({ slug }) {
               
               {/* pagination */}
               <div className='flex justify-center w-full'>
-                  <Pagination pageLength={reviews.length} mainColour='white' textColour='secondary' hoverColour="none" />
+                <Pagination pageLength={maxPage} currentPage={currentPage} setCurrentPage={setCurrentPage} mainColour='white' textColour='secondary' hoverColour="none" />
               </div>
 
         </div>
