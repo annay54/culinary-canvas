@@ -18,6 +18,40 @@ export async function getAllRecipes(search, filter) {
   return await res.json();
 }
 
+export async function getRecipeById(id) {
+  const res = await fetch(`${RECIPES_API_URL}/info?id=${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+
+  return await res.json();
+}
+
+export async function getUserRecipes(email, page, numRecipes) {
+  const res = await fetch(`${RECIPES_API_URL}/user-created?value=${email}&page=${page}&numRecipes=${numRecipes}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+
+  const recipes = await res.json()
+  return recipes
+}
+
+export async function getRecipeReviews(id, page, numReviews) {
+  const res = await fetch(`${RECIPES_API_URL}/reviews?id=${id}&page=${page}&numReviews=${numReviews}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+
+  return await res.json();
+}
+
 export async function getAllTags() {
   const res = await fetch(`${RECIPES_API_URL}/tags`, {
     method: 'GET',

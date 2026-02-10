@@ -1,5 +1,4 @@
 const USERS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/users`
-const RECIPES_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/recipes`
 
 export async function postRegister(userData) {
   const res = await fetch(`${USERS_API_URL}/register`, {
@@ -44,30 +43,6 @@ export async function getUserInfo(id) {
   })
   const user = await res.json()
   return user
-}
-
-export async function getFavRecipes(id, page, numRecipes) {
-  const res = await fetch(`${USERS_API_URL}/fav-recipes?value=${id}&page=${page}&numRecipes=${numRecipes}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  })
-
-  const recipes = await res.json()
-  return recipes
-}
-
-export async function getUserRecipes(email, page, numRecipes) {
-  const res = await fetch(`${RECIPES_API_URL}/user-created?value=${email}&page=${page}&numRecipes=${numRecipes}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  })
-
-  const recipes = await res.json()
-  return recipes
 }
 
 export async function getUserReviews(email, page, numRecipes) {

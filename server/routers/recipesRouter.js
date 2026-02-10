@@ -1,5 +1,9 @@
 import { Router } from "express";
 import { Recipe } from "../models/recipes.js";
+import { RecipeIngrs } from "../models/recipeIngrs.js";
+import { Review } from "../models/reviews.js";
+import { FavRecipes } from "../models/favRecipes.js";
+import { User } from "../models/users.js";
 import { sequelize } from "../datasource.js";
 import { Op } from "sequelize";
 
@@ -70,6 +74,65 @@ recipesRouter.get("/all", async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch recipes." });
   }
 });
+
+/**
+ * Return the recipe information with the specified identifier.
+ */
+recipesRouter.get("/info", async (req, res) => {
+  const recipe = await Recipe.findOne({ where: { recid: req.query.id } });
+  if (!recipe) {
+    return res.status(404).json({ error: "Recipe not found." });
+  }
+  try {
+    const ingrs = await RecipeIngrs.findAll({ 
+      where: { recid: req.query.id },
+      attributes: ["item", "quantity", "unit"],
+    });
+    return res.json({
+      recipe: recipe,
+      ingrs: ingrs,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch recipe ingredients." });
+  }
+})
+
+/**
+ * Return all reviews of the recipe with the specified identifier.
+ */
+recipesRouter.get("/reviews", async (req, res) => {
+  const limit = parseInt(req.query.numReviews);
+  const offset = (limit * req.query.page) - limit;
+
+  try {
+    // separately call findAll and count, instead of using findAndCountAll,
+    // due to usage of the include option (ex., SQL JOIN); 
+    // otherwise, not accurate count
+    const reviews = await Review.findAll({ 
+      include: [{
+        model: User,
+        attributes: ["profile_img", "uid"],
+      }],
+      where: { recipe: req.query.id },
+      limit: limit,
+      offset: offset,
+      distinct: true,
+    });
+
+    const count = await Review.count({
+      where: { recipe: req.query.id },
+    });
+
+    return res.json({ 
+      reviews: reviews,
+      count: count,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch reviews." });
+  }
+})
 
 /**
  * Return all the recipe tags in the database.

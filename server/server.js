@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import { usersRouter } from "./routers/usersRouter.js";
 import { recipesRouter } from "./routers/recipesRouter.js";
+import { favRecipesRouter } from "./routers/favRecipesRouter.js";
 import { sequelize } from "./datasource.js";
 
 const app = express();
@@ -30,6 +31,7 @@ try {
 // API route to fetch data
 app.use("/api/users", usersRouter)
 app.use("/api/recipes", recipesRouter)
+app.use("/api/favRecipes", favRecipesRouter)
 
 // Run application
 app.listen(process.env.APP_PORT, (err) => {
