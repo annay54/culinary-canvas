@@ -17,7 +17,7 @@ usersRouter.post("/register", async (req, res) => {
   const userExist = await User.findOne({
     where: { email: req.body.userData.email },
   });
-  if (userExist !== null) {
+  if (userExist) {
     return res.status(422).json({ error: "User already exists" });
   }
   

@@ -58,6 +58,36 @@ favRecipesRouter.get("/isFav", async (req, res) => {
 })
 
 /**
- * Add a new row in FavRecipes table when user favourited a recipe.
+ * Add a new row in FavRecipes table when user added recipe to their favourites.
  */
-// favRecipesRouter.post("/add")
+favRecipesRouter.post("/add", async (req, res) => {
+  // Check if row already exist in database
+  const favExist = await FavRecipes.findOne({
+    where: { recid: req.query.id, uid: req.query.user },
+  });
+  if (favExist) {
+    return res.status(422).json({ error: "User already added recipe to their favourites." });
+  }
+  
+  const fav = await FavRecipes.create({
+    recid: req.query.id, 
+    uid: req.query.user
+  })
+
+  return res.json("Successfully added recipe to user's favourites.");
+})
+
+/**
+ * Delete a row in FavRecipes table when user remove recipe from their favourites.
+ */
+favRecipesRouter.delete("/delete", async (req, res) => {
+  // Check if row already exist in database
+  const favExist = await FavRecipes.findOne({
+    where: { recid: req.query.id, uid: req.query.user },
+  });
+  if (favExist) {
+    await favExist.destroy();
+  }
+
+  return res.json("Successfully deleted recipe from user's favourites.");
+})

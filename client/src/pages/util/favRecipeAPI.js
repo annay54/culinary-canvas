@@ -22,3 +22,26 @@ export async function isFavRecipe(id, uid) {
 
   return await res.json();
 }
+
+export async function addDeleteFavRecipe(id, uid, isFav) {
+  let res;
+  if (isFav) {
+    res = await fetch(`${FAVRECIPES_API_URL}/delete?id=${id}&user=${uid}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+  }
+  else {
+    res = await fetch(`${FAVRECIPES_API_URL}/add?id=${id}&user=${uid}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+  }
+  
+
+  return await res.json();
+}

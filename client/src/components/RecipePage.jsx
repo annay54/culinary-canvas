@@ -2,7 +2,7 @@ import React from "react";
 import RecipeTag from "./RecipeTag";
 import { Avatar } from "@nextui-org/avatar";
 import { useSession } from "next-auth/react";
-import { isFavRecipe } from "@/pages/util/favRecipeAPI";
+import { isFavRecipe, addDeleteFavRecipe } from "@/pages/util/favRecipeAPI";
 
 const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
   const { data: session } = useSession()
@@ -32,6 +32,11 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
     </div>
   );
 
+  const handleFav = () => {
+    addDeleteFavRecipe(recipe.recid, session.user.id, isFav)
+    setIsFav(!isFav)
+  }
+
   return (
     <div className='pt-16 md:mx-[10%] mx-[5%]'>
       {/* hero */}
@@ -49,7 +54,7 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
       {/* Show favourite button when user is logged in */}
       {session && (
         <div className='flex justify-end -mt-6 md:-mt-10'>
-          <button className='p-0 bg-transparent z-50'>
+          <button className='p-0 bg-transparent z-50' onClick={handleFav}>
             <i aria-hidden className={`fa-star text-primary fa-2xl ${isFav ? 'fa-solid' : 'fa-regular'}`}></i>
           </button>
         </div>
