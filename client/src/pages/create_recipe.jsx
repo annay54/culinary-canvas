@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import {Select, SelectItem} from "@nextui-org/react";
 import RecipePage from "@/components/RecipePage";
 import Tiptap from "@/components/Tiptap";
+import { useSession } from "next-auth/react";
 
 const CreateRecipe = () => {
+  const { data: session } = useSession()
+
   // there will be a total of 4 steps to create a recipe
   const [step, setStep] = useState(1);
   const [recipe, setRecipe] = useState({name: "", description: "", picture: "", prepTime: "", cookTime: "", servings: "", tags: "", additionalNotes: ""});
@@ -21,6 +24,16 @@ const CreateRecipe = () => {
   // first element of list measurements should be the default value
   const measurements = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
   const tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"];
+
+  // user is not signed in, they cannot access this page
+  if (!session) {
+    return (
+      <div className="flex flex-col w-full h-screen gap-2 md:gap-5 items-center justify-center text-secondary">
+        <i aria-hidden className="fa-solid fa-triangle-exclamation text-3xl md:text-5xl"></i>
+        <p className="text-base mx-8 lg:text-xl font-semibold">You are not signed in. Please sign in before creating a recipe.</p>
+      </div>
+    )
+  }
 
   const saveRecipe = () => {
     if (step === 1)
