@@ -9,9 +9,12 @@ const CreateRecipe = () => {
 
   // there will be a total of 4 steps to create a recipe
   const [step, setStep] = useState(1);
-  const [recipe, setRecipe] = useState({name: "", description: "", picture: "", prepTime: "", cookTime: "", servings: "", tags: "", additionalNotes: ""});
+  const [recipe, setRecipe] = useState({name: "", description: "", picture: "", prepTime: "0:0", cookTime: "0:0", servings: 0, tags: [], additionalNotes: ""});
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
+  const noFile = "No selected file"
+  const [image, setImage] = useState(null);
+  const [fileName, setFileName] = useState(noFile);
   // displayList: array of items from array list to display on the page
   // editList: array of boolean values to determine if an item in the list is being edited
   const [displayList, setDisplayList] = useState([]);
@@ -23,7 +26,12 @@ const CreateRecipe = () => {
 
   // first element of list measurements should be the default value
   const measurements = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
-  const tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"];
+  const tags = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Appetizer', 'Side Dish', 
+'Easy', 'Quick', 'Simple', 'One-Pot', 'No-Bake', 'Beginner-Friendly', 'Healthy', 'Low-Carb', 'Low-Calorie', 'High Protein', 
+'High Fiber', 'Vegan', 'Vegetarian', 'Gluten-Free', 'Dairy-Free', 'Keto', 'Paleo', 'High-Fiber', 'Sugar-Free', 'Low-Fat',
+'Baked', 'Grilled', 'Roasted', 'Fried', 'Slow Cooker', 'Instant Pot', 'Air Fryer', 'Steamed', 'Toasted', 'Kid-Friendly', 'BBQ', 
+'Comfort Food', 'Holiday', 'Italian', 'Mexican', 'Indian', 'Chinese', 'Japanese', 'Thai', 'Mediterranean', 'Middle Eastern', 
+'American', 'French', 'Korean', 'Turkish', 'Spanish', 'Arab', 'Vietnamese', 'Greek', 'Hong Kong', 'Indonesian'];
 
   // user is not signed in, they cannot access this page
   if (!session) {
@@ -297,7 +305,7 @@ const CreateRecipe = () => {
         <>
           <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">Name of your recipe</h3>
-            <input type="text" name="name" defaultValue={recipe.name} className="w-full h-10 border-2 border-primary rounded-lg px-2" />
+            <input type="text" name="name" defaultValue={recipe.name} placeholder="ex., Apple pie" className="w-full h-10 border-2 border-primary rounded-lg px-2" />
           </div>
           <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">About your recipe</h3>
@@ -329,12 +337,36 @@ const CreateRecipe = () => {
           </div>
           <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">Upload a picture of your recipe</h3>
+            <p>Click on or drag and drop an image to the box below to upload a picture</p>
             <p>Recommended size: 800x400 pixels</p>
-            <div className="flex flex-col w-full h-56 bg-white border-2 border-primary rounded-lg items-center justify-center">
-              <i aria-hidden className="fa-solid fa-image text-4xl text-primary"></i>
-              <h3 className="font-medium">Drag & drop or browse</h3>
-              <p className="text-gray-600 font-normal text-base">Supports: JPEG, JPG, PNG</p>
-            </div>
+            <form className="flex flex-col w-full h-56 bg-white border-2 border-primary rounded-lg items-center justify-center hover:cursor-pointer"
+            action="" onClick={() => {document.querySelector(".upload-img").click()}}
+            >
+              {image ?
+              <img src={image} alt={fileName} width={100} height={100} /> :
+              <>
+                <i aria-hidden className="fa-solid fa-image text-4xl text-primary"></i>
+                <h3 className="font-medium">Drag & drop or browse files to upload</h3>
+                <p className="text-gray-600 font-normal text-base">Supports: JPEG, JPG, PNG</p>
+              </>
+              }
+              <input type="file" accept="images/*" className="upload-img" hidden 
+              onChange={({ target: {files}}) => {
+                if (files[0]) {
+                  setFileName(files[0].name)
+                  setImage(URL.createObjectURL(files[0]))
+                }
+              }}/>
+            </form>
+            <p className="flex flex-row gap-2 items-center">
+              <i aria-hidden className={`fa-solid ${image ? 'fa-image' : 'fa-notdef'} text-primary`}></i>
+              {fileName}
+              {image && <i aria-hidden className="fa-solid fa-trash text-primary hover:cursor-pointer" 
+              onClick={() => {
+                setFileName(noFile)
+                setImage(null)
+              }}></i>}
+            </p>
           </div>
           <hr className="border-1 border-primary w-full my-5" />
           <div className="flex flex-col lg:flex-row justify-between gap-5 lg:gap-1 w-full">
