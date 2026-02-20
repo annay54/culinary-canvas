@@ -337,7 +337,7 @@ const CreateRecipe = () => {
           </div>
           <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">Upload a picture of your recipe</h3>
-            <p>Click on or drag and drop an image to the box below to upload a picture</p>
+            <p>Click on the box below to upload an image from your files.</p>
             <p>Recommended size: 800x400 pixels</p>
             <form className="flex flex-col w-full h-56 bg-white border-2 border-primary rounded-lg items-center justify-center hover:cursor-pointer"
             action="" onClick={() => {document.querySelector(".upload-img").click()}}
@@ -346,7 +346,7 @@ const CreateRecipe = () => {
               <img src={image} alt={fileName} width={100} height={100} /> :
               <>
                 <i aria-hidden className="fa-solid fa-image text-4xl text-primary"></i>
-                <h3 className="font-medium">Drag & drop or browse files to upload</h3>
+                <h3 className="font-medium">Browse files to upload</h3>
                 <p className="text-gray-600 font-normal text-base">Supports: JPEG, JPG, PNG</p>
               </>
               }
