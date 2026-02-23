@@ -11,6 +11,7 @@ const CreateRecipe = () => {
   // there will be a total of 4 steps to create a recipe
   const [step, setStep] = useState(1);
   const [recipe, setRecipe] = useState({name: "", description: "", picture: "", prepTime: "0:0", cookTime: "0:0", servings: 0, tags: [], additionalNotes: ""});
+  const [selectTags, setSelectTags] = React.useState(new Set());
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
   const noFile = "No selected file"
@@ -45,7 +46,14 @@ const CreateRecipe = () => {
   }
 
   const saveRecipe = () => {
-    if (step === 1)
+    if (step === 1){
+      let extractTags = []
+      if (selectTags.size > 0) {
+        // selectTags is a Set object, not a list since Select element from NextUI uses Set objects
+        for (const tag of selectTags) {
+          extractTags.push(tag)
+        }
+      }
       setRecipe({
         name: document.getElementsByName("name")[0].value,
         author: session.user.email,
@@ -54,8 +62,9 @@ const CreateRecipe = () => {
         prepTime: document.getElementsByName("prepHour")[0].value + ":" + document.getElementsByName("prepMin")[0].value,
         cookTime: document.getElementsByName("cookHour")[0].value + ":" + document.getElementsByName("cookMin")[0].value,
         servings: document.getElementsByName("servings")[0].value,
-        tags: ""
+        tags: extractTags,
       })
+    }
     else if (step === 2)
       setIngredients(displayList)
     else if (step === 3) {
@@ -226,14 +235,14 @@ const CreateRecipe = () => {
             </div>
           }
           {displayList.map((ingr, index) => (
-            <div className="flex flex-col gap-3">
+            <div key={index} className="flex flex-col gap-3">
               {editList[index] ? (
                 <div className='flex flex-col sm:flex-row mt-1 px-4 gap-2 items-end sm:items-center justify-between'>
                   <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full">
                     <input name={index} defaultValue={ingr.quantity} className='w-1/12 min-w-12 p-2 border-2 border-primary rounded-md'/>
                     <select name={index} defaultValue={ingr.unit} className='w-2/12 min-w-24 p-2 border-2 border-primary rounded-md'>
-                      {units.map((unit) => (
-                        <option value={unit}>{unit}</option>
+                      {units.map((unit, index) => (
+                        <option value={unit} key={index}>{unit}</option>
                       ))}
                     </select>
                     <input name={index} defaultValue={ingr.item} className='w-10/12 p-2 border-2 border-primary rounded-md'/>
@@ -271,7 +280,7 @@ const CreateRecipe = () => {
               </div>
             }
             {displayList.map((step, index) => (
-              <div className="flex flex-col gap-3">
+              <div key={index} className="flex flex-col gap-3">
                 {editList[index] ? (
                   <div className='flex flex-row mt-1 px-4 gap-2 items-center justify-between'>
                     <textarea name={index} defaultValue={step} className='w-full h-24 max-h-48 p-2 border-2 border-primary rounded-md'></textarea>
@@ -324,6 +333,8 @@ const CreateRecipe = () => {
                 variant="flat"
                 isMultiline={true}
                 selectionMode="multiple"
+                selectedKeys={selectTags}
+                onSelectionChange={setSelectTags}
                 classNames={{ 
                   mainWrapper: "border-2 border-primary rounded-lg",
                   listbox: "text-secondary",
@@ -381,13 +392,13 @@ const CreateRecipe = () => {
             <div className="flex flex-row mt-2 gap-3 md:gap-5 w-full flex-wrap md:flex-nowrap">
               <div className="flex flex-col gap-1 w-fit mr-2 md:mr-0">
                 <p className="font-medium text-lg">Quantity</p>
-                <input type="text" name="quantity" className="w-24 h-10 border-2 border-primary rounded-lg px-2" />
+                <input type="number" min="0" name="quantity" className="w-24 h-10 border-2 border-primary rounded-lg px-2" />
               </div>
               <div className="flex flex-col gap-1 w-fit">
                 <p className="font-medium text-lg">Measurement</p>
                 <select name="unit" defaultValue={units[0]} className='h-10 border-2 border-primary rounded-lg px-2'>
-                  {units.map((unit) => (
-                    <option value={unit}>{unit}</option>
+                  {units.map((unit, index) => (
+                    <option value={unit} key={index}>{unit}</option>
                   ))}
                 </select>
               </div>

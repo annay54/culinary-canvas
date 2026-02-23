@@ -52,6 +52,21 @@ export async function getRecipeReviews(id, page, numReviews) {
   return await res.json();
 }
 
+export async function postRecipe(recipe, steps, ingrs) {
+  const res = await fetch(`${RECIPES_API_URL}/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({recipe, steps, ingrs})
+  })
+
+  const result = await res.json();
+  console.log("result", result)
+
+  return result;
+}
+
 export async function getAllTags() {
   const res = await fetch(`${RECIPES_API_URL}/tags`, {
     method: 'GET',

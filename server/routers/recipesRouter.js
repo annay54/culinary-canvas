@@ -174,3 +174,37 @@ recipesRouter.get("/user-created", async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch recipes." });
   }
 });
+
+/**
+ * Creates a row in the recipes and recipeIngrs tables in the database.
+ */
+recipesRouter.post("/create", async(req, res) => {
+  try {
+    const recipe = await Recipe.create({
+      recipe_name: req.body.recipe.name,
+      author: req.body.recipe.author,
+      about: req.body.recipe.description,
+      img: req.body.recipe.picture,
+      prep_time: req.body.recipe.prepTime,
+      cook_time: req.body.recipe.cookTIme,
+      tags: req.body.recipe.tags,
+      notes: req.body.recipe.additionalNotes,
+      servings: req.body.recipe.servings,
+      steps: req.body.steps,
+    });
+    req.body.ingrs.map(async (ingr) => {
+      const row = await RecipeIngrs.create({
+        recid: recipe.recid,
+        item: ingr.item,
+        quantity: parseInt(ingr.quantity),
+        unit: ingr.unit,
+      });
+      console.log("ingrs: ", row)
+    })
+
+    return res.json("Successfully added recipe to user's favourites.");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to create recipe and ingredient entries." });
+  }
+})
