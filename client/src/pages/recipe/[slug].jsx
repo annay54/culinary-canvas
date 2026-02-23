@@ -26,7 +26,24 @@ export default function ({ slug }) {
           router.push("/notfound")
         }
         else {
-          setRecipe(res.recipe);
+          // setRecipe(res.recipe);
+          const parsePrepTime = res.recipe.prep_time.split(",")
+          const parseCookTime = res.recipe.cook_time.split(",")
+          setRecipe({
+            recid: res.recipe.recid,
+            recipe_name: res.recipe.recipe_name,
+            author: res.recipe.author,
+            about: res.recipe.about,
+            img: res.recipe.img,
+            rating: res.recipe.rating,
+            prep_time: parsePrepTime[0].slice(1) + ":" + parsePrepTime[1].slice(0, -1), // remove the parentheses around numbers
+            cook_time: parseCookTime[0].slice(1) + ":" + parseCookTime[1].slice(0, -1), // remove the parentheses around numbers
+            tags: res.recipe.tags,
+            notes: res.recipe.notes,
+            servings: res.recipe.servings,
+            steps: res.recipe.steps,
+            created_at: res.recipe.created_at
+          })
           setIngrs(res.ingrs);
         }
       }), {

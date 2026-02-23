@@ -25,8 +25,8 @@ const CreateRecipe = () => {
   const [aboutContent, setAboutContent] = useState(recipe.description);
   const [additionalContent, setAdditionalContent] = useState(recipe.additionalNotes);
 
-  // first element of list measurements should be the default value
-  const measurements = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
+  // first element of list measurement units should be the default value
+  const units = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
   const tags = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Appetizer', 'Side Dish', 
 'Easy', 'Quick', 'Simple', 'One-Pot', 'No-Bake', 'Beginner-Friendly', 'Healthy', 'Low-Carb', 'Low-Calorie', 'High Protein', 
 'High Fiber', 'Vegan', 'Vegetarian', 'Gluten-Free', 'Dairy-Free', 'Keto', 'Paleo', 'High-Fiber', 'Sugar-Free', 'Low-Fat',
@@ -48,8 +48,9 @@ const CreateRecipe = () => {
     if (step === 1)
       setRecipe({
         name: document.getElementsByName("name")[0].value,
+        author: session.user.email,
         description: aboutContent,
-        picture: "",
+        picture: image,
         prepTime: document.getElementsByName("prepHour")[0].value + ":" + document.getElementsByName("prepMin")[0].value,
         cookTime: document.getElementsByName("cookHour")[0].value + ":" + document.getElementsByName("cookMin")[0].value,
         servings: document.getElementsByName("servings")[0].value,
@@ -111,7 +112,7 @@ const CreateRecipe = () => {
     if (type === "ingredients")
       setDisplayList(displayList.concat({
         quantity: document.getElementsByName("quantity")[0].value, 
-        measurement: document.getElementsByName("measurement")[0].value, 
+        unit: document.getElementsByName("unit")[0].value, 
         item: document.getElementsByName("item")[0].value 
       }));
     else // type === "steps"
@@ -187,7 +188,7 @@ const CreateRecipe = () => {
             if (type === "ingredients") {
               displayList[index.index] = {
                 quantity: document.getElementsByName(index.index)[0].value,
-                measurement: document.getElementsByName(index.index)[1].value,
+                unit: document.getElementsByName(index.index)[1].value,
                 item: document.getElementsByName(index.index)[2].value
               }
             }
@@ -230,9 +231,9 @@ const CreateRecipe = () => {
                 <div className='flex flex-col sm:flex-row mt-1 px-4 gap-2 items-end sm:items-center justify-between'>
                   <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full">
                     <input name={index} defaultValue={ingr.quantity} className='w-1/12 min-w-12 p-2 border-2 border-primary rounded-md'/>
-                    <select name={index} defaultValue={ingr.measurement} className='w-2/12 min-w-24 p-2 border-2 border-primary rounded-md'>
-                      {measurements.map((measurement) => (
-                        <option value={measurement}>{measurement}</option>
+                    <select name={index} defaultValue={ingr.unit} className='w-2/12 min-w-24 p-2 border-2 border-primary rounded-md'>
+                      {units.map((unit) => (
+                        <option value={unit}>{unit}</option>
                       ))}
                     </select>
                     <input name={index} defaultValue={ingr.item} className='w-10/12 p-2 border-2 border-primary rounded-md'/>
@@ -244,10 +245,10 @@ const CreateRecipe = () => {
                 </div>
               ) : (
                 <div className='flex flex-row mt-1 px-4 gap-2 items-center justify-between'>
-                  {ingr.measurement === 'none' ? (
+                  {ingr.unit === 'none' ? (
                     <p className='text-textColor'>{ingr.quantity} {ingr.item}</p>
                   ) : (
-                    <p className='text-textColor'>{ingr.quantity} {ingr.measurement} {ingr.item}</p>
+                    <p className='text-textColor'>{ingr.quantity} {ingr.unit} {ingr.item}</p>
                   )}
                   <div className='flex gap-2'>
                     <EditButton index={index} />
@@ -384,9 +385,9 @@ const CreateRecipe = () => {
               </div>
               <div className="flex flex-col gap-1 w-fit">
                 <p className="font-medium text-lg">Measurement</p>
-                <select name="measurement" defaultValue={measurements[0]} className='h-10 border-2 border-primary rounded-lg px-2'>
-                  {measurements.map((measurement) => (
-                    <option value={measurement}>{measurement}</option>
+                <select name="unit" defaultValue={units[0]} className='h-10 border-2 border-primary rounded-lg px-2'>
+                  {units.map((unit) => (
+                    <option value={unit}>{unit}</option>
                   ))}
                 </select>
               </div>
@@ -399,7 +400,7 @@ const CreateRecipe = () => {
               pushList("ingredients");
               // reset the input fields
               document.getElementsByName("quantity")[0].value = "";
-              document.getElementsByName("measurement")[0].value = measurements[0];
+              document.getElementsByName("unit")[0].value = units[0];
               document.getElementsByName("item")[0].value = "";
             }}>
               Add
@@ -461,7 +462,7 @@ const CreateRecipe = () => {
             <h3 className="text-secondary font-medium">Preview of recipe page</h3>
           </div>
           <div className="w-screen -mt-16 -mx-5 sm:-mx-10 md:-mx-20 xl:-mx-56">
-            <RecipePage recipe={recipe}></RecipePage>
+            <RecipePage recipe={recipe} ingrs={ingredients} authorImg={session.user.image}></RecipePage>
           </div>
 
           <div className="flex flex-row gap-5 w-fit self-start sm:self-end py-10">

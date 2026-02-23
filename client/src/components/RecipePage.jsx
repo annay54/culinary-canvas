@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import RecipeTag from "./RecipeTag";
 import { Avatar } from "@nextui-org/avatar";
 import { useSession } from "next-auth/react";
@@ -6,7 +6,10 @@ import { isFavRecipe, addDeleteFavRecipe } from "@/pages/util/favRecipeAPI";
 
 const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
   const { data: session } = useSession()
-  const [isFav, setIsFav] = React.useState(false);
+  const [isFav, setIsFav] = useState(false);
+  const [prepTime, setPrepTime] = useState("0 mins");
+  const [cookTime, setCookTime] = useState("0 mins");
+  const [totalTime, setTotalTime] = useState("0 mins");
 
   React.useEffect(() => {
     if (session) {
@@ -14,6 +17,30 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
         setIsFav(res);
       })
     }
+    const parsePrepTime = recipe.prep_time.split(":")
+    const parseCookTime = recipe.cook_time.split(":")
+    // consider special case: when hour and mins for prep time or cook time are both 0
+    if (parseInt(parsePrepTime[0]) == 0 && parseInt(parsePrepTime[1]) == 0) {
+      setPrepTime("0 mins")
+    } else {
+      setPrepTime(`${parseInt(parsePrepTime[0]) == 0 ? "" : parsePrepTime[0] + " hr"}` + `${parseInt(parsePrepTime[0]) == 0 || parseInt(parsePrepTime[1]) == 0? " " : ", "}` + `${parseInt(parsePrepTime[1]) == 0 ? "" : parsePrepTime[1] + " mins"}`)
+    }
+    if (parseInt(parseCookTime[0]) == 0 && parseInt(parseCookTime[1]) == 0) {
+      setCookTime("0 mins")
+    } else {
+      setCookTime(`${parseInt(parseCookTime[0]) == 0 ? "" : parseCookTime[0] + " hr"}` + `${parseInt(parseCookTime[0]) == 0 || parseInt(parseCookTime[1]) == 0 ? " ": ", "}` + `${parseInt(parseCookTime[1]) == 0 ? "" : parseCookTime[1] + " mins"}`)
+    }
+
+    // convert sum of prep time and cook time mins to hours if necessary
+    const sumMin = parseInt(parsePrepTime[1]) + parseInt(parseCookTime[1])
+    let totalMin = sumMin
+    let totalHr = parseInt(parsePrepTime[0]) + parseInt(parseCookTime[0])
+    if (sumMin >= 60) {
+      totalMin = sumMin % 60
+      totalHr += Math.floor(sumMin / 60)
+    }
+    // also consider special case: when totalHr and totalMin are both 0
+    setTotalTime(`${totalHr > 0 ? totalHr + "  hr" : ""}` + `${totalHr > 0 && totalMin > 0 ? ", " : " "}` + `${totalMin > 0 ? totalMin + " mins" : ""}` + `${totalHr == 0 && totalMin == 0 ? "0 mins" : ""}`)
   }, [session])
 
   const Instruction = ({ step, description }) => (
@@ -87,7 +114,11 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
           <div className='flex flex-wrap md:flex-row gap-x-8'>
             <div className='flex flex-row gap-2 items-center'>
               <i aria-hidden className='fa-solid fa-clock text-textColor' />
-              <span>20 minutes</span>
+              <div className='flex flex-row gap-6'>
+                <span><span className="font-medium">Prep Time:</span> {prepTime}</span>
+                <span><span className="font-medium">Cook Time:</span> {cookTime}</span>
+                <span><span className="font-medium">Total Time:</span> {totalTime}</span>
+              </div>
             </div>
             <div className='flex flex-row gap-2 items-center'>
               <i aria-hidden className='fa-solid fa-comment text-textColor' />
@@ -98,7 +129,7 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
 
         {/* tags */}
         <div className='flex flex-wrap gap-2'>
-          {recipe.tags.map((tag, index) => (
+          {recipe.tags && recipe.tags.map((tag, index) => (
             <RecipeTag key={index} tag={tag} />
           ))}
         </div>
@@ -110,7 +141,7 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
         {/* instructions */}
         <div className='max-md:order-last flex flex-col gap-4 w-full'>
           <h2 className=''>Instructions</h2>
-          {recipe.steps.map((step, index) => (
+          {recipe.steps && recipe.steps.map((step, index) => (
             <Instruction key={index} step={index + 1} description={step} />
           ))}
         </div>
