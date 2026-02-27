@@ -49,7 +49,14 @@ const CreateRecipe = () => {
   // return true if successfully saved data, otherwise return false
   const saveRecipe = () => {
     if (step === 1) {
-      let missingInputs = []
+      let missingInputs = ["prepHour", "prepMin", "cookHour", "cookMin"]
+      // check when the above inputs are undefined or empty
+      for (let missing of missingInputs) {
+        if (document.getElementsByName(missing)[0] == undefined)
+          document.getElementsByName(missing)[0].value = 0
+      }
+      missingInputs = []
+
       let errorMsg = ["name", "aboutContent", "prep", "cook", "servings"]
       // check if required inputs are not empty before saving recipe information
       if (document.getElementsByName("name")[0].value.trim().length == 0)
@@ -62,7 +69,8 @@ const CreateRecipe = () => {
       if (document.getElementsByName("cookHour")[0].value == 0
       && document.getElementsByName("cookMin")[0].value == 0)
         missingInputs.push("cook")
-      if (document.getElementsByName("servings")[0].value == 0)
+      if (document.getElementsByName("servings")[0] == undefined
+      || document.getElementsByName("servings")[0].value == 0)
         missingInputs.push("servings")
 
       if (missingInputs.length > 0) {
@@ -97,8 +105,8 @@ const CreateRecipe = () => {
           author: session.user.email,
           description: aboutContent,
           picture: image,
-          prepTime: document.getElementsByName("prepHour")[0].value + ":" + document.getElementsByName("prepMin")[0].value,
-          cookTime: document.getElementsByName("cookHour")[0].value + ":" + document.getElementsByName("cookMin")[0].value,
+          prepTime: (document.getElementsByName("prepHour")[0].valueAsNumber || 0) + ":" + (document.getElementsByName("prepMin")[0].valueAsNumber || 0),
+          cookTime: (document.getElementsByName("cookHour")[0].valueAsNumber || 0) + ":" + (document.getElementsByName("cookMin")[0].valueAsNumber || 0),
           servings: document.getElementsByName("servings")[0].value,
           tags: extractTags,
         })
@@ -192,16 +200,34 @@ const CreateRecipe = () => {
   }
 
   const pushList = (type) => {
-    if (type === "ingredients")
-      setDisplayList(displayList.concat({
-        quantity: document.getElementsByName("quantity")[0].value, 
-        unit: document.getElementsByName("unit")[0].value, 
-        item: document.getElementsByName("item")[0].value 
-      }));
-    else // type === "steps"
-      setDisplayList(displayList.concat(document.getElementsByName("step")[0].value));
-    
-    setEditList(editList.concat(false));
+    if (type === "ingredients") {
+      // check if quantity and item inputs are empty
+      if (document.getElementsByName("quantity")[0] == undefined
+      || document.getElementsByName("quantity")[0].value == 0
+      || document.getElementsByName("item")[0].value.trim().length == 0) {
+        window.scrollTo(0, 0)
+        toast.error("Fill in the required inputs before clicking on the add button.")
+      }
+      else {
+        setDisplayList(displayList.concat({
+          quantity: document.getElementsByName("quantity")[0].value, 
+          unit: document.getElementsByName("unit")[0].value, 
+          item: document.getElementsByName("item")[0].value 
+        }));
+        setEditList(editList.concat(false));
+      }
+    }
+    else { // type === "steps"
+      // check if step input is empty
+      if (document.getElementsByName("step")[0].value.trim().length == 0) {
+        window.scrollTo(0, 0)
+        toast.error("Fill in the required inputs before clicking on the add button.")
+      }
+      else {
+        setDisplayList(displayList.concat(document.getElementsByName("step")[0].value));
+        setEditList(editList.concat(false));
+      }
+    }
   }
 
   const ProgressSteps = () => (
@@ -269,17 +295,32 @@ const CreateRecipe = () => {
         <button title='Save edit' className='bg-primary py-1.5 px-2 rounded-lg'
           onClick={() => {
             if (type === "ingredients") {
-              displayList[index.index] = {
-                quantity: document.getElementsByName(index.index)[0].value,
-                unit: document.getElementsByName(index.index)[1].value,
-                item: document.getElementsByName(index.index)[2].value
+              // check if all required inputs are completed]
+              if (document.getElementsByName(index.index)[0] == undefined
+              || document.getElementsByName(index.index)[0]?.value == 0
+              || document.getElementsByName(index.index)[2].value.trim().length == 0) {
+                toast.error("Fill in the required inputs before clicking on the save edit button.")
+              }
+              else {
+                displayList[index.index] = {
+                  quantity: document.getElementsByName(index.index)[0].value,
+                  unit: document.getElementsByName(index.index)[1].value,
+                  item: document.getElementsByName(index.index)[2].value
+                }
+                setEditList(editList.map((value, i) => i === index.index ? false : value))
               }
             }
             else {
-              displayList[index.index] = document.getElementsByName(index.index)[0].value
+              if (document.getElementsByName(index.index)[0].value.trim().length == 0) {
+                toast.error("Fill in the required inputs before clicking on the save edit button.")
+              }
+              else {
+                displayList[index.index] = document.getElementsByName(index.index)[0].value
+                setEditList(editList.map((value, i) => i === index.index ? false : value))
+              }
             }
-            setEditList(editList.map((value, i) => i === index.index ? false : value))
-        }}>
+          }
+        }>
           <i aria-hidden className="fa-solid fa-check text-white w-5 h-5"></i>
         </button>
       )
@@ -313,8 +354,8 @@ const CreateRecipe = () => {
               {editList[index] ? (
                 <div className='flex flex-col sm:flex-row mt-1 px-4 gap-2 items-end sm:items-center justify-between'>
                   <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full">
-                    <input name={index} defaultValue={ingr.quantity} className='w-1/12 min-w-12 p-2 border-2 border-primary rounded-md'/>
-                    <select name={index} defaultValue={ingr.unit} className='w-2/12 min-w-24 p-2 border-2 border-primary rounded-md'>
+                    <input name={index} type="number" min={0} defaultValue={ingr.quantity} className='w-1/12 min-w-12 p-2 border-2 border-primary rounded-md'/>
+                    <select name={index} defaultValue={ingr.unit} className='w-1/12 min-w-24 p-2 border-2 border-primary rounded-md hover:cursor-pointer'>
                       {units.map((unit, index) => (
                         <option value={unit} key={index}>{unit}</option>
                       ))}
@@ -472,11 +513,11 @@ const CreateRecipe = () => {
             <div className="flex flex-row mt-2 gap-3 md:gap-5 w-full flex-wrap md:flex-nowrap">
               <div className="flex flex-col gap-1 w-fit mr-2 md:mr-0">
                 <p className="font-medium text-lg">Quantity</p>
-                <input type="number" min="0" name="quantity" className="w-24 h-10 border-2 border-primary rounded-lg px-2" />
+                <input type="number" min={0} defaultValue={0} name="quantity" className="w-24 h-10 border-2 border-primary rounded-lg px-2" />
               </div>
               <div className="flex flex-col gap-1 w-fit">
                 <p className="font-medium text-lg">Measurement</p>
-                <select name="unit" defaultValue={units[0]} className='h-10 border-2 border-primary rounded-lg px-2'>
+                <select name="unit" defaultValue={units[0]} className='h-10 border-2 border-primary rounded-lg px-2 hover:cursor-pointer'>
                   {units.map((unit, index) => (
                     <option value={unit} key={index}>{unit}</option>
                   ))}
@@ -490,7 +531,7 @@ const CreateRecipe = () => {
             <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" onClick={() => {
               pushList("ingredients");
               // reset the input fields
-              document.getElementsByName("quantity")[0].value = "";
+              document.getElementsByName("quantity")[0].value = 0;
               document.getElementsByName("unit")[0].value = units[0];
               document.getElementsByName("item")[0].value = "";
             }}>
