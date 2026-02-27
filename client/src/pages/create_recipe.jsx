@@ -4,6 +4,7 @@ import RecipePage from "@/components/RecipePage";
 import Tiptap from "@/components/Tiptap";
 import UploadImage from "@/components/UploadImage";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const CreateRecipe = () => {
   const { data: session } = useSession()
@@ -45,76 +46,149 @@ const CreateRecipe = () => {
     )
   }
 
+  // return true if successfully saved data, otherwise return false
   const saveRecipe = () => {
-    if (step === 1){
-      let extractTags = []
-      if (selectTags.size > 0) {
-        // selectTags is a Set object, not a list since Select element from NextUI uses Set objects
-        for (const tag of selectTags) {
-          extractTags.push(tag)
+    if (step === 1) {
+      let missingInputs = []
+      let errorMsg = ["name", "aboutContent", "prep", "cook", "servings"]
+      // check if required inputs are not empty before saving recipe information
+      if (document.getElementsByName("name")[0].value.trim().length == 0)
+        missingInputs.push("name") 
+      if (aboutContent.length == 0)
+        missingInputs.push("aboutContent")
+      if (document.getElementsByName("prepHour")[0].value == 0
+      && document.getElementsByName("prepMin")[0].value == 0)
+        missingInputs.push("prep")
+      if (document.getElementsByName("cookHour")[0].value == 0
+      && document.getElementsByName("cookMin")[0].value == 0)
+        missingInputs.push("cook")
+      if (document.getElementsByName("servings")[0].value == 0)
+        missingInputs.push("servings")
+
+      if (missingInputs.length > 0) {
+        // display missing required inputs error message
+        // hide error message of completed required inputs
+        for (let missing of missingInputs) {
+          document.getElementById(missing + "-error").hidden = false
         }
+        for (let error of errorMsg) {
+          if (!missingInputs.includes(error))
+            document.getElementById(error + "-error").hidden = true
+        }
+
+        window.scrollTo(0, 0)
+        toast.error("Fill in all required inputs.")
+        return false
       }
-      setRecipe({
-        name: document.getElementsByName("name")[0].value,
-        author: session.user.email,
-        description: aboutContent,
-        picture: image,
-        prepTime: document.getElementsByName("prepHour")[0].value + ":" + document.getElementsByName("prepMin")[0].value,
-        cookTime: document.getElementsByName("cookHour")[0].value + ":" + document.getElementsByName("cookMin")[0].value,
-        servings: document.getElementsByName("servings")[0].value,
-        tags: extractTags,
-      })
+      else {
+        // hide all error messages of required inputs
+        for (let error of errorMsg) {
+          document.getElementById(error + "-error").hidden = true
+        }
+        let extractTags = []
+        if (selectTags.size > 0) {
+          // selectTags is a Set object, not a list since Select element from NextUI uses Set objects
+          for (const tag of selectTags) {
+            extractTags.push(tag)
+          }
+        }
+        setRecipe({
+          name: document.getElementsByName("name")[0].value,
+          author: session.user.email,
+          description: aboutContent,
+          picture: image,
+          prepTime: document.getElementsByName("prepHour")[0].value + ":" + document.getElementsByName("prepMin")[0].value,
+          cookTime: document.getElementsByName("cookHour")[0].value + ":" + document.getElementsByName("cookMin")[0].value,
+          servings: document.getElementsByName("servings")[0].value,
+          tags: extractTags,
+        })
+      }
     }
-    else if (step === 2)
-      setIngredients(displayList)
+    else if (step === 2) {
+      // check if required inputs are not empty before saving recipe information
+      // display missing required inputs error message
+      // hide error message of completed required inputs
+      if (displayList.length == 0) {
+        document.getElementById("ingrs-error").hidden = false
+        window.scrollTo(0, 0)
+        toast.error("Add at least one recipe ingredient.")
+        return false
+      }
+      else {
+        document.getElementById("ingrs-error").hidden = true
+        setIngredients(displayList)
+      }
+    }
     else if (step === 3) {
-      setSteps(displayList)
-      setRecipe({
-        ...recipe,
-        additionalNotes: additionalContent
-      })
+      // check if required inputs are not empty before saving recipe information
+      // display missing required inputs error message
+      // hide error message of completed required inputs
+      if (displayList.length == 0) {
+        document.getElementById("steps-error").hidden = false
+        window.scrollTo(0, 0)
+        toast.error("Add at least one recipe step.")
+        return false
+      }
+      else {
+        document.getElementById("steps-error").hidden = true
+        setSteps(displayList)
+        setRecipe({
+          ...recipe,
+          additionalNotes: additionalContent
+        })
+      }
     }
+    console.log("recipe", recipe)
+    console.log("ingrs", ingredients)
+    console.log("steps", steps)
+    return true
   }
 
   const handleNextStep = () => {
-    saveRecipe();
+    const result = saveRecipe();
     window.scrollTo(0, 0);
-    if (step === 1) {
-      setStep(2);
-      setDisplayList(ingredients);
-      setEditList(new Array(ingredients.length).fill(false));
-      console.log(recipe);
-    } else if (step === 2) {
-      setStep(3);
-      setDisplayList(steps);
-      setEditList(new Array(steps.length).fill(false));
-    }
-    else { // step === 3
-      setStep(4);
+    if (result) {
+      if (step === 1) {
+        setStep(2);
+        setDisplayList(ingredients);
+        setEditList(new Array(ingredients.length).fill(false));
+        console.log(recipe);
+      } else if (step === 2) {
+        setStep(3);
+        setDisplayList(steps);
+        setEditList(new Array(steps.length).fill(false));
+      }
+      else { // step === 3
+        setStep(4);
+      }
     }
   }
 
   const handleBackStep = () => {
-    saveRecipe();
+    const result = saveRecipe();
     window.scrollTo(0, 0);
-    if (step === 2) {
-      setStep(1);
-    } else if (step === 3) {
-      setStep(2);
-      setDisplayList(ingredients);
-      setEditList(new Array(ingredients.length).fill(false));
-    }
-    else { // step === 4
-      setStep(3);
-      setDisplayList(steps);
-      setEditList(new Array(steps.length).fill(false));
+    if (result) {
+      if (step === 2) {
+        setStep(1);
+      } else if (step === 3) {
+        setStep(2);
+        setDisplayList(ingredients);
+        setEditList(new Array(ingredients.length).fill(false));
+      }
+      else { // step === 4
+        setStep(3);
+        setDisplayList(steps);
+        setEditList(new Array(steps.length).fill(false));
+      }
     }
   }
 
   const submitRecipe = () => {
-    saveRecipe();
-    window.location.href = "/"; // go back to the home page
-    alert("Recipe created successfully!");
+    const result = saveRecipe();
+    if (result) {
+      window.location.href = "/"; // go back to the home page
+      alert("Recipe created successfully!");
+      }
   }
 
   const pushList = (type) => {
@@ -315,13 +389,15 @@ const CreateRecipe = () => {
       {step === 1 ? (
         <>
           <div className="flex flex-col gap-1 w-full">
-            <h3 className="text-secondary font-medium">Name of your recipe</h3>
+            <h3 className="text-secondary font-medium">Name of your recipe*</h3>
+            <p id="name-error" className="text-red-600 font-medium" hidden>Required.</p>
             <input type="text" name="name" defaultValue={recipe.name} placeholder="ex., Apple pie" className="w-full h-10 border-2 border-primary rounded-lg px-2" />
           </div>
           <div className="flex flex-col gap-1 w-full">
-            <h3 className="text-secondary font-medium">About your recipe</h3>
+            <h3 className="text-secondary font-medium">About your recipe*</h3>
+            <p id="aboutContent-error" className="text-red-600 font-medium" hidden>Required.</p>
             <p>Provide a brief description of your recipe.</p>
-            <Tiptap content={aboutContent} onChange={(newContent) => {console.log(newContent); setAboutContent(newContent)}} />
+            <Tiptap name="aboutContent" content={aboutContent} onChange={(newContent) => {console.log(newContent); setAboutContent(newContent)}} />
           </div>
           <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">Recipe tags</h3>
@@ -352,26 +428,29 @@ const CreateRecipe = () => {
           <hr className="border-1 border-primary w-full my-5" />
           <div className="flex flex-col lg:flex-row justify-between gap-5 lg:gap-1 w-full">
             <div className="flex flex-col gap-1 w-fit">
-              <h3 className="text-secondary font-medium">Preparation time</h3>
+              <h3 className="text-secondary font-medium">Preparation time*</h3>
+              <p id="prep-error" className="text-red-600 font-medium" hidden>Required.</p>
               <div className="flex flex-row gap-2 items-center">
-                <input type="number" name="prepHour" min={0} max={24} defaultValue={recipe.prepTime.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
+                <input aria-label="Prep hour" type="number" name="prepHour" min={0} max={24} defaultValue={recipe.prepTime.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
                 <p>hours</p>
-                <input type="number" name="prepMin" min={0} max={59} defaultValue={recipe.prepTime.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
+                <input aria-label="Prep minute" type="number" name="prepMin" min={0} max={59} defaultValue={recipe.prepTime.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
                 <p>minutes</p>
               </div>
             </div>
             <div className="flex flex-col gap-1 w-fit">
-              <h3 className="text-secondary font-medium">Cooking time</h3>
+              <h3 className="text-secondary font-medium">Cooking time*</h3>
+              <p id="cook-error" className="text-red-600 font-medium" hidden>Required.</p>
               <div className="flex flex-row gap-2 items-center">
-                <input type="number" name="cookHour" min={0} max={24} defaultValue={recipe.cookTime.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
+                <input aria-label="Cook hour" type="number" name="cookHour" min={0} max={24} defaultValue={recipe.cookTime.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
                 <p>hours</p>
-                <input type="number" name="cookMin" min={0} max={59} defaultValue={recipe.cookTime.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2 " />
+                <input aria-label="Cook minute" type="number" name="cookMin" min={0} max={59} defaultValue={recipe.cookTime.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2 " />
                 <p>minutes</p>
               </div>
             </div>
             <div className="flex flex-col gap-1 w-fit">
-              <h3 className="text-secondary font-medium">Number of servings</h3>
-              <input type="number" name="servings" min={1} defaultValue={recipe.servings} className="w-20 h-10 border-2 border-primary rounded-lg px-2" />
+              <h3 className="text-secondary font-medium">Number of servings*</h3>
+              <p id="servings-error" className="text-red-600 font-medium" hidden>Required.</p>
+              <input aria-label="Servings" type="number" name="servings" min={1} defaultValue={recipe.servings} className="w-20 h-10 border-2 border-primary rounded-lg px-2" />
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
@@ -385,7 +464,8 @@ const CreateRecipe = () => {
       ) : step === 2 ? (
         <>
           <div className="flex flex-col gap-1 w-full mb-5">
-            <h3 className="text-secondary font-medium">Ingredients</h3>
+            <h3 className="text-secondary font-medium">Ingredients*</h3>
+            <p id="ingrs-error" className="text-red-600 font-medium" hidden>Required. Add at least 1 ingredient.</p>
             <p>Insert the ingredients of your recipe.</p>
             <p>For example: 3/4 cup cream cheese</p>
             <p><b>Note: </b>For ingredients that do not require a measurement, leave the measurement as "none".</p>
@@ -435,7 +515,8 @@ const CreateRecipe = () => {
       ) : step === 3 ? ( // step === 3
         <>
           <div className="flex flex-col gap-1 w-full mb-5">
-            <h3 className="text-secondary font-medium">Recipe steps</h3>
+            <h3 className="text-secondary font-medium">Recipe steps*</h3>
+            <p id="steps-error" className="text-red-600 font-medium" hidden>Required. Add at least 1 step.</p>
             <p>Insert the steps of your recipe.</p>
             <p>For example: Preheat the oven to 350°F.</p>
             <p><b>Note: </b>Do not include the number of the step as it will automatically number the step once you click on the "Add" button. See the example.</p>
