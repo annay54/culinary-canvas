@@ -452,6 +452,7 @@ const CreateRecipe = () => {
                 selectionMode="multiple"
                 selectedKeys={selectTags}
                 onSelectionChange={setSelectTags}
+                aria-label="Select tags"
                 classNames={{ 
                   mainWrapper: "border-2 border-primary rounded-lg",
                   listbox: "text-secondary",
@@ -460,7 +461,7 @@ const CreateRecipe = () => {
                 }}
               >
                 {tags.map((tag) => (
-                  <SelectItem key={tag}>{tag}</SelectItem>
+                  <SelectItem aria-label={tag} key={tag}>{tag}</SelectItem>
                 ))}
               </Select>
             </div>
