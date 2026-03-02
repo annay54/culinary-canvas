@@ -4,7 +4,7 @@ import { Avatar } from "@nextui-org/avatar";
 import { useSession } from "next-auth/react";
 import { isFavRecipe, addDeleteFavRecipe } from "@/pages/util/favRecipeAPI";
 
-const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
+const RecipePage = ({ recipe, ingrs, steps, authorImg, numRating, isCreate }) => {
   const { data: session } = useSession()
   const [isFav, setIsFav] = useState(false);
   const [prepTime, setPrepTime] = useState("0 mins");
@@ -12,7 +12,7 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
   const [totalTime, setTotalTime] = useState("0 mins");
 
   React.useEffect(() => {
-    if (session) {
+    if (session && isCreate != null) {
       isFavRecipe(recipe.recid, session.user.id).then((res) => {
         setIsFav(res);
       })
@@ -40,7 +40,10 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
       totalHr += Math.floor(sumMin / 60)
     }
     // also consider special case: when totalHr and totalMin are both 0
-    setTotalTime(`${totalHr > 0 ? totalHr + "  hr" : ""}` + `${totalHr > 0 && totalMin > 0 ? ", " : " "}` + `${totalMin > 0 ? totalMin + " mins" : ""}` + `${totalHr == 0 && totalMin == 0 ? "0 mins" : ""}`)
+    setTotalTime(`${totalHr > 0 ? totalHr + "  hr" : ""}` + `${totalHr > 0 
+      && totalMin > 0 ? ", " : " "}` + `${totalMin > 0 ? totalMin + " mins" : ""}` 
+      + `${totalHr == 0 && totalMin == 0 ? "0 mins" : ""}`)
+
   }, [session])
 
   const Instruction = ({ step, description }) => (
@@ -78,8 +81,8 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
         <h1 className='text-secondary max-md:text-4xl max-md:py-2'>{recipe.recipe_name}</h1>
       </div>
 
-      {/* Show favourite button when user is logged in */}
-      {session && (
+      {/* Show favourite button when user is logged in and recipe page is not a preview for creating recipe */}
+      {session && isCreate != null && (
         <div className='flex justify-end -mt-6 md:-mt-10'>
           <button className='p-0 bg-transparent z-50' onClick={handleFav}>
             <i aria-hidden className={`fa-star text-primary fa-2xl ${isFav ? 'fa-solid' : 'fa-regular'}`}></i>
@@ -139,11 +142,19 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
 
       <div className='flex flex-col md:flex-row gap-8 my-8'>
         {/* instructions */}
-        <div className='max-md:order-last flex flex-col gap-4 w-full'>
+        <div className='max-md:order-last flex flex-col gap-0 w-full'>
           <h2 className=''>Instructions</h2>
-          {recipe.steps && recipe.steps.map((step, index) => (
-            <Instruction key={index} step={index + 1} description={step} />
-          ))}
+          <hr className='border-1 border-primary mb-4' />
+          {/* for recipe preview in create recipe page */}
+          <div className='max-md:order-last flex flex-col gap-4 w-full'>
+            {steps && steps.map((step, index) => (
+              <Instruction key={index} step={index + 1} description={step} />
+            ))}
+            {/* for recipe page when user clicks on a recipe card */}
+            {recipe.steps && recipe.steps.map((step, index) => (
+              <Instruction key={index} step={index + 1} description={step} />
+            ))}
+          </div>
         </div>
                 
         {/* ingredients */}

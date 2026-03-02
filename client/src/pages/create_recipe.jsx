@@ -11,7 +11,7 @@ const CreateRecipe = () => {
 
   // there will be a total of 4 steps to create a recipe
   const [step, setStep] = useState(1);
-  const [recipe, setRecipe] = useState({name: "", description: "", picture: "", prepTime: "0:0", cookTime: "0:0", servings: 0, tags: [], additionalNotes: ""});
+  const [recipe, setRecipe] = useState({name: "", about: "", img: "", prep_time: "0:0", cook_time: "0:0", servings: 0, tags: [], notes: ""});
   const [selectTags, setSelectTags] = React.useState(new Set());
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
@@ -24,8 +24,8 @@ const CreateRecipe = () => {
   const [editList, setEditList] = useState([]);
 
   // contents of the Tiptap text editor to store the recipe description and additional notes
-  const [aboutContent, setAboutContent] = useState(recipe.description);
-  const [additionalContent, setAdditionalContent] = useState(recipe.additionalNotes);
+  const [aboutContent, setAboutContent] = useState(recipe.about);
+  const [additionalContent, setAdditionalContent] = useState(recipe.notes);
 
   // first element of list measurement units should be the default value
   const units = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
@@ -103,10 +103,10 @@ const CreateRecipe = () => {
         setRecipe({
           name: document.getElementsByName("name")[0].value,
           author: session.user.email,
-          description: aboutContent,
-          picture: image,
-          prepTime: (document.getElementsByName("prepHour")[0].valueAsNumber || 0) + ":" + (document.getElementsByName("prepMin")[0].valueAsNumber || 0),
-          cookTime: (document.getElementsByName("cookHour")[0].valueAsNumber || 0) + ":" + (document.getElementsByName("cookMin")[0].valueAsNumber || 0),
+          about: aboutContent,
+          img: image,
+          prep_time: (document.getElementsByName("prepHour")[0].valueAsNumber || 0) + ":" + (document.getElementsByName("prepMin")[0].valueAsNumber || 0),
+          cook_time: (document.getElementsByName("cookHour")[0].valueAsNumber || 0) + ":" + (document.getElementsByName("cookMin")[0].valueAsNumber || 0),
           servings: document.getElementsByName("servings")[0].value,
           tags: extractTags,
         })
@@ -142,7 +142,7 @@ const CreateRecipe = () => {
         setSteps(displayList)
         setRecipe({
           ...recipe,
-          additionalNotes: additionalContent
+          notes: additionalContent
         })
       }
     }
@@ -473,9 +473,9 @@ const CreateRecipe = () => {
               <h3 className="text-secondary font-medium">Preparation time*</h3>
               <p id="prep-error" className="text-red-600 font-medium" hidden>Required.</p>
               <div className="flex flex-row gap-2 items-center">
-                <input aria-label="Prep hour" type="number" name="prepHour" min={0} max={24} defaultValue={recipe.prepTime.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
+                <input aria-label="Prep hour" type="number" name="prepHour" min={0} max={24} defaultValue={recipe.prep_time.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
                 <p>hours</p>
-                <input aria-label="Prep minute" type="number" name="prepMin" min={0} max={59} defaultValue={recipe.prepTime.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
+                <input aria-label="Prep minute" type="number" name="prepMin" min={0} max={59} defaultValue={recipe.prep_time.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
                 <p>minutes</p>
               </div>
             </div>
@@ -483,9 +483,9 @@ const CreateRecipe = () => {
               <h3 className="text-secondary font-medium">Cooking time*</h3>
               <p id="cook-error" className="text-red-600 font-medium" hidden>Required.</p>
               <div className="flex flex-row gap-2 items-center">
-                <input aria-label="Cook hour" type="number" name="cookHour" min={0} max={24} defaultValue={recipe.cookTime.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
+                <input aria-label="Cook hour" type="number" name="cookHour" min={0} max={24} defaultValue={recipe.cook_time.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
                 <p>hours</p>
-                <input aria-label="Cook minute" type="number" name="cookMin" min={0} max={59} defaultValue={recipe.cookTime.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2 " />
+                <input aria-label="Cook minute" type="number" name="cookMin" min={0} max={59} defaultValue={recipe.cook_time.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2 " />
                 <p>minutes</p>
               </div>
             </div>
@@ -596,7 +596,7 @@ const CreateRecipe = () => {
             <h3 className="text-secondary font-medium">Preview of recipe page</h3>
           </div>
           <div className="w-screen -mt-16 -mx-5 sm:-mx-10 md:-mx-20 xl:-mx-56">
-            <RecipePage recipe={recipe} ingrs={ingredients} authorImg={session.user.image}></RecipePage>
+            <RecipePage recipe={recipe} ingrs={ingredients} steps={steps} authorImg={session.user.image}></RecipePage>
           </div>
 
           <div className="flex flex-row gap-5 w-fit self-start sm:self-end py-10">
