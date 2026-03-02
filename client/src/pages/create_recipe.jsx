@@ -496,8 +496,8 @@ const CreateRecipe = () => {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
-            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-center" onClick={saveRecipe}>Save</button>
-            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleNextStep}>
+            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-center" title="Save current step progress" onClick={saveRecipe}>Save</button>
+            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Next step" onClick={handleNextStep}>
               Next
               <i aria-hidden className="fa-solid fa-arrow-right ml-2"></i>
             </button>
@@ -529,7 +529,7 @@ const CreateRecipe = () => {
                 <input type="text" name="item" className="w-full h-10 border-2 border-primary rounded-lg px-2" />
               </div>
             </div>
-            <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" onClick={() => {
+            <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" title="Add recipe ingredient" onClick={() => {
               pushList("ingredients");
               // reset the input fields
               document.getElementsByName("quantity")[0].value = 0;
@@ -541,13 +541,15 @@ const CreateRecipe = () => {
           </div>
           <IngrStep type={"ingredients"} />
           <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
-            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" onClick={saveRecipe}>Save</button>
+            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" title="Save current step progress" onClick={saveRecipe}>
+              Save
+            </button>
             <div className="flex flex-row gap-5">
-              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleBackStep}>
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Previous step" onClick={handleBackStep}>
                 <i aria-hidden className="fa-solid fa-arrow-left mr-2"></i>
                 Back
               </button>
-              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleNextStep}>
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Next step" onClick={handleNextStep}>
                 Next
                 <i aria-hidden className="fa-solid fa-arrow-right ml-2"></i>
               </button>
@@ -563,7 +565,7 @@ const CreateRecipe = () => {
             <p>For example: Preheat the oven to 350°F.</p>
             <p><b>Note: </b>Do not include the number of the step as it will automatically number the step once you click on the "Add" button. See the example.</p>
             <textarea name="step" className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea>
-            <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" onClick={() => {
+            <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" title="Add recipe step" onClick={() => {
               pushList("steps");
               document.getElementsByName("step")[0].value = "";
             }}>
@@ -577,13 +579,15 @@ const CreateRecipe = () => {
             <Tiptap content={additionalContent} onChange={(newContent) => {console.log(newContent); setAdditionalContent(newContent)}} />
           </div>
           <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
-            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" onClick={saveRecipe}>Save</button>
+            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" title="Save current step progress" onClick={saveRecipe}>
+              Save
+            </button>
             <div className="flex flex-row gap-5">
-              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleBackStep}>
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Previous step" onClick={handleBackStep}>
                 <i aria-hidden className="fa-solid fa-arrow-left mr-2"></i>
                 Back
               </button>
-              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleNextStep}>
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Next step" onClick={handleNextStep}>
                 Next
                 <i aria-hidden className="fa-solid fa-arrow-right ml-2"></i>
               </button>
@@ -600,11 +604,13 @@ const CreateRecipe = () => {
           </div>
 
           <div className="flex flex-row gap-5 w-fit self-start sm:self-end py-10">
-            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={handleBackStep}>
+            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Previous step" onClick={handleBackStep}>
               <i aria-hidden className="fa-solid fa-arrow-left mr-2"></i>
               Back
             </button>
-            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" onClick={submitRecipe}>Submit</button>
+            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Submit recipe" onClick={submitRecipe}>
+              Submit
+            </button>
           </div>
         </>
       )}

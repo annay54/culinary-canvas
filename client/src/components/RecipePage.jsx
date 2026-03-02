@@ -3,6 +3,7 @@ import RecipeTag from "./RecipeTag";
 import { Avatar } from "@nextui-org/avatar";
 import { useSession } from "next-auth/react";
 import { isFavRecipe, addDeleteFavRecipe } from "@/pages/util/favRecipeAPI";
+import ReadOnlyTiptap from "./ReadOnlyTiptap";
 
 const RecipePage = ({ recipe, ingrs, steps, authorImg, numRating, isCreate }) => {
   const { data: session } = useSession()
@@ -125,7 +126,7 @@ const RecipePage = ({ recipe, ingrs, steps, authorImg, numRating, isCreate }) =>
             </div>
             <div className='flex flex-row gap-2 items-center'>
               <i aria-hidden className='fa-solid fa-comment text-textColor' />
-              <span>30 reviews</span>
+              <span>{numRating ? numRating : 0} reviews</span>
             </div>
           </div>
         </div>
@@ -137,7 +138,7 @@ const RecipePage = ({ recipe, ingrs, steps, authorImg, numRating, isCreate }) =>
           ))}
         </div>
 
-        <p>{recipe.about}</p>
+        <ReadOnlyTiptap content={recipe.about} />
       </div>
 
       <div className='flex flex-col md:flex-row gap-8 my-8'>
@@ -167,6 +168,16 @@ const RecipePage = ({ recipe, ingrs, steps, authorImg, numRating, isCreate }) =>
           ))}
         </div>
       </div>
+
+      
+      {/* additional notes */}
+      {recipe.notes && 
+        <div className='mb-14'>
+          <h2>Additional Notes</h2>
+          <hr className='border-1 border-primary mb-4' />
+          <ReadOnlyTiptap content={recipe.notes} />
+        </div>
+      }
     </div>
   )
 }

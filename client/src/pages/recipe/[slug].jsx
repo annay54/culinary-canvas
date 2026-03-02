@@ -63,7 +63,7 @@ export default function ({ slug }) {
   return (
     <>
       {recipe && <>
-        <RecipePage recipe={recipe} ingrs={ingrs} />
+        <RecipePage recipe={recipe} ingrs={ingrs} numRating={reviews.length} />
         {/* reviews */}
         <div className='flex flex-col w-full gap-4 md:px-[10%] px-[5%] py-12 bg-primary text-white'>
               <h2>Reviews</h2>

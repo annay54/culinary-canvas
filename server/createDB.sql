@@ -86,8 +86,8 @@ INSERT INTO users (full_name, email, password_hash) VALUES
   ('Larry Gary', 'notlarry@email.com', '$2b$16$LvThBSSknrFMnxojuiPyw.ZXLxs5NLh.c.UiRzyqFqVqMNzKIoKY6');
 
 INSERT INTO recipes (recipe_name, author, about, prep_time, cook_time, tags, servings, ingrs, steps) VALUES
-    ('Blueberry pancakes', 'mary_sue@email.com', 'This is my first recipe I made 15 years ago when I first started cooking. 
-    These pancakes are fluffy and a masterpiece. Feel free to serve it with a cup of coffee for breakfast.', (0, 30), (0, 15), 
+    ('Blueberry pancakes', 'mary_sue@email.com', '<p>This is my first recipe I made 15 years ago when I first started cooking. 
+    These pancakes are fluffy and a masterpiece. Feel free to serve it with a cup of coffee for breakfast.</p>', (0, 30), (0, 15), 
     ARRAY[('Breakfast')::tag, ('Easy')::tag, ('No-Bake')::tag, ('Beginner-Friendly')::tag], 1, ARRAY[
       ('All purpose flour', 2, 'cup')::ingredient,
       ('Blueberries', 0.5, 'cup')::ingredient,
@@ -104,9 +104,9 @@ INSERT INTO recipes (recipe_name, author, about, prep_time, cook_time, tags, ser
       'Pour or scoop the batter onto the griddle, using approximately 1/4 cup for each pancake.',
       'Brown on both sides and serve hot.'
     ]),
-    ('Avocado toasts', 'mary_sue@email.com', 'This is my go-to breakfast when I am busy and do not have time in the morning. 
+    ('Avocado toasts', 'mary_sue@email.com', '<p>This is my go-to breakfast when I am busy and do not have time in the morning. 
     This recipe is very simple and easy and it contains ingredients that you probably have in your house. You can add whatever
-    extra toppings you want on the toasts, like honey.', (0, 0), (0, 10), 
+    extra toppings you want on the toasts, like honey.</p>', (0, 0), (0, 10), 
     ARRAY[('Breakfast')::tag, ('Easy')::tag, ('Quick')::tag, ('Healthy')::tag, ('Vegetarian')::tag, ('American')::tag, ('Toasted')::tag], 2, 
     ARRAY[
       ('Bread', 2, 'slice')::ingredient,
@@ -124,8 +124,8 @@ INSERT INTO recipes (recipe_name, author, about, prep_time, cook_time, tags, ser
       'Finally, you can add whatever other toppings you want. I added cottage cheese and egg for extra protein. 
       I also added cranberries for some extra crunch'
     ]),
-    ('Shrimp ramen', 'notlarry@email.com', 'This is a simple ramen recipe that contains minimum ingredients and satisfies your 
-    craving for Japanese food.', (0, 10), (0, 30), 
+    ('Shrimp ramen', 'notlarry@email.com', '<p>This is a simple ramen recipe that contains minimum ingredients and satisfies your 
+    craving for Japanese food.</p>', (0, 10), (0, 30), 
     ARRAY[('Lunch')::tag, ('Dinner')::tag, ('Simple')::tag, ('Beginner-Friendly')::tag, ('One-Pot')::tag, ('Japanese')::tag], 2, ARRAY[
       ('Instant ramen noodles', 300, 'g')::ingredient,
       ('Shrimps, peeled', 150, 'g')::ingredient,
