@@ -164,7 +164,7 @@ const RecipePage = ({ recipe, ingrs, steps, authorImg, numRating, isCreate }) =>
           <p className='text-textColor'>Servings: {recipe.servings}</p>
           <hr className='border-1' />
           {ingrs.map((ingr, index) => (
-            <Ingredient key={index} name={ingr.item} quantity={ingr.quantity + " " + ingr.unit} />
+            <Ingredient key={index} name={ingr.item} quantity={ingr.quantity + " " + (ingr.unit == "none" ? "" : ingr.unit)} />
           ))}
         </div>
       </div>

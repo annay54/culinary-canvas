@@ -5,13 +5,14 @@ import Tiptap from "@/components/Tiptap";
 import UploadImage from "@/components/UploadImage";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { postRecipe } from "./util/recipeAPI";
 
 const CreateRecipe = () => {
   const { data: session } = useSession()
 
   // there will be a total of 4 steps to create a recipe
   const [step, setStep] = useState(1);
-  const [recipe, setRecipe] = useState({name: "", about: "", img: "", prep_time: "0:0", cook_time: "0:0", servings: 0, tags: [], notes: ""});
+  const [recipe, setRecipe] = useState({recipe_name: "", about: "", img: "", prep_time: "0:0", cook_time: "0:0", servings: 0, tags: [], notes: ""});
   const [selectTags, setSelectTags] = React.useState(new Set());
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
@@ -101,7 +102,7 @@ const CreateRecipe = () => {
           }
         }
         setRecipe({
-          name: document.getElementsByName("name")[0].value,
+          recipe_name: document.getElementsByName("name")[0].value,
           author: session.user.email,
           about: aboutContent,
           img: image,
@@ -192,11 +193,15 @@ const CreateRecipe = () => {
   }
 
   const submitRecipe = () => {
-    const result = saveRecipe();
-    if (result) {
+    const res = postRecipe(recipe, steps, ingredients)
+    console.log("res status", res.status, "res error", res.error)
+    if (res.error) {
+      toast.error(res.error)
+    }
+    else {
       window.location.href = "/"; // go back to the home page
-      alert("Recipe created successfully!");
-      }
+      toast.success(res.success);
+    }
   }
 
   const pushList = (type) => {
@@ -432,7 +437,7 @@ const CreateRecipe = () => {
           <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">Name of your recipe*</h3>
             <p id="name-error" className="text-red-600 font-medium" hidden>Required.</p>
-            <input type="text" name="name" defaultValue={recipe.name} placeholder="ex., Apple pie" className="w-full h-10 border-2 border-primary rounded-lg px-2" />
+            <input type="text" name="name" defaultValue={recipe.recipe_name} placeholder="ex., Apple pie" className="w-full h-10 border-2 border-primary rounded-lg px-2" />
           </div>
           <div className="flex flex-col gap-1 w-full">
             <h3 className="text-secondary font-medium">About your recipe*</h3>

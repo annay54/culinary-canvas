@@ -2,10 +2,11 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import Underline from '@tiptap/extension-underline'
 
 const ReadOnlyTiptap = ({ content }) => {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, Underline],
     editorProps: {
       attributes: {
         class: 'w-full h-auto py-3 text-textColour font-medium text-base',

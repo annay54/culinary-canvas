@@ -6,6 +6,7 @@ import { User } from "./users.js";
 export const Review = sequelize.define("Review", {
   revid: {
     type: DataTypes.INTEGER,
+    autoIncrement: true,
     allowNull: false,
   },
   author: {

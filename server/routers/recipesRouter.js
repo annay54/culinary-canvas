@@ -180,18 +180,24 @@ recipesRouter.get("/user-created", async (req, res) => {
  */
 recipesRouter.post("/create", async(req, res) => {
   try {
+    let splitTime = req.body.recipe.prep_time.split(":")
+    const prep_time = sequelize.literal("ROW("+parseInt(splitTime[0])+","+parseInt(splitTime[1])+")::recipe_time")
+    splitTime = req.body.recipe.cook_time.split(":")
+    const cook_time = sequelize.literal("ROW("+parseInt(splitTime[0])+","+parseInt(splitTime[1])+")::recipe_time")
     const recipe = await Recipe.create({
-      recipe_name: req.body.recipe.name,
+      recipe_name: req.body.recipe.recipe_name,
       author: req.body.recipe.author,
-      about: req.body.recipe.description,
-      img: req.body.recipe.picture,
-      prep_time: req.body.recipe.prepTime,
-      cook_time: req.body.recipe.cookTIme,
+      about: req.body.recipe.about,
+      img: req.body.recipe.img,
+      prep_time: prep_time,
+      cook_time: cook_time,
       tags: req.body.recipe.tags,
-      notes: req.body.recipe.additionalNotes,
+      notes: req.body.recipe.notes,
       servings: req.body.recipe.servings,
       steps: req.body.steps,
     });
+    console.log("finished creating recipe")
+    console.log("Recipe id is ", recipe.recid)
     req.body.ingrs.map(async (ingr) => {
       const row = await RecipeIngrs.create({
         recid: recipe.recid,
@@ -202,7 +208,10 @@ recipesRouter.post("/create", async(req, res) => {
       console.log("ingrs: ", row)
     })
 
-    return res.json("Successfully added recipe to user's favourites.");
+    if (recipe) 
+      return res.json({ success: "Recipe created successfully!" });
+    else
+      return res.status(500).json({ error: "Failed to create recipe and ingredient entries." });  
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Failed to create recipe and ingredient entries." });

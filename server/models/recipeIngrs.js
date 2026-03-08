@@ -8,6 +8,7 @@ export const RecipeIngrs = sequelize.define("RecipeIngrs", {
   ingrid: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    autoIncrement: true,
     primaryKey: true,
   },
   recid: {
