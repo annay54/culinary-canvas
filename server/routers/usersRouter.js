@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { User } from "../models/users.js";
-import { FavRecipes } from "../models/favRecipes.js";
 import { Review } from "../models/reviews.js";
 import { Recipe } from "../models/recipes.js";
 import bcrypt from "bcrypt";
@@ -18,7 +17,7 @@ usersRouter.post("/register", async (req, res) => {
   const userExist = await User.findOne({
     where: { email: req.body.userData.email },
   });
-  if (userExist !== null) {
+  if (userExist) {
     return res.status(422).json({ error: "User already exists" });
   }
   
@@ -119,48 +118,7 @@ usersRouter.get("/info", async (req, res) => {
 });
 
 /**
- * Return all favourite recipes of the user with the specified identifier.
- */
-usersRouter.get("/fav-recipes", async (req, res) => {
-  const limit = parseInt(req.query.numRecipes);
-  const offset = (limit * req.query.page) - limit;
-
-  try {
-    // separately call findAll and count, instead of using findAndCountAll,
-    // due to usage of the include option (ex., SQL JOIN);
-    // otherwise not accurate count
-    const rows = await FavRecipes.findAll({
-      include: [{
-        model: Recipe,
-      }],
-      where: { uid: req.query.value },
-      limit: limit,
-      offset: offset,
-      distinct: true,
-    });
-
-    const count = await FavRecipes.count({
-      where: { uid: req.query.value },
-    });
-
-    // Get and return only the recipes
-    let recipes = []
-    rows.forEach((elem) => {
-      recipes.push(elem.Recipe)
-    })
-
-    return res.json({ 
-      recipes: recipes,
-      count: count,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Failed to fetch recipes." });
-  }
-});
-
-/**
- * Return all favourite recipes of the user with the specified identifier.
+ * Return all reviews of the user with the specified identifier.
  */
 usersRouter.get("/reviews", async (req, res) => {
   const limit = parseInt(req.query.numRecipes);

@@ -1,7 +1,13 @@
 import { Router } from "express";
 import { Recipe } from "../models/recipes.js";
+import { RecipeIngrs } from "../models/recipeIngrs.js";
+import { Review } from "../models/reviews.js";
+import { User } from "../models/users.js";
 import { sequelize } from "../datasource.js";
 import { Op } from "sequelize";
+import multer from "multer";
+
+const upload = multer();
 
 const sortByDict = {"rating": "rating", "create": "created_at", "author": "author", "recipe": "recipe_name"}
 const sortOrderDict = {"descending": "DESC", "ascending": "ASC"}
@@ -72,6 +78,86 @@ recipesRouter.get("/all", async (req, res) => {
 });
 
 /**
+ * Return the image of the recipe with the specified identifier.
+ */
+recipesRouter.get("/img", async (req, res) => {
+  const recipe = await Recipe.findOne({ 
+    where: { recid: req.query.id }, 
+    attributes: ["img"],
+  }); 
+  if (!recipe) return res.status(404).send();
+  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+  console.log("recipe image", recipe.img)
+  res.set("Content-Type", "image/png");
+  res.send(recipe.img); // bytea buffer
+})
+
+/**
+ * Return the recipe information with the specified identifier.
+ */
+recipesRouter.get("/info", async (req, res) => {
+  const recipe = await Recipe.findOne({ 
+    where: { recid: req.query.id }, 
+    attributes: ["recid", "recipe_name", "author", "about", "rating", 
+      "prep_time", "cook_time", "tags", "notes", "servings", "steps", 
+      "created_at"],
+  });
+  
+  if (!recipe) {
+    return res.status(404).json({ error: "Recipe not found." });
+  }
+  try {
+    const ingrs = await RecipeIngrs.findAll({ 
+      where: { recid: req.query.id },
+      attributes: ["item", "quantity", "unit"],
+    });
+    return res.json({
+      recipe: recipe,
+      ingrs: ingrs,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch recipe ingredients." });
+  }
+})
+
+/**
+ * Return all reviews of the recipe with the specified identifier.
+ */
+recipesRouter.get("/reviews", async (req, res) => {
+  const limit = parseInt(req.query.numReviews);
+  const offset = (limit * req.query.page) - limit;
+
+  try {
+    // separately call findAll and count, instead of using findAndCountAll,
+    // due to usage of the include option (ex., SQL JOIN); 
+    // otherwise, not accurate count
+    const reviews = await Review.findAll({ 
+      include: [{
+        model: User,
+        attributes: ["profile_img", "uid"],
+      }],
+      where: { recipe: req.query.id },
+      limit: limit,
+      offset: offset,
+      distinct: true,
+    });
+
+    const count = await Review.count({
+      where: { recipe: req.query.id },
+    });
+
+    return res.json({ 
+      reviews: reviews,
+      count: count,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to fetch reviews." });
+  }
+})
+
+/**
  * Return all the recipe tags in the database.
  */
 recipesRouter.get("/tags", async (req, res) => {
@@ -111,3 +197,45 @@ recipesRouter.get("/user-created", async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch recipes." });
   }
 });
+
+/**
+ * Creates rows in the recipes and recipeIngrs tables in the database.
+ */
+recipesRouter.post("/create", upload.single("img"), async(req, res) => {
+  try {
+    let splitTime = req.body.prep_time.split(":")
+    const prep_time = sequelize.literal("ROW("+parseInt(splitTime[0])+","+parseInt(splitTime[1])+")::recipe_time")
+    splitTime = req.body.cook_time.split(":")
+    const cook_time = sequelize.literal("ROW("+parseInt(splitTime[0])+","+parseInt(splitTime[1])+")::recipe_time")
+    const tags = req.body.tags.split(",")
+    const recipe = await Recipe.create({
+      recipe_name: req.body.recipe_name,
+      author: req.body.author,
+      about: req.body.about,
+      img: req.file?.buffer,
+      prep_time: prep_time,
+      cook_time: cook_time,
+      tags: tags,
+      notes: req.body.notes,
+      servings: req.body.servings,
+      steps: JSON.parse(req.body.steps),
+    });
+    const ingrs = JSON.parse(req.body.ingrs)
+    ingrs.map(async (ingr) => {
+      const row = await RecipeIngrs.create({
+        recid: recipe.recid,
+        item: ingr.item,
+        quantity: parseInt(ingr.quantity),
+        unit: ingr.unit,
+      });
+    })
+
+    if (recipe) 
+      return res.json({ success: "Recipe created successfully!" });
+    else
+      return res.status(500).json({ error: "Failed to create recipe and ingredient entries." });  
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Failed to create recipe and ingredient entries." });
+  }
+})

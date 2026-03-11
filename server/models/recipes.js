@@ -7,28 +7,12 @@ const tagOptions = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert'
 'Baked', 'Grilled', 'Roasted', 'Fried', 'Slow Cooker', 'Instant Pot', 'Air Fryer', 'Steamed', 'Toasted', 'Kid-Friendly', 'BBQ', 
 'Comfort Food', 'Holiday', 'Italian', 'Mexican', 'Indian', 'Chinese', 'Japanese', 'Thai', 'Mediterranean', 'Middle Eastern', 
 'American', 'French', 'Korean', 'Turkish', 'Spanish', 'Arab', 'Vietnamese', 'Greek', 'Hong Kong', 'Indonesian'];
-const units = ['none', 'tsp', 'tbsp', 'cup', 'pinch', 'oz', 'ml', 'l', 'lbs', 'g', 'kg', 'slice'];
-const recipe_time = {
-  type: 'recipe_time',
-  fields: [
-    'hr',
-    'min',
-  ],
-};
-
-const ingredient = {
-  type: 'ingredient',
-  fields: [
-    'item',
-    'quantity',
-    'unit',
-  ],
-};
 
 export const Recipe = sequelize.define("Recipes", {
   recid: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     allowNull: false,
   },
   recipe_name: {
@@ -51,8 +35,20 @@ export const Recipe = sequelize.define("Recipes", {
     type: DataTypes.DECIMAL,
     defaultValue: 0,
   },
-  prep_time: recipe_time,
-  cook_time: recipe_time,
+  prep_time: {
+    type: 'recipe_time',
+    fields: [
+      'hr',
+      'min',
+    ],
+  },
+  cook_time: {
+    type: 'recipe_time',
+    fields: [
+      'hr',
+      'min',
+    ],
+  },
   tags: {
     type: DataTypes.ARRAY(DataTypes.ENUM(tagOptions)),
     defaultValue: "",
@@ -65,7 +61,6 @@ export const Recipe = sequelize.define("Recipes", {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
-  ingrs: ingredient,
   steps: {
     type: DataTypes.ARRAY(DataTypes.TEXT),
     defaultValue: [],

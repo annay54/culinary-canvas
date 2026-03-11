@@ -70,14 +70,16 @@ const Explore = () => {
   }
 
   const handleFilter = (e) => {
-    // selectTags is a Set object, not a list
+    // selectTags is a Set object, not a list since Select element from NextUI uses Set objects
     // create a list using selectTags
     let extractTags = []
     console.log("selected tags:", selectTags, selectTags.size)
     if (selectTags.size == 0) {
+      // if no tags are selected to filter, search for recipes with any tags
       extractTags = tags
     }
     else {
+      // otherwise, use a list rather than selecTags Sets
       for (const tag of selectTags) {
         extractTags.push(tag)
       }

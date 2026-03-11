@@ -1,0 +1,626 @@
+import React, { useState } from "react";
+import {Select, SelectItem} from "@nextui-org/react";
+import RecipePage from "@/components/RecipePage";
+import Tiptap from "@/components/Tiptap";
+import UploadImage from "@/components/UploadImage";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+import { postRecipe } from "./util/recipeAPI";
+
+const CreateRecipe = () => {
+  const { data: session } = useSession()
+
+  // there will be a total of 4 steps to create a recipe
+  const [step, setStep] = useState(1);
+  const [recipe, setRecipe] = useState({recipe_name: "", about: "", img: "", prep_time: "0:0", cook_time: "0:0", servings: 0, tags: [], notes: ""});
+  const [selectTags, setSelectTags] = React.useState(new Set());
+  const [ingredients, setIngredients] = useState([]);
+  const [steps, setSteps] = useState([]);
+  const noFile = "No selected file"
+  const [image, setImage] = useState(null);
+  const [fileName, setFileName] = useState(noFile);
+  // displayList: array of items from array list to display on the page
+  // editList: array of boolean values to determine if an item in the list is being edited
+  const [displayList, setDisplayList] = useState([]);
+  const [editList, setEditList] = useState([]);
+
+  // contents of the Tiptap text editor to store the recipe description and additional notes
+  const [aboutContent, setAboutContent] = useState(recipe.about);
+  const [additionalContent, setAdditionalContent] = useState(recipe.notes);
+
+  // first element of list measurement units should be the default value
+  const units = ["none", "tsp", "tbsp", "cup", "pinch", "oz", "ml", "l", "lbs", "g", "kg", ]
+  const tags = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Appetizer', 'Side Dish', 
+'Easy', 'Quick', 'Simple', 'One-Pot', 'No-Bake', 'Beginner-Friendly', 'Healthy', 'Low-Carb', 'Low-Calorie', 'High Protein', 
+'High Fiber', 'Vegan', 'Vegetarian', 'Gluten-Free', 'Dairy-Free', 'Keto', 'Paleo', 'High-Fiber', 'Sugar-Free', 'Low-Fat',
+'Baked', 'Grilled', 'Roasted', 'Fried', 'Slow Cooker', 'Instant Pot', 'Air Fryer', 'Steamed', 'Toasted', 'Kid-Friendly', 'BBQ', 
+'Comfort Food', 'Holiday', 'Italian', 'Mexican', 'Indian', 'Chinese', 'Japanese', 'Thai', 'Mediterranean', 'Middle Eastern', 
+'American', 'French', 'Korean', 'Turkish', 'Spanish', 'Arab', 'Vietnamese', 'Greek', 'Hong Kong', 'Indonesian'];
+
+  // user is not signed in, they cannot access this page
+  if (!session) {
+    return (
+      <div className="flex flex-col w-full h-screen gap-2 md:gap-5 items-center justify-center text-secondary">
+        <i aria-hidden className="fa-solid fa-triangle-exclamation text-3xl md:text-5xl"></i>
+        <p className="text-base mx-8 lg:text-xl font-semibold">You are not signed in. Please sign in before creating a recipe.</p>
+      </div>
+    )
+  }
+
+  // return true if successfully saved data, otherwise return false
+  const saveRecipe = () => {
+    if (step === 1) {
+      let missingInputs = ["prepHour", "prepMin", "cookHour", "cookMin"]
+      // check when the above inputs are undefined or empty
+      for (let missing of missingInputs) {
+        if (document.getElementsByName(missing)[0] == undefined)
+          document.getElementsByName(missing)[0].value = 0
+      }
+      missingInputs = []
+
+      let errorMsg = ["name", "aboutContent", "prep", "cook", "servings"]
+      // check if required inputs are not empty before saving recipe information
+      if (document.getElementsByName("name")[0].value.trim().length == 0)
+        missingInputs.push("name") 
+      if (aboutContent.length == 0)
+        missingInputs.push("aboutContent")
+      if (document.getElementsByName("prepHour")[0].value == 0
+      && document.getElementsByName("prepMin")[0].value == 0)
+        missingInputs.push("prep")
+      if (document.getElementsByName("cookHour")[0].value == 0
+      && document.getElementsByName("cookMin")[0].value == 0)
+        missingInputs.push("cook")
+      if (document.getElementsByName("servings")[0] == undefined
+      || document.getElementsByName("servings")[0].value == 0)
+        missingInputs.push("servings")
+
+      if (missingInputs.length > 0) {
+        // display missing required inputs error message
+        // hide error message of completed required inputs
+        for (let missing of missingInputs) {
+          document.getElementById(missing + "-error").hidden = false
+        }
+        for (let error of errorMsg) {
+          if (!missingInputs.includes(error))
+            document.getElementById(error + "-error").hidden = true
+        }
+
+        window.scrollTo(0, 0)
+        toast.error("Fill in all required inputs.")
+        return false
+      }
+      else {
+        // hide all error messages of required inputs
+        for (let error of errorMsg) {
+          document.getElementById(error + "-error").hidden = true
+        }
+        let extractTags = []
+        if (selectTags.size > 0) {
+          // selectTags is a Set object, not a list since Select element from NextUI uses Set objects
+          for (const tag of selectTags) {
+            extractTags.push(tag)
+          }
+        }
+        setRecipe({
+          recipe_name: document.getElementsByName("name")[0].value,
+          author: session.user.email,
+          about: aboutContent,
+          img: image,
+          prep_time: (document.getElementsByName("prepHour")[0].valueAsNumber || 0) + ":" + (document.getElementsByName("prepMin")[0].valueAsNumber || 0),
+          cook_time: (document.getElementsByName("cookHour")[0].valueAsNumber || 0) + ":" + (document.getElementsByName("cookMin")[0].valueAsNumber || 0),
+          servings: document.getElementsByName("servings")[0].value,
+          tags: extractTags,
+        })
+      }
+    }
+    else if (step === 2) {
+      // check if required inputs are not empty before saving recipe information
+      // display missing required inputs error message
+      // hide error message of completed required inputs
+      if (displayList.length == 0) {
+        document.getElementById("ingrs-error").hidden = false
+        window.scrollTo(0, 0)
+        toast.error("Add at least one recipe ingredient.")
+        return false
+      }
+      else {
+        document.getElementById("ingrs-error").hidden = true
+        setIngredients(displayList)
+      }
+    }
+    else if (step === 3) {
+      // check if required inputs are not empty before saving recipe information
+      // display missing required inputs error message
+      // hide error message of completed required inputs
+      if (displayList.length == 0) {
+        document.getElementById("steps-error").hidden = false
+        window.scrollTo(0, 0)
+        toast.error("Add at least one recipe step.")
+        return false
+      }
+      else {
+        document.getElementById("steps-error").hidden = true
+        setSteps(displayList)
+        setRecipe({
+          ...recipe,
+          notes: additionalContent
+        })
+      }
+    }
+    console.log("recipe", recipe)
+    console.log("ingrs", ingredients)
+    console.log("steps", steps)
+    return true
+  }
+
+  const handleNextStep = () => {
+    const result = saveRecipe();
+    window.scrollTo(0, 0);
+    if (result) {
+      if (step === 1) {
+        setStep(2);
+        setDisplayList(ingredients);
+        setEditList(new Array(ingredients.length).fill(false));
+        console.log(recipe);
+      } else if (step === 2) {
+        setStep(3);
+        setDisplayList(steps);
+        setEditList(new Array(steps.length).fill(false));
+      }
+      else { // step === 3
+        setStep(4);
+      }
+    }
+  }
+
+  const handleBackStep = () => {
+    const result = saveRecipe();
+    window.scrollTo(0, 0);
+    if (result) {
+      if (step === 2) {
+        setStep(1);
+      } else if (step === 3) {
+        setStep(2);
+        setDisplayList(ingredients);
+        setEditList(new Array(ingredients.length).fill(false));
+      }
+      else { // step === 4
+        setStep(3);
+        setDisplayList(steps);
+        setEditList(new Array(steps.length).fill(false));
+      }
+    }
+  }
+
+  const submitRecipe = () => {
+    postRecipe(recipe, steps, ingredients).then((res) => {
+      if (res.error) {
+        toast.error(res.error)
+      }
+      else {
+        toast.success(res.success);
+        window.location.href = "/"; // go back to the home page
+      }
+    })
+  }
+
+  const pushList = (type) => {
+    if (type === "ingredients") {
+      // check if quantity and item inputs are empty
+      if (document.getElementsByName("quantity")[0] == undefined
+      || document.getElementsByName("quantity")[0].value == 0
+      || document.getElementsByName("item")[0].value.trim().length == 0) {
+        window.scrollTo(0, 0)
+        toast.error("Fill in the required inputs before clicking on the add button.")
+      }
+      else {
+        setDisplayList(displayList.concat({
+          quantity: document.getElementsByName("quantity")[0].value, 
+          unit: document.getElementsByName("unit")[0].value, 
+          item: document.getElementsByName("item")[0].value 
+        }));
+        setEditList(editList.concat(false));
+      }
+    }
+    else { // type === "steps"
+      // check if step input is empty
+      if (document.getElementsByName("step")[0].value.trim().length == 0) {
+        window.scrollTo(0, 0)
+        toast.error("Fill in the required inputs before clicking on the add button.")
+      }
+      else {
+        setDisplayList(displayList.concat(document.getElementsByName("step")[0].value));
+        setEditList(editList.concat(false));
+      }
+    }
+  }
+
+  const ProgressSteps = () => (
+    <div className="flex flex-row md:gap-2 items-center justify-center self-center w-full h-fit">
+      <div className="flex flex-col items-center gap-0.5">
+        <div className={`flex flex-row items-center justify-center rounded-full w-10 h-10 md:w-12 md:h-12 border-primary border-3 ${step >= 1 ? 'bg-primary text-white' : 'bg-inherit text-primary'}`}>
+          <h3 className="font-medium text-lg md:text-2xl">1</h3>
+        </div>
+        <p className="text-secondary font-medium hidden md:inline">Basic info</p>
+      </div>
+      <hr className="border-1.5 border-primary w-1/12 lg:w-32 md:mb-5" />
+      <div className="flex flex-col items-center gap-0.5">
+        <div className={`flex flex-row items-center justify-center rounded-full w-10 h-10 md:w-12 md:h-12 border-primary border-3 ${step >= 2 ? 'bg-primary text-white' : 'bg-inherit text-primary'}`}>
+          <h3 className="font-medium text-lg md:text-2xl">2</h3>
+        </div>
+        <p className="text-secondary font-medium hidden md:inline">Ingredients</p>
+      </div>
+      <hr className="border-1.5 border-primary w-1/12 lg:w-32 md:mb-5" />
+      <div className="flex flex-col items-center gap-0.5">
+        <div className={`flex flex-row items-center justify-center rounded-full w-10 h-10 md:w-12 md:h-12 border-primary border-3 ${step >= 3 ? 'bg-primary text-white' : 'bg-inherit text-primary'}`}>
+          <h3 className="font-medium text-lg md:text-2xl">3</h3>
+        </div>
+        <p className="text-secondary font-medium hidden md:inline">Recipe steps</p>
+      </div>
+      <hr className="border-1.5 border-primary w-1/12 lg:w-32 md:mb-5" />
+      <div className="flex flex-col items-center gap-0.5">
+        <div className={`flex flex-row items-center justify-center rounded-full w-10 h-10 md:w-12 md:h-12 border-primary border-3 ${step >= 4 ? 'bg-primary text-white' : 'bg-inherit text-primary'}`}>
+          <h3 className="font-medium text-lg md:text-2xl">4</h3>
+        </div>
+        <p className="text-secondary font-medium hidden md:inline">Preview</p>
+      </div>
+    </div>
+  );
+
+  const IngrStep = ({ type }) => {
+    // type: 'ingredients' or 'steps'
+
+    const EditButton = (index) => {
+      return (
+        <button title='Edit' className='bg-primary py-1.5 px-2 rounded-lg' 
+          onClick={() => {
+            setEditList(editList.map((value, i) => i === index.index ? true : value))
+          }}>
+          <i aria-hidden className="fa-regular fa-pen-to-square text-white w-5 h-5"></i>
+        </button>
+      )
+    }
+  
+    const DeleteButton = (index) => {
+      return (
+        <button title='Delete' className='bg-red-600 py-1.5 px-2 rounded-lg'
+          onClick={() => {
+            // remove the item from the displayList
+            setDisplayList(displayList.filter((_, i) => i !== index.index))
+            // update editList to reflect the new list with all values set to false values
+            setEditList(new Array(displayList.length).fill(false))
+          }}>
+          <i aria-hidden className="fa-regular fa-trash-can text-white w-5 h-5"></i>
+        </button>
+      )
+    }
+  
+    const ConfirmEditButton = (index) => {
+      return (
+        <button title='Save edit' className='bg-primary py-1.5 px-2 rounded-lg'
+          onClick={() => {
+            if (type === "ingredients") {
+              // check if all required inputs are completed]
+              if (document.getElementsByName(index.index)[0] == undefined
+              || document.getElementsByName(index.index)[0]?.value == 0
+              || document.getElementsByName(index.index)[2].value.trim().length == 0) {
+                toast.error("Fill in the required inputs before clicking on the save edit button.")
+              }
+              else {
+                displayList[index.index] = {
+                  quantity: document.getElementsByName(index.index)[0].value,
+                  unit: document.getElementsByName(index.index)[1].value,
+                  item: document.getElementsByName(index.index)[2].value
+                }
+                setEditList(editList.map((value, i) => i === index.index ? false : value))
+              }
+            }
+            else {
+              if (document.getElementsByName(index.index)[0].value.trim().length == 0) {
+                toast.error("Fill in the required inputs before clicking on the save edit button.")
+              }
+              else {
+                displayList[index.index] = document.getElementsByName(index.index)[0].value
+                setEditList(editList.map((value, i) => i === index.index ? false : value))
+              }
+            }
+          }
+        }>
+          <i aria-hidden className="fa-solid fa-check text-white w-5 h-5"></i>
+        </button>
+      )
+    }
+  
+    const CancelEditButton = (index) => {
+      return (
+        <button title='Cancel edit' className='bg-red-600 py-1.5 px-2 rounded-lg' 
+          onClick={() => {
+            setEditList(editList.map((value, i) => i === index.index ? false : value))
+          }}>
+          <i aria-hidden className="fa-solid fa-xmark text-white w-5 h-5"></i>
+        </button>
+      )
+    }
+  
+    return (
+      <>
+        {type === "ingredients" ? (
+          <div className='flex flex-col gap-2 w-full h-fit self-center'>
+          <p className="text-sm">Inserted {displayList.length} ingredient{displayList.length > 1 && "s"}</p>
+          <hr className='w-full border-1 border-primary'/>
+          {displayList.length === 0 &&
+            <div className='text-textColor flex flex-col justify-center items-center w-full'>
+              <p className="my-10">No ingredients added yet.</p>
+              <hr className='w-full border-1 border-primary'/>
+            </div>
+          }
+          {displayList.map((ingr, index) => (
+            <div key={index} className="flex flex-col gap-3">
+              {editList[index] ? (
+                <div className='flex flex-col sm:flex-row mt-1 px-4 gap-2 items-end sm:items-center justify-between'>
+                  <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full">
+                    <input name={index} type="number" min={0} defaultValue={ingr.quantity} className='w-1/12 min-w-12 p-2 border-2 border-primary rounded-md'/>
+                    <select name={index} defaultValue={ingr.unit} className='w-1/12 min-w-24 p-2 border-2 border-primary rounded-md hover:cursor-pointer'>
+                      {units.map((unit, index) => (
+                        <option value={unit} key={index}>{unit}</option>
+                      ))}
+                    </select>
+                    <input name={index} defaultValue={ingr.item} className='w-10/12 p-2 border-2 border-primary rounded-md'/>
+                  </div>
+                  <div className='flex gap-2'>
+                    <ConfirmEditButton index={index} />
+                    <CancelEditButton index={index} />
+                  </div>
+                </div>
+              ) : (
+                <div className='flex flex-row mt-1 px-4 gap-2 items-center justify-between'>
+                  {ingr.unit === 'none' ? (
+                    <p className='text-textColor'>{ingr.quantity} {ingr.item}</p>
+                  ) : (
+                    <p className='text-textColor'>{ingr.quantity} {ingr.unit} {ingr.item}</p>
+                  )}
+                  <div className='flex gap-2'>
+                    <EditButton index={index} />
+                    <DeleteButton index={index} />
+                  </div>
+                </div>
+              )}
+              <hr className='w-full border-1 border-primary'/>
+            </div>
+          ))}
+        </div>
+        ) : ( // type === "steps"
+          <div className='flex flex-col gap-2 w-full h-fit self-center'>
+            <p className="text-sm">Inserted {displayList.length} step{displayList.length > 1 && "s"}</p>
+            <hr className='w-full border-1 border-primary'/>
+            {displayList.length === 0 &&
+              <div className='text-textColor flex flex-col justify-center items-center w-full'>
+                <p className="my-10">No steps added yet.</p>
+                <hr className='w-full border-1 border-primary'/>
+              </div>
+            }
+            {displayList.map((step, index) => (
+              <div key={index} className="flex flex-col gap-3">
+                {editList[index] ? (
+                  <div className='flex flex-row mt-1 px-4 gap-2 items-center justify-between'>
+                    <textarea name={index} defaultValue={step} className='w-full h-24 max-h-48 p-2 border-2 border-primary rounded-md'></textarea>
+                    <div className='flex gap-2'>
+                      <ConfirmEditButton index={index} />
+                      <CancelEditButton index={index} />
+                    </div>
+                  </div>
+                ) : (
+                  <div className='flex flex-row mt-1 px-4 gap-2 items-center justify-between'>
+                    <p className='text-textColor'>{index + 1}. {step}</p>
+                    <div className='flex gap-2'>
+                      <EditButton index={index} />
+                      <DeleteButton index={index} />
+                    </div>
+                  </div>
+                )}
+                <hr className='w-full border-1 border-primary'/>
+              </div>
+            ))}
+          </div>
+        )}
+      </>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-4 self-center w-full h-fit px-5 sm:px-10 md:px-20 xl:px-56 py-8">
+      <h2 className="text-secondary text-4xl">Add a new recipe</h2>
+      <ProgressSteps />
+      <hr className="border-1.5 border-primary w-full" />
+      {step === 1 ? (
+        <>
+          <div className="flex flex-col gap-1 w-full">
+            <h3 className="text-secondary font-medium">Name of your recipe*</h3>
+            <p id="name-error" className="text-red-600 font-medium" hidden>Required.</p>
+            <input type="text" name="name" defaultValue={recipe.recipe_name} placeholder="ex., Apple pie" className="w-full h-10 border-2 border-primary rounded-lg px-2" />
+          </div>
+          <div className="flex flex-col gap-1 w-full">
+            <h3 className="text-secondary font-medium">About your recipe*</h3>
+            <p id="aboutContent-error" className="text-red-600 font-medium" hidden>Required.</p>
+            <p>Provide a brief description of your recipe.</p>
+            <Tiptap name="aboutContent" content={aboutContent} onChange={(newContent) => {console.log(newContent); setAboutContent(newContent)}} />
+          </div>
+          <div className="flex flex-col gap-1 w-full">
+            <h3 className="text-secondary font-medium">Recipe tags</h3>
+            <p>Add tags to your recipe to make it easier to find. The tags should describe the recipe.</p>
+            <div className="my-2">
+              <Select
+                items={tags}
+                placeholder="Select tags"
+                variant="flat"
+                isMultiline={true}
+                selectionMode="multiple"
+                selectedKeys={selectTags}
+                onSelectionChange={setSelectTags}
+                aria-label="Select tags"
+                classNames={{ 
+                  mainWrapper: "border-2 border-primary rounded-lg",
+                  listbox: "text-secondary",
+                  selectorIcon: "text-secondary",
+                  trigger: "bg-white",
+                }}
+              >
+                {tags.map((tag) => (
+                  <SelectItem aria-label={tag} key={tag}>{tag}</SelectItem>
+                ))}
+              </Select>
+            </div>
+          </div>
+          <UploadImage image={image} setImage={setImage} fileName={fileName} setFileName={setFileName}/>
+          <hr className="border-1 border-primary w-full my-5" />
+          <div className="flex flex-col lg:flex-row justify-between gap-5 lg:gap-1 w-full">
+            <div className="flex flex-col gap-1 w-fit">
+              <h3 className="text-secondary font-medium">Preparation time*</h3>
+              <p id="prep-error" className="text-red-600 font-medium" hidden>Required.</p>
+              <div className="flex flex-row gap-2 items-center">
+                <input aria-label="Prep hour" type="number" name="prepHour" min={0} max={24} defaultValue={recipe.prep_time.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
+                <p>hours</p>
+                <input aria-label="Prep minute" type="number" name="prepMin" min={0} max={59} defaultValue={recipe.prep_time.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
+                <p>minutes</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 w-fit">
+              <h3 className="text-secondary font-medium">Cooking time*</h3>
+              <p id="cook-error" className="text-red-600 font-medium" hidden>Required.</p>
+              <div className="flex flex-row gap-2 items-center">
+                <input aria-label="Cook hour" type="number" name="cookHour" min={0} max={24} defaultValue={recipe.cook_time.split(":")[0]} className="w-16 h-10 border-2 border-primary rounded-lg px-2" />
+                <p>hours</p>
+                <input aria-label="Cook minute" type="number" name="cookMin" min={0} max={59} defaultValue={recipe.cook_time.split(":")[1]} className="w-16 h-10 border-2 border-primary rounded-lg px-2 " />
+                <p>minutes</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 w-fit">
+              <h3 className="text-secondary font-medium">Number of servings*</h3>
+              <p id="servings-error" className="text-red-600 font-medium" hidden>Required.</p>
+              <input aria-label="Servings" type="number" name="servings" min={1} defaultValue={recipe.servings} className="w-20 h-10 border-2 border-primary rounded-lg px-2" />
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
+            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-center" title="Save current step progress" onClick={saveRecipe}>Save</button>
+            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Next step" onClick={handleNextStep}>
+              Next
+              <i aria-hidden className="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </>
+      ) : step === 2 ? (
+        <>
+          <div className="flex flex-col gap-1 w-full mb-5">
+            <h3 className="text-secondary font-medium">Ingredients*</h3>
+            <p id="ingrs-error" className="text-red-600 font-medium" hidden>Required. Add at least 1 ingredient.</p>
+            <p>Insert the ingredients of your recipe.</p>
+            <p>For example: 3/4 cup cream cheese</p>
+            <p><b>Note: </b>For ingredients that do not require a measurement, leave the measurement as "none".</p>
+            <div className="flex flex-row mt-2 gap-3 md:gap-5 w-full flex-wrap md:flex-nowrap">
+              <div className="flex flex-col gap-1 w-fit mr-2 md:mr-0">
+                <p className="font-medium text-lg">Quantity</p>
+                <input type="number" min={0} defaultValue={0} name="quantity" className="w-24 h-10 border-2 border-primary rounded-lg px-2" />
+              </div>
+              <div className="flex flex-col gap-1 w-fit">
+                <p className="font-medium text-lg">Measurement</p>
+                <select name="unit" defaultValue={units[0]} className='h-10 border-2 border-primary rounded-lg px-2 hover:cursor-pointer'>
+                  {units.map((unit, index) => (
+                    <option value={unit} key={index}>{unit}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-medium text-lg">Item</p>
+                <input type="text" name="item" className="w-full h-10 border-2 border-primary rounded-lg px-2" />
+              </div>
+            </div>
+            <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" title="Add recipe ingredient" onClick={() => {
+              pushList("ingredients");
+              // reset the input fields
+              document.getElementsByName("quantity")[0].value = 0;
+              document.getElementsByName("unit")[0].value = units[0];
+              document.getElementsByName("item")[0].value = "";
+            }}>
+              Add
+            </button>
+          </div>
+          <IngrStep type={"ingredients"} />
+          <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
+            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" title="Save current step progress" onClick={saveRecipe}>
+              Save
+            </button>
+            <div className="flex flex-row gap-5">
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Previous step" onClick={handleBackStep}>
+                <i aria-hidden className="fa-solid fa-arrow-left mr-2"></i>
+                Back
+              </button>
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Next step" onClick={handleNextStep}>
+                Next
+                <i aria-hidden className="fa-solid fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+        </>
+      ) : step === 3 ? ( // step === 3
+        <>
+          <div className="flex flex-col gap-1 w-full mb-5">
+            <h3 className="text-secondary font-medium">Recipe steps*</h3>
+            <p id="steps-error" className="text-red-600 font-medium" hidden>Required. Add at least 1 step.</p>
+            <p>Insert the steps of your recipe.</p>
+            <p>For example: Preheat the oven to 350°F.</p>
+            <p><b>Note: </b>Do not include the number of the step as it will automatically number the step once you click on the "Add" button. See the example.</p>
+            <textarea name="step" className="w-full h-24 max-h-48 border-2 border-primary rounded-lg px-2"></textarea>
+            <button className="w-28 h-10 mt-4 bg-primary text-white font-medium rounded-lg" title="Add recipe step" onClick={() => {
+              pushList("steps");
+              document.getElementsByName("step")[0].value = "";
+            }}>
+              Add
+            </button>
+          </div>
+          <IngrStep type={"steps"} />
+          <div className="flex flex-col gap-1 w-full mt-8">
+            <h3 className="text-secondary font-medium">Additional notes</h3>
+            <p>Provide any additional notes or tips for the recipe. This will appear at the bottom of the recipe page.</p>
+            <Tiptap content={additionalContent} onChange={(newContent) => {console.log(newContent); setAdditionalContent(newContent)}} />
+          </div>
+          <div className="flex flex-col sm:flex-row gap-5 w-fit self-start sm:self-end py-10">
+            <button className="w-28 h-10 bg-primary text-white font-medium rounded-lg self-start" title="Save current step progress" onClick={saveRecipe}>
+              Save
+            </button>
+            <div className="flex flex-row gap-5">
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Previous step" onClick={handleBackStep}>
+                <i aria-hidden className="fa-solid fa-arrow-left mr-2"></i>
+                Back
+              </button>
+              <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Next step" onClick={handleNextStep}>
+                Next
+                <i aria-hidden className="fa-solid fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+        </>
+      ) : ( // step === 4
+        <>
+          <div className="flex flex-col gap-1 w-full mb-5">
+            <h3 className="text-secondary font-medium">Preview of recipe page</h3>
+          </div>
+          <div className="w-full self-center -mt-16 sm:-mx-10 md:-mx-20 xl:-mx-56">
+            <RecipePage recipe={recipe} ingrs={ingredients} steps={steps} authorImg={session.user.image}></RecipePage>
+          </div>
+
+          <div className="flex flex-row gap-5 w-fit self-start sm:self-end py-10">
+            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Previous step" onClick={handleBackStep}>
+              <i aria-hidden className="fa-solid fa-arrow-left mr-2"></i>
+              Back
+            </button>
+            <button className="w-28 h-10 bg-secondary text-white font-medium rounded-lg self-center" title="Submit recipe" onClick={submitRecipe}>
+              Submit
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+export default CreateRecipe;
