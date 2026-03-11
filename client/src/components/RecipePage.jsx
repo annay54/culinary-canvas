@@ -1,19 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import RecipeTag from "./RecipeTag";
 import { Avatar } from "@nextui-org/avatar";
 import { useSession } from "next-auth/react";
 import { isFavRecipe, addDeleteFavRecipe } from "@/pages/util/favRecipeAPI";
+import ReadOnlyTiptap from "./ReadOnlyTiptap";
+import { RECIPES_API_URL } from "@/pages/util/recipeAPI";
 
-const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
+const RecipePage = ({ recipe, ingrs, steps, authorImg, numRating, isCreate }) => {
   const { data: session } = useSession()
-  const [isFav, setIsFav] = React.useState(false);
+  const [isFav, setIsFav] = useState(false);
+  const [prepTime, setPrepTime] = useState("0 mins");
+  const [cookTime, setCookTime] = useState("0 mins");
+  const [totalTime, setTotalTime] = useState("0 mins");
 
   React.useEffect(() => {
-    if (session) {
+    if (session && isCreate != null) {
       isFavRecipe(recipe.recid, session.user.id).then((res) => {
         setIsFav(res);
       })
     }
+    const parsePrepTime = recipe.prep_time.split(":")
+    const parseCookTime = recipe.cook_time.split(":")
+    // consider special case: when hour and mins for prep time or cook time are both 0
+    if (parseInt(parsePrepTime[0]) == 0 && parseInt(parsePrepTime[1]) == 0) {
+      setPrepTime("0 mins")
+    } else {
+      setPrepTime(`${parseInt(parsePrepTime[0]) == 0 ? "" : parsePrepTime[0] + " hr"}` + `${parseInt(parsePrepTime[0]) == 0 || parseInt(parsePrepTime[1]) == 0? " " : ", "}` + `${parseInt(parsePrepTime[1]) == 0 ? "" : parsePrepTime[1] + " mins"}`)
+    }
+    if (parseInt(parseCookTime[0]) == 0 && parseInt(parseCookTime[1]) == 0) {
+      setCookTime("0 mins")
+    } else {
+      setCookTime(`${parseInt(parseCookTime[0]) == 0 ? "" : parseCookTime[0] + " hr"}` + `${parseInt(parseCookTime[0]) == 0 || parseInt(parseCookTime[1]) == 0 ? " ": ", "}` + `${parseInt(parseCookTime[1]) == 0 ? "" : parseCookTime[1] + " mins"}`)
+    }
+
+    // convert sum of prep time and cook time mins to hours if necessary
+    const sumMin = parseInt(parsePrepTime[1]) + parseInt(parseCookTime[1])
+    let totalMin = sumMin
+    let totalHr = parseInt(parsePrepTime[0]) + parseInt(parseCookTime[0])
+    if (sumMin >= 60) {
+      totalMin = sumMin % 60
+      totalHr += Math.floor(sumMin / 60)
+    }
+    // also consider special case: when totalHr and totalMin are both 0
+    setTotalTime(`${totalHr > 0 ? totalHr + "  hr" : ""}` + `${totalHr > 0 
+      && totalMin > 0 ? ", " : " "}` + `${totalMin > 0 ? totalMin + " mins" : ""}` 
+      + `${totalHr == 0 && totalMin == 0 ? "0 mins" : ""}`)
+
   }, [session])
 
   const Instruction = ({ step, description }) => (
@@ -40,10 +72,10 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
   return (
     <div className='pt-16 md:mx-[10%] mx-[5%]'>
       {/* hero */}
-      {recipe.img && (
+      {recipe.img?.size > 0 && (
         <img 
-          src={recipe.img}
-          alt="pancake" 
+          src={URL.createObjectURL(recipe.img)}
+          alt={recipe.recipe_name} 
           className='w-full md:w-full h-[250px] md:h-[400px] object-cover z-0 relative'
         />
       )}
@@ -51,8 +83,8 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
         <h1 className='text-secondary max-md:text-4xl max-md:py-2'>{recipe.recipe_name}</h1>
       </div>
 
-      {/* Show favourite button when user is logged in */}
-      {session && (
+      {/* Show favourite button when user is logged in and recipe page is not a preview for creating recipe */}
+      {session && isCreate != null && (
         <div className='flex justify-end -mt-6 md:-mt-10'>
           <button className='p-0 bg-transparent z-50' onClick={handleFav}>
             <i aria-hidden className={`fa-star text-primary fa-2xl ${isFav ? 'fa-solid' : 'fa-regular'}`}></i>
@@ -87,32 +119,44 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
           <div className='flex flex-wrap md:flex-row gap-x-8'>
             <div className='flex flex-row gap-2 items-center'>
               <i aria-hidden className='fa-solid fa-clock text-textColor' />
-              <span>20 minutes</span>
+              <div className='flex flex-row gap-6'>
+                <span><span className="font-medium">Prep Time:</span> {prepTime}</span>
+                <span><span className="font-medium">Cook Time:</span> {cookTime}</span>
+                <span><span className="font-medium">Total Time:</span> {totalTime}</span>
+              </div>
             </div>
             <div className='flex flex-row gap-2 items-center'>
               <i aria-hidden className='fa-solid fa-comment text-textColor' />
-              <span>30 reviews</span>
+              <span>{numRating ? numRating : 0} reviews</span>
             </div>
           </div>
         </div>
 
         {/* tags */}
         <div className='flex flex-wrap gap-2'>
-          {recipe.tags.map((tag, index) => (
+          {recipe.tags && recipe.tags.map((tag, index) => (
             <RecipeTag key={index} tag={tag} />
           ))}
         </div>
 
-        <p>{recipe.about}</p>
+        <ReadOnlyTiptap content={recipe.about} />
       </div>
 
       <div className='flex flex-col md:flex-row gap-8 my-8'>
         {/* instructions */}
-        <div className='max-md:order-last flex flex-col gap-4 w-full'>
+        <div className='max-md:order-last flex flex-col gap-0 w-full'>
           <h2 className=''>Instructions</h2>
-          {recipe.steps.map((step, index) => (
-            <Instruction key={index} step={index + 1} description={step} />
-          ))}
+          <hr className='border-1 border-primary mb-4' />
+          {/* for recipe preview in create recipe page */}
+          <div className='max-md:order-last flex flex-col gap-4 w-full'>
+            {steps && steps.map((step, index) => (
+              <Instruction key={index} step={index + 1} description={step} />
+            ))}
+            {/* for recipe page when user clicks on a recipe card */}
+            {recipe.steps && recipe.steps.map((step, index) => (
+              <Instruction key={index} step={index + 1} description={step} />
+            ))}
+          </div>
         </div>
                 
         {/* ingredients */}
@@ -121,10 +165,20 @@ const RecipePage = ({ recipe, ingrs, authorImg, numRating }) => {
           <p className='text-textColor'>Servings: {recipe.servings}</p>
           <hr className='border-1' />
           {ingrs.map((ingr, index) => (
-            <Ingredient key={index} name={ingr.item} quantity={ingr.quantity + " " + ingr.unit} />
+            <Ingredient key={index} name={ingr.item} quantity={ingr.quantity + " " + (ingr.unit == "none" ? "" : ingr.unit)} />
           ))}
         </div>
       </div>
+
+      
+      {/* additional notes */}
+      {recipe.notes && 
+        <div className='mb-14'>
+          <h2>Additional Notes</h2>
+          <hr className='border-1 border-primary mb-4' />
+          <ReadOnlyTiptap content={recipe.notes} />
+        </div>
+      }
     </div>
   )
 }

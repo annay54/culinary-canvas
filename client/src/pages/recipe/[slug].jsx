@@ -4,7 +4,7 @@ import Review from '@/components/Review';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 import React from 'react'
 import toast from "react-hot-toast";
-import { getRecipeById, getRecipeReviews } from "@/pages/util/recipeAPI";
+import { getRecipeById, getRecipeImg, getRecipeReviews } from "@/pages/util/recipeAPI";
 import { useRouter } from "next/navigation";
 
 export default function ({ slug }) {
@@ -26,7 +26,26 @@ export default function ({ slug }) {
           router.push("/notfound")
         }
         else {
-          setRecipe(res.recipe);
+          // setRecipe(res.recipe);
+          const parsePrepTime = res.recipe.prep_time.split(",")
+          const parseCookTime = res.recipe.cook_time.split(",")
+          getRecipeImg(res.recipe.recid).then((img) => {          
+            setRecipe({
+              recid: res.recipe.recid,
+              recipe_name: res.recipe.recipe_name,
+              author: res.recipe.author,
+              about: res.recipe.about,
+              img: img,
+              rating: res.recipe.rating,
+              prep_time: parsePrepTime[0].slice(1) + ":" + parsePrepTime[1].slice(0, -1), // remove the parentheses around numbers
+              cook_time: parseCookTime[0].slice(1) + ":" + parseCookTime[1].slice(0, -1), // remove the parentheses around numbers
+              tags: res.recipe.tags,
+              notes: res.recipe.notes,
+              servings: res.recipe.servings,
+              steps: res.recipe.steps,
+              created_at: res.recipe.created_at
+            })
+          })
           setIngrs(res.ingrs);
         }
       }), {
@@ -46,7 +65,7 @@ export default function ({ slug }) {
   return (
     <>
       {recipe && <>
-        <RecipePage recipe={recipe} ingrs={ingrs} />
+        <RecipePage recipe={recipe} ingrs={ingrs} numRating={reviews.length} />
         {/* reviews */}
         <div className='flex flex-col w-full gap-4 md:px-[10%] px-[5%] py-12 bg-primary text-white'>
               <h2>Reviews</h2>
