@@ -2,10 +2,12 @@ import { Router } from "express";
 import { Recipe } from "../models/recipes.js";
 import { RecipeIngrs } from "../models/recipeIngrs.js";
 import { Review } from "../models/reviews.js";
-import { FavRecipes } from "../models/favRecipes.js";
 import { User } from "../models/users.js";
 import { sequelize } from "../datasource.js";
 import { Op } from "sequelize";
+import multer from "multer";
+
+const upload = multer();
 
 const sortByDict = {"rating": "rating", "create": "created_at", "author": "author", "recipe": "recipe_name"}
 const sortOrderDict = {"descending": "DESC", "ascending": "ASC"}
@@ -76,10 +78,31 @@ recipesRouter.get("/all", async (req, res) => {
 });
 
 /**
+ * Return the image of the recipe with the specified identifier.
+ */
+recipesRouter.get("/img", async (req, res) => {
+  const recipe = await Recipe.findOne({ 
+    where: { recid: req.query.id }, 
+    attributes: ["img"],
+  }); 
+  if (!recipe) return res.status(404).send();
+  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+  console.log("recipe image", recipe.img)
+  res.set("Content-Type", "image/png");
+  res.send(recipe.img); // bytea buffer
+})
+
+/**
  * Return the recipe information with the specified identifier.
  */
 recipesRouter.get("/info", async (req, res) => {
-  const recipe = await Recipe.findOne({ where: { recid: req.query.id } });
+  const recipe = await Recipe.findOne({ 
+    where: { recid: req.query.id }, 
+    attributes: ["recid", "recipe_name", "author", "about", "rating", 
+      "prep_time", "cook_time", "tags", "notes", "servings", "steps", 
+      "created_at"],
+  });
+  
   if (!recipe) {
     return res.status(404).json({ error: "Recipe not found." });
   }
@@ -176,36 +199,35 @@ recipesRouter.get("/user-created", async (req, res) => {
 });
 
 /**
- * Creates a row in the recipes and recipeIngrs tables in the database.
+ * Creates rows in the recipes and recipeIngrs tables in the database.
  */
-recipesRouter.post("/create", async(req, res) => {
+recipesRouter.post("/create", upload.single("img"), async(req, res) => {
   try {
-    let splitTime = req.body.recipe.prep_time.split(":")
+    let splitTime = req.body.prep_time.split(":")
     const prep_time = sequelize.literal("ROW("+parseInt(splitTime[0])+","+parseInt(splitTime[1])+")::recipe_time")
-    splitTime = req.body.recipe.cook_time.split(":")
+    splitTime = req.body.cook_time.split(":")
     const cook_time = sequelize.literal("ROW("+parseInt(splitTime[0])+","+parseInt(splitTime[1])+")::recipe_time")
+    const tags = req.body.tags.split(",")
     const recipe = await Recipe.create({
-      recipe_name: req.body.recipe.recipe_name,
-      author: req.body.recipe.author,
-      about: req.body.recipe.about,
-      img: req.body.recipe.img,
+      recipe_name: req.body.recipe_name,
+      author: req.body.author,
+      about: req.body.about,
+      img: req.file?.buffer,
       prep_time: prep_time,
       cook_time: cook_time,
-      tags: req.body.recipe.tags,
-      notes: req.body.recipe.notes,
-      servings: req.body.recipe.servings,
-      steps: req.body.steps,
+      tags: tags,
+      notes: req.body.notes,
+      servings: req.body.servings,
+      steps: JSON.parse(req.body.steps),
     });
-    console.log("finished creating recipe")
-    console.log("Recipe id is ", recipe.recid)
-    req.body.ingrs.map(async (ingr) => {
+    const ingrs = JSON.parse(req.body.ingrs)
+    ingrs.map(async (ingr) => {
       const row = await RecipeIngrs.create({
         recid: recipe.recid,
         item: ingr.item,
         quantity: parseInt(ingr.quantity),
         unit: ingr.unit,
       });
-      console.log("ingrs: ", row)
     })
 
     if (recipe) 

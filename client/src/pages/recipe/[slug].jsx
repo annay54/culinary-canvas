@@ -4,7 +4,7 @@ import Review from '@/components/Review';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 import React from 'react'
 import toast from "react-hot-toast";
-import { getRecipeById, getRecipeReviews } from "@/pages/util/recipeAPI";
+import { getRecipeById, getRecipeImg, getRecipeReviews } from "@/pages/util/recipeAPI";
 import { useRouter } from "next/navigation";
 
 export default function ({ slug }) {
@@ -29,20 +29,22 @@ export default function ({ slug }) {
           // setRecipe(res.recipe);
           const parsePrepTime = res.recipe.prep_time.split(",")
           const parseCookTime = res.recipe.cook_time.split(",")
-          setRecipe({
-            recid: res.recipe.recid,
-            recipe_name: res.recipe.recipe_name,
-            author: res.recipe.author,
-            about: res.recipe.about,
-            img: res.recipe.img,
-            rating: res.recipe.rating,
-            prep_time: parsePrepTime[0].slice(1) + ":" + parsePrepTime[1].slice(0, -1), // remove the parentheses around numbers
-            cook_time: parseCookTime[0].slice(1) + ":" + parseCookTime[1].slice(0, -1), // remove the parentheses around numbers
-            tags: res.recipe.tags,
-            notes: res.recipe.notes,
-            servings: res.recipe.servings,
-            steps: res.recipe.steps,
-            created_at: res.recipe.created_at
+          getRecipeImg(res.recipe.recid).then((img) => {          
+            setRecipe({
+              recid: res.recipe.recid,
+              recipe_name: res.recipe.recipe_name,
+              author: res.recipe.author,
+              about: res.recipe.about,
+              img: img,
+              rating: res.recipe.rating,
+              prep_time: parsePrepTime[0].slice(1) + ":" + parsePrepTime[1].slice(0, -1), // remove the parentheses around numbers
+              cook_time: parseCookTime[0].slice(1) + ":" + parseCookTime[1].slice(0, -1), // remove the parentheses around numbers
+              tags: res.recipe.tags,
+              notes: res.recipe.notes,
+              servings: res.recipe.servings,
+              steps: res.recipe.steps,
+              created_at: res.recipe.created_at
+            })
           })
           setIngrs(res.ingrs);
         }

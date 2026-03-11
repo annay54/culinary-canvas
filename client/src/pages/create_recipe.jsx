@@ -193,15 +193,15 @@ const CreateRecipe = () => {
   }
 
   const submitRecipe = () => {
-    const res = postRecipe(recipe, steps, ingredients)
-    console.log("res status", res.status, "res error", res.error)
-    if (res.error) {
-      toast.error(res.error)
-    }
-    else {
-      window.location.href = "/"; // go back to the home page
-      toast.success(res.success);
-    }
+    postRecipe(recipe, steps, ingredients).then((res) => {
+      if (res.error) {
+        toast.error(res.error)
+      }
+      else {
+        toast.success(res.success);
+        window.location.href = "/"; // go back to the home page
+      }
+    })
   }
 
   const pushList = (type) => {
@@ -604,7 +604,7 @@ const CreateRecipe = () => {
           <div className="flex flex-col gap-1 w-full mb-5">
             <h3 className="text-secondary font-medium">Preview of recipe page</h3>
           </div>
-          <div className="w-screen -mt-16 -mx-5 sm:-mx-10 md:-mx-20 xl:-mx-56">
+          <div className="w-full self-center -mt-16 sm:-mx-10 md:-mx-20 xl:-mx-56">
             <RecipePage recipe={recipe} ingrs={ingredients} steps={steps} authorImg={session.user.image}></RecipePage>
           </div>
 

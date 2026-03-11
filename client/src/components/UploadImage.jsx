@@ -10,7 +10,7 @@ const UploadImage = ({image, setImage, fileName, setFileName}) => {
       action="" onClick={() => {document.querySelector(".upload-img").click()}}
       >
         {image ?
-        <img src={image} alt={fileName} width={100} height={100} /> :
+        <img src={URL.createObjectURL(image)} alt={fileName} width={100} height={100} /> :
         <>
           <i aria-hidden className="fa-solid fa-image text-4xl text-primary"></i>
           <h3 className="font-medium">Browse files to upload</h3>
@@ -21,7 +21,7 @@ const UploadImage = ({image, setImage, fileName, setFileName}) => {
         onChange={({ target: {files}}) => {
           if (files[0]) {
             setFileName(files[0].name)
-            setImage(URL.createObjectURL(files[0]))
+            setImage(files[0])
           }
         }}/>
       </form>

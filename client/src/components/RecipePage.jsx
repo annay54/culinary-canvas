@@ -4,6 +4,7 @@ import { Avatar } from "@nextui-org/avatar";
 import { useSession } from "next-auth/react";
 import { isFavRecipe, addDeleteFavRecipe } from "@/pages/util/favRecipeAPI";
 import ReadOnlyTiptap from "./ReadOnlyTiptap";
+import { RECIPES_API_URL } from "@/pages/util/recipeAPI";
 
 const RecipePage = ({ recipe, ingrs, steps, authorImg, numRating, isCreate }) => {
   const { data: session } = useSession()
@@ -71,10 +72,10 @@ const RecipePage = ({ recipe, ingrs, steps, authorImg, numRating, isCreate }) =>
   return (
     <div className='pt-16 md:mx-[10%] mx-[5%]'>
       {/* hero */}
-      {recipe.img && (
+      {recipe.img?.size > 0 && (
         <img 
-          src={recipe.img}
-          alt="pancake" 
+          src={URL.createObjectURL(recipe.img)}
+          alt={recipe.recipe_name} 
           className='w-full md:w-full h-[250px] md:h-[400px] object-cover z-0 relative'
         />
       )}
