@@ -56,7 +56,7 @@ CREATE TABLE recipe_ingrs (
   quantity DECIMAL NOT NULL,
   unit units DEFAULT 'none',
   CONSTRAINT fk_recipe_ingr FOREIGN KEY (recid) REFERENCES recipes(recid) ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
 
 CREATE TABLE fav_recipes (
   uid INTEGER NOT NULL,
@@ -85,18 +85,11 @@ INSERT INTO users (full_name, email, password_hash) VALUES
   ('Mary Sue', 'mary_sue@email.com', '$2b$16$UfVpcKEZxKAylC.l9pAsA.Dk8X2bxVWwFU83aHGP7iGamb32dBnEq'), 
   ('Larry Gary', 'notlarry@email.com', '$2b$16$LvThBSSknrFMnxojuiPyw.ZXLxs5NLh.c.UiRzyqFqVqMNzKIoKY6');
 
-INSERT INTO recipes (recipe_name, author, about, prep_time, cook_time, tags, servings, ingrs, steps) VALUES
+INSERT INTO recipes (recipe_name, author, about, prep_time, cook_time, tags, servings, steps) VALUES
     ('Blueberry pancakes', 'mary_sue@email.com', '<p>This is my first recipe I made 15 years ago when I first started cooking. 
     These pancakes are fluffy and a masterpiece. Feel free to serve it with a cup of coffee for breakfast.</p>', (0, 30), (0, 15), 
-    ARRAY[('Breakfast')::tag, ('Easy')::tag, ('No-Bake')::tag, ('Beginner-Friendly')::tag], 1, ARRAY[
-      ('All purpose flour', 2, 'cup')::ingredient,
-      ('Blueberries', 0.5, 'cup')::ingredient,
-      ('Baking powder', 1.5, 'tsp')::ingredient,
-      ('Sugar', 2, 'tbsp')::ingredient,
-      ('Milk', 1.25, 'cup')::ingredient,
-      ('Butter, melted', 3, 'tbsp')::ingredient,
-      ('Egg', 2, 'none')::ingredient
-    ], ARRAY[
+    ARRAY[('Breakfast')::tag, ('Easy')::tag, ('No-Bake')::tag, ('Beginner-Friendly')::tag], 1, 
+    ARRAY[
       'Mix flour, sugar, and baking powder in a bowl.',
       'Add milk, eggs, and butter; mix until smooth.',
       'Gently mix the blueberries into the mixture. Make sure not to overmix!',
@@ -109,14 +102,6 @@ INSERT INTO recipes (recipe_name, author, about, prep_time, cook_time, tags, ser
     extra toppings you want on the toasts, like honey.</p>', (0, 0), (0, 10), 
     ARRAY[('Breakfast')::tag, ('Easy')::tag, ('Quick')::tag, ('Healthy')::tag, ('Vegetarian')::tag, ('American')::tag, ('Toasted')::tag], 2, 
     ARRAY[
-      ('Bread', 2, 'slice')::ingredient,
-      ('Avocado', 1, 'none')::ingredient,
-      ('Lemon juice', 1, 'tbsp')::ingredient,
-      ('Salt', 1.25, 'tsp')::ingredient,
-      ('Cottage cheese (optional)', 0.5, 'cup')::ingredient,
-      ('Egg (optional)', 1, 'none')::ingredient,
-      ('Cranberries (optional)', 0.25, 'cup')::ingredient
-    ], ARRAY[
       'Put the 2 slices of any type of bread into the toaster. (I prefer sourdough bread.)',
       'While the bread is toasting, cut one large avocado (or 2 small avocados) and smash it on a bowl.',
       'Mix the lemon juice and salt in the smashed avocado.',
@@ -126,17 +111,8 @@ INSERT INTO recipes (recipe_name, author, about, prep_time, cook_time, tags, ser
     ]),
     ('Shrimp ramen', 'notlarry@email.com', '<p>This is a simple ramen recipe that contains minimum ingredients and satisfies your 
     craving for Japanese food.</p>', (0, 10), (0, 30), 
-    ARRAY[('Lunch')::tag, ('Dinner')::tag, ('Simple')::tag, ('Beginner-Friendly')::tag, ('One-Pot')::tag, ('Japanese')::tag], 2, ARRAY[
-      ('Instant ramen noodles', 300, 'g')::ingredient,
-      ('Shrimps, peeled', 150, 'g')::ingredient,
-      ('Green onion', 2, 'none')::ingredient,
-      ('Carrot', 1, 'none')::ingredient,
-      ('Ginger, grated', 3, 'tsp')::ingredient,
-      ('Garlic, grated', 4, 'tsp')::ingredient,
-      ('Broth, chicken or vegetable', 2, 'cup')::ingredient,
-      ('Water', 2, 'cup')::ingredient, 
-      ('Sesame oil', 1, 'tbsp')::ingredient
-    ], ARRAY[
+    ARRAY[('Lunch')::tag, ('Dinner')::tag, ('Simple')::tag, ('Beginner-Friendly')::tag, ('One-Pot')::tag, ('Japanese')::tag], 2, 
+    ARRAY[
       'Shred the carrot into thin strips. Cut the green onions into small pieces and make sure to separate the white and green parts 
       of the green onions. Mince the ginger and garlic.',
       'In a wok, fry the sesame oil, white part of the green onions, ginger, and garlic in medium-low heat until fragrant.', 
