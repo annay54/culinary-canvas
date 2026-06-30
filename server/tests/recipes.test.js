@@ -205,4 +205,118 @@ describe('Recipe API', () => {
         })
     });
   });
+
+  describe('GET /api/recipes/reviews', () => {
+    test('should return list of reviews from recipe 1', async () => {
+      const response = await request('http://localhost:8080')
+        .get('/api/recipes/reviews?id=1&page=1&numReviews=10')
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toEqual({
+            reviews: [
+                {
+                    revid: 1,
+                    author: "john@email.com",
+                    recipe: 1,
+                    created_at: "2026-06-24",
+                    comment: "This is the best pancake recipe I've ever tried. It's so easy and quick to make. I love it!",
+                    rating: "5",
+                    helpful: 0,
+                    User: {
+                        profile_img: null,
+                        uid: 1
+                    }
+                },
+                {
+                    revid: 3,
+                    author: "notlarry@email.com",
+                    recipe: 1,
+                    created_at: "2026-06-24",
+                    comment: "As Mary said, the pancakes are fluffy and it is an easy recipe to follow. But I prefer putting chocolate\n  chips on my pancake rather than blueberries...",
+                    rating: "3",
+                    helpful: 0,
+                    User: {
+                        profile_img: null,
+                        uid: 3
+                    }
+                }
+            ],
+            count: 2
+          })
+        })
+    });
+  });
+
+describe('GET /api/recipes/tags', () => {
+    test('should return list of recipe tags', async () => {
+      const response = await request('http://localhost:8080')
+        .get('/api/recipes/tags')
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toEqual([
+            "Breakfast",
+            "Brunch",
+            "Lunch",
+            "Dinner",
+            "Snack",
+            "Dessert",
+            "Appetizer",
+            "Side Dish",
+            "Easy",
+            "Quick",
+            "Simple",
+            "One-Pot",
+            "No-Bake",
+            "Beginner-Friendly",
+            "Healthy",
+            "Low-Carb",
+            "Low-Calorie",
+            "High Protein",
+            "High Fiber",
+            "Vegan",
+            "Vegetarian",
+            "Gluten-Free",
+            "Dairy-Free",
+            "Keto",
+            "Paleo",
+            "High-Fiber",
+            "Sugar-Free",
+            "Low-Fat",
+            "Baked",
+            "Grilled",
+            "Roasted",
+            "Fried",
+            "Slow Cooker",
+            "Instant Pot",
+            "Air Fryer",
+            "Steamed",
+            "Toasted",
+            "Kid-Friendly",
+            "BBQ",
+            "Comfort Food",
+            "Holiday",
+            "Italian",
+            "Mexican",
+            "Indian",
+            "Chinese",
+            "Japanese",
+            "Thai",
+            "Mediterranean",
+            "Middle Eastern",
+            "American",
+            "French",
+            "Korean",
+            "Turkish",
+            "Spanish",
+            "Arab",
+            "Vietnamese",
+            "Greek",
+            "Hong Kong",
+            "Indonesian"
+          ])
+        })
+    });
+  });
+
+
 });
