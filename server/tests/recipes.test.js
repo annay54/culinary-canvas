@@ -318,5 +318,91 @@ describe('GET /api/recipes/tags', () => {
     });
   });
 
+  describe('GET /api/recipes/user-created', () => {
+    // positive test case
+    test('should return list of recipes by user email', async () => {
+      const response = await request('http://localhost:8080')
+        .get('/api/recipes/user-created?value=mary_sue@email.com&page=1&numRecipes=10')
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toEqual({
+            recipes: [
+                {
+                    recid: 1,
+                    recipe_name: "Blueberry pancakes",
+                    author: "mary_sue@email.com",
+                    about: "<p>This is my first recipe I made 15 years ago when I first started cooking. \n    These pancakes are fluffy and a masterpiece. Feel free to serve it with a cup of coffee for breakfast.</p>",
+                    img: null,
+                    rating: "0",
+                    prep_time: "(0,30)",
+                    cook_time: "(0,15)",
+                    tags: [
+                        "Breakfast",
+                        "Easy",
+                        "No-Bake",
+                        "Beginner-Friendly"
+                    ],
+                    notes: "",
+                    servings: 1,
+                    steps: [
+                        "Mix flour, sugar, and baking powder in a bowl.",
+                        "Add milk, eggs, and butter; mix until smooth.",
+                        "Gently mix the blueberries into the mixture. Make sure not to overmix!",
+                        "Heat a lightly oiled griddle or frying pan over medium-high heat.",
+                        "Pour or scoop the batter onto the griddle, using approximately 1/4 cup for each pancake.",
+                        "Brown on both sides and serve hot."
+                    ],
+                    created_at: "2026-06-24T20:54:39.219Z"
+                },
+                {
+                    recid: 2,
+                    recipe_name: "Avocado toasts",
+                    author: "mary_sue@email.com",
+                    about: "<p>This is my go-to breakfast when I am busy and do not have time in the morning. \n    This recipe is very simple and easy and it contains ingredients that you probably have in your house. You can add whatever\n    extra toppings you want on the toasts, like honey.</p>",
+                    img: null,
+                    rating: "0",
+                    prep_time: "(0,0)",
+                    cook_time: "(0,10)",
+                    tags: [
+                        "Breakfast",
+                        "Easy",
+                        "Quick",
+                        "Healthy",
+                        "Vegetarian",
+                        "American",
+                        "Toasted"
+                    ],
+                    notes: "",
+                    servings: 2,
+                    steps: [
+                        "Put the 2 slices of any type of bread into the toaster. (I prefer sourdough bread.)",
+                        "While the bread is toasting, cut one large avocado (or 2 small avocados) and smash it on a bowl.",
+                        "Mix the lemon juice and salt in the smashed avocado.",
+                        "Evenly spread the avocado mixture onto the toasted bread.",
+                        "Finally, you can add whatever other toppings you want. I added cottage cheese and egg for extra protein. \n      I also added cranberries for some extra crunch"
+                    ],
+                    created_at: "2026-06-24T20:54:39.219Z"
+                }
+            ],
+            count: 2
+        })
+      });
+    });
+
+    // negative test case
+    test('should return empty list when user email does not exist', async () => {
+      const response = await request('http://localhost:8080')
+        .get('/api/recipes/user-created?value=m@email.com&page=1&numRecipes=10')
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toEqual({
+              recipes: [],
+              count: 0
+          })
+        })
+    });
+  });
+
+  
 
 });
