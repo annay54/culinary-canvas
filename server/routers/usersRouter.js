@@ -15,16 +15,16 @@ const saltRounds = 16
  */
 usersRouter.post("/register", async (req, res) => {
   const userExist = await User.findOne({
-    where: { email: req.body.userData.email },
+    where: { email: req?.body?.userData?.email },
   });
   if (userExist) {
     return res.status(422).json({ error: "User already exists" });
   }
   
   const salt = bcrypt.genSaltSync(saltRounds)
-  const password_hash = bcrypt.hashSync(req.body.userData.password, salt)
+  const password_hash = bcrypt.hashSync(req?.body?.userData?.password, salt)
   try {
-    const fullName = req.body.userData.firstName + " " + req.body.userData.lastName;
+    const fullName = req?.body?.userData?.firstName + " " + req?.body?.userData?.lastName;
     const [result, metadata] = await sequelize.query(`INSERT INTO users (full_name, email, password_hash) VALUES ('${fullName}', '${req.body.userData.email}', '${password_hash}')`);
 
     if (metadata == 1) {
